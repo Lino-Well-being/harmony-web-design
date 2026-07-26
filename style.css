@@ -297,6 +297,44 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
 }
 
+
+/* ---------- 対話の風景（帯・2026-07-26） ---------- */
+.story-band {
+  padding: 0 0 clamp(48px, 7vw, 88px);
+  background: linear-gradient(180deg, #fffaf6 0%, var(--rose-50) 100%);
+}
+
+.story-band-photo {
+  margin: 0;
+  width: min(1180px, calc(100% - 48px));
+  margin-inline: auto;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(150, 110, 90, 0.14);
+}
+
+.story-band-photo img {
+  display: block;
+  width: 100%;
+  height: clamp(220px, 32vh, 340px);
+  object-fit: cover;
+  object-position: center 42%;
+}
+
+.story-band-caption {
+  margin: 22px auto 0;
+  text-align: center;
+  font-family: var(--font-accent);
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  letter-spacing: 0.08em;
+  color: rgba(120, 96, 86, 0.85);
+}
+
+@media (max-width: 768px) {
+  .story-band-photo { width: calc(100% - 32px); border-radius: 18px; }
+  .story-band-photo img { height: clamp(180px, 26vh, 240px); }
+}
+
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex;
