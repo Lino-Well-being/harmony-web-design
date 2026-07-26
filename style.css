@@ -593,7 +593,8 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  /* Safari対策: 素の 1fr は min-content で膨張しうるため minmax(0, 1fr) で固定 */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
 }
 
@@ -603,13 +604,35 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
-  padding: 40px 32px;
   transition: transform 0.3s, box-shadow 0.3s;
   position: relative;
   overflow: hidden;
 }
 
-.service-card::before {
+/* サービスカードのイメージ画像（2026-07-26追加・制作実績カードと同じ挙動） */
+.service-shot {
+  margin: 0;
+  overflow: hidden;
+  background: var(--gray-100, #f6f2ee);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.service-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.5s ease;
+}
+
+.service-card:hover .service-shot img { transform: scale(1.03); }
+
+.service-body {
+  padding: 32px 32px 36px;
+  position: relative;
+}
+
+/* ホバー時のアクセント線。画像の上端に重ならないよう .service-body の上端に配置 */
+.service-body::before {
   content: '';
   position: absolute;
   top: 0;
@@ -626,7 +649,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   box-shadow: var(--shadow-md);
 }
 
-.service-card:hover::before {
+.service-card:hover .service-body::before {
   opacity: 1;
 }
 
@@ -1129,8 +1152,8 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
     gap: 16px;
   }
 
-  .service-card {
-    padding: 28px 24px;
+  .service-body {
+    padding: 24px 22px 28px;
   }
 
   /* Flow */
