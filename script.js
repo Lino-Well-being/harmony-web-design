@@ -52,30 +52,38 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---------- Scroll-triggered fade-in ----------
   const fadeElements = document.querySelectorAll('.fade-in');
 
-  const observerOptions = {
-    threshold: 0.12,
-    rootMargin: '0px 0px -40px 0px'
-  };
+  // ファーストビュー内の要素は即時表示（読み込み直後に白く見えるのを防ぐ・2026-07-26）
+  document.querySelectorAll('.hero .fade-in').forEach(el => el.classList.add('visible'));
 
-  const fadeObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry, index) => {
-      if (entry.isIntersecting) {
-        // Stagger animation for sibling elements
-        const parent = entry.target.parentElement;
-        const siblings = Array.from(parent.querySelectorAll(':scope > .fade-in'));
-        const siblingIndex = siblings.indexOf(entry.target);
-        const delay = siblingIndex >= 0 ? siblingIndex * 80 : 0;
+  // IO非対応・アニメ抑制設定の環境では全要素を即時表示（演出を単一障害点にしない）
+  if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    fadeElements.forEach(el => el.classList.add('visible'));
+  } else {
+    const observerOptions = {
+      threshold: 0.12,
+      rootMargin: '0px 0px -40px 0px'
+    };
 
-        setTimeout(() => {
-          entry.target.classList.add('visible');
-        }, delay);
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Stagger animation for sibling elements
+          const parent = entry.target.parentElement;
+          const siblings = Array.from(parent.querySelectorAll(':scope > .fade-in'));
+          const siblingIndex = siblings.indexOf(entry.target);
+          const delay = siblingIndex >= 0 ? siblingIndex * 80 : 0;
 
-        fadeObserver.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, delay);
 
-  fadeElements.forEach(el => fadeObserver.observe(el));
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    fadeElements.forEach(el => fadeObserver.observe(el));
+  }
 
   // ---------- FAQ Accordion ----------
   const faqButtons = document.querySelectorAll('.faq-question');
