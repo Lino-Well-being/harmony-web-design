@@ -201,7 +201,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: url('hero-bg.png') center/cover no-repeat;
+  background: url('hero-bg.png') center 22% / cover no-repeat; /* 2026-07-26: 二人の顔がテキストと重ならないよう画像を下げる */
   transform: scale(1.05);
   animation: heroZoom 20s ease-in-out infinite alternate;
 }
