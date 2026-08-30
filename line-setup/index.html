@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公式LINE構築サービス | Harmony Web Design</title>
+  <meta name="description" content="ライブやイベントの告知、お店のお知らせ、ファンとのつながりに。あなたの活動にちょうどいい公式LINEを、開設から「使える状態」までまるごと整えます。Harmony Web Designの公式LINE構築サービス。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <noscript>
+    <style>.fade-in { opacity: 1 !important; transform: none !important; }</style>
+  </noscript>
+  <style>
+    /* ---- このページ専用（プラン表） ---- */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+      gap: clamp(24px, 3vw, 36px);
+      margin-top: 48px;
+      align-items: stretch;
+    }
+    .plan-card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 36px 32px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+    .plan-card.plan-recommended {
+      border: 2px solid var(--gold-400);
+      box-shadow: var(--shadow-md);
+    }
+    .plan-badge {
+      position: absolute;
+      top: -14px;
+      left: 28px;
+      background: var(--accent-gradient);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      padding: 4px 16px;
+      border-radius: 100px;
+    }
+    .plan-name {
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .plan-for {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+    .plan-price {
+      font-size: 1.9rem;
+      font-weight: 500;
+      color: var(--rose-500);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .plan-price small {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+    .plan-list {
+      list-style: none;
+      margin: 20px 0 0;
+      padding-top: 20px;
+      border-top: 1px solid var(--gray-200);
+      flex-grow: 1;
+    }
+    .plan-list li {
+      position: relative;
+      padding-left: 26px;
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+    .plan-list li::before {
+      content: "✦";
+      position: absolute;
+      left: 2px;
+      color: var(--gold-400);
+      font-size: 0.8rem;
+    }
+    .plan-note-goal {
+      margin-top: 20px;
+      padding: 14px 18px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .price-note {
+      max-width: 720px;
+      margin: 40px auto 0;
+      padding: 24px 28px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      line-height: 2;
+      color: var(--text-secondary);
+    }
+    .price-note h3 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== ヘッダー ========== -->
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a href="../" class="logo">Harmony <span>Web Design</span></a>
+      <button class="hamburger" id="hamburger" aria-label="メニューを開く">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="global-nav" id="global-nav">
+        <a href="#plans">プランと料金</a>
+        <a href="#flow">進め方</a>
+        <a href="#faq">FAQ</a>
+        <a href="../">Harmonyのトップへ</a>
+        <a href="https://lin.ee/rEQQALw" class="nav-cta" target="_blank" rel="noopener">無料相談</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========== ヒーロー ========== -->
+  <section class="section" id="top" style="padding-top: 140px;">
+    <div class="container">
+      <div class="section-header fade-in">
+        <p class="section-label">LINE Official Account</p>
+        <h2 class="section-title">公式LINE構築サービス</h2>
+        <p class="section-lead">ライブやイベントの告知、お店のお知らせ、ファンとのつながり。<br>あなたの活動にちょうどいい公式LINEを、開設から「使える状態」までまるごと整えます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== こんなときに ========== -->
+  <section class="section section-problems" id="problems">
+    <div class="container">
+      <div class="section-header fade-in">
+        <p class="section-label">For You</p>
+        <h2 class="section-title">こんなときに</h2>
+      </div>
+      <div class="problems-grid">
+        <div class="problem-card fade-in">
+          <div class="problem-icon">🎹</div>
+          <p>ライブやイベントの告知を、来てほしい人に確実に届けたい</p>
+        </div>
+        <div class="problem-card fade-in">
+          <div class="problem-icon">📌</div>
+          <p>SNSの投稿は流れてしまう。大事なお知らせの「置き場所」が欲しい</p>
+        </div>
+        <div class="problem-card fade-in">
+          <div class="problem-icon">😵</div>
+          <p>公式LINEを作ろうとしたけど、設定画面を見てそっと閉じた</p>
+        </div>
+        <div class="problem-card fade-in">
+          <div class="problem-icon">📱</div>
+          <p>トーク画面の下に出てくるメニューまで、きちんと整えたい</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== プランと料金 ========== -->
+  <section class="section" id="plans">
+    <div class="container">
+      <div class="section-header fade-in">
+        <p class="section-label">Plans</p>
+        <h2 class="section-title">プランと料金</h2>
+        <p class="section-lead">どちらのプランも、面倒な設定はぜんぶこちらで行います。ご用意いただくのはプロフィール写真くらいで大丈夫です。</p>
+      </div>
+
+      <div class="plans-grid">
+        <div class="plan-card fade-in">
+          <p class="plan-name">ライト｜開設セット</p>
+          <p class="plan-for">まずは公式LINEを持ちたい方に</p>
+          <p class="plan-price">22,000円 <small>（税込）</small></p>
+          <ul class="plan-list">
+            <li>アカウント開設・基本設定（プロフィール・あいさつメッセージ）</li>
+            <li>友だち追加のQRコードとリンクの発行</li>
+            <li>自動応答の設定（1〜2本）</li>
+          </ul>
+          <p class="plan-note-goal">チラシやSNSにQRコードを貼って、今日から友だちを集められる状態でお渡しします。</p>
+        </div>
+
+        <div class="plan-card plan-recommended fade-in">
+          <span class="plan-badge">イベント・ライブ告知におすすめ</span>
+          <p class="plan-name">スタンダード｜開設＋告知が回るセット</p>
+          <p class="plan-for">イベントやライブの集客に使いたい方に</p>
+          <p class="plan-price">66,000円 <small>（税込）</small></p>
+          <ul class="plan-list">
+            <li>ライトの内容すべて</li>
+            <li>リッチメニューのデザイン制作（トーク画面下のボタン。イベント告知・プロフィール・SNSリンクなど）</li>
+            <li>告知配信のテンプレート一式（お知らせ → リマインド → 直前案内）</li>
+            <li>使い方レクチャー（Zoom 60分）</li>
+          </ul>
+          <p class="plan-note-goal">イベントの日程から逆算して、いつ開設して、いつ何を配信するかのスケジュールもご提案します。</p>
+        </div>
+      </div>
+
+      <div class="price-note fade-in">
+        <h3>料金に含まれないもの</h3>
+        <p>月々の配信代行や運用サポートは含まれません（ご希望の方には別途ご案内します）。LINE社の利用料もかかりませんのでご安心ください。公式LINEは月200通まで無料で配信できるので、小規模な運用なら月額0円のまま使い続けられます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 進め方 ========== -->
+  <section class="section" id="flow">
+    <div class="container">
+      <div class="section-header fade-in">
+        <p class="section-label">Flow</p>
+        <h2 class="section-title">進め方</h2>
+      </div>
+      <div class="flow-timeline">
+        <div class="flow-step fade-in">
+          <div class="flow-step-marker"><span class="flow-step-num">1</span></div>
+          <div class="flow-step-content">
+            <h3>無料相談</h3>
+            <p>LINEかZoomでお気軽にどうぞ。活動の内容と「LINEで何をしたいか」をお聞きして、合うプランをご提案します。イベントの予定があれば、その日程から逆算したスケジュールもこの場でお伝えします。</p>
+          </div>
+        </div>
+        <div class="flow-step fade-in">
+          <div class="flow-step-marker"><span class="flow-step-num">2</span></div>
+          <div class="flow-step-content">
+            <h3>ヒアリング</h3>
+            <p>あいさつメッセージやメニューに入れる文章は、お話を聞きながら私がまとめます。原稿のご用意はいりません。</p>
+          </div>
+        </div>
+        <div class="flow-step fade-in">
+          <div class="flow-step-marker"><span class="flow-step-num">3</span></div>
+          <div class="flow-step-content">
+            <h3>構築・デザイン</h3>
+            <p>開設から各種設定、リッチメニューのデザインまでこちらで進めます。途中で画面をお見せしながら、イメージに合っているかを確認します。</p>
+          </div>
+        </div>
+        <div class="flow-step fade-in">
+          <div class="flow-step-marker"><span class="flow-step-num">4</span></div>
+          <div class="flow-step-content">
+            <h3>お渡し・レクチャー</h3>
+            <p>「使える状態」でお渡しします。スタンダードプランでは、配信のしかたをZoomで一緒に練習するレクチャーつき。お渡し後の質問にもお答えします。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FAQ ========== -->
+  <section class="section section-faq" id="faq">
+    <div class="container">
+      <div class="section-header fade-in">
+        <p class="section-label">FAQ</p>
+        <h2 class="section-title">よくあるご質問</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item fade-in">
+          <button class="faq-question" aria-expanded="false">
+            <span>月々の費用はかかりますか？</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>公式LINEは月200通まで無料で配信できます。友だち100人に月2回お知らせを送る、くらいの使い方なら月額0円のままで大丈夫です。配信数が増えてきたら、そのときに有料プランをご案内します。</p>
+          </div>
+        </div>
+        <div class="faq-item fade-in">
+          <button class="faq-question" aria-expanded="false">
+            <span>何を準備すればいいですか？</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>プロフィールに使う写真やロゴがあれば十分です。文章はヒアリングでお聞きしながら私がまとめるので、原稿のご用意はいりません。</p>
+          </div>
+        </div>
+        <div class="faq-item fade-in">
+          <button class="faq-question" aria-expanded="false">
+            <span>どのくらいの期間でできますか？</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>ライトプランで1週間前後、スタンダードプランで2〜3週間が目安です。</p>
+          </div>
+        </div>
+        <div class="faq-item fade-in">
+          <button class="faq-question" aria-expanded="false">
+            <span>イベントに間に合わせたいのですが、いつ始めればいいですか？</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>イベントの2〜3ヶ月前の開設をおすすめしています。当日までにライブや店頭でQRコードから友だちを集めておくと、告知を届けたいときには「届く相手がいる」状態になっています。日程が決まっていれば、逆算スケジュールを無料相談でご提案します。</p>
+          </div>
+        </div>
+        <div class="faq-item fade-in">
+          <button class="faq-question" aria-expanded="false">
+            <span>作ったあとの運用もお願いできますか？</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>はい。配信文の作成や月々の運用サポートは別メニューでご案内しています。まずは無料相談でご希望をお聞かせください。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA ========== -->
+  <section class="section section-cta" id="cta">
+    <div class="container">
+      <div class="cta-content fade-in">
+        <h2>まずは、お気軽にご相談ください</h2>
+        <p>「うちの場合はどっちのプラン？」だけでも大丈夫です。<br>ご相談は無料。無理なおすすめはしません。</p>
+        <div class="cta-btn-group">
+          <a href="https://lin.ee/rEQQALw" class="btn btn-primary btn-pulse btn-large" target="_blank" rel="noopener">
+            <span class="btn-icon">✦</span>
+            LINEで無料相談する
+          </a>
+          <a href="../" class="btn btn-sub">
+            Harmony Web Designのトップへ
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== フッター ========== -->
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-logo">Harmony <span>Web Design</span></p>
+      <p class="footer-copy">&copy; 2026 Harmony Web Design. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+</body>
+</html>
