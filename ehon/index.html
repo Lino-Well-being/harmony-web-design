@@ -52,6 +52,10 @@ footer a{color:#7a6f64}
 .omiyage li:last-child{margin-bottom:0}
 .omiyage li::before{content:"🎁";position:absolute;left:0}
 .omiyage li small{display:block;font-weight:400;color:var(--ink);font-size:.88rem}
+.naze-list{list-style:none;margin-top:8px}
+.naze-list li{display:flex;gap:14px;align-items:center;background:#fff;border-radius:16px;padding:18px 20px;margin-bottom:14px;box-shadow:0 4px 16px rgba(74,64,56,.06);font-weight:800;line-height:1.8}
+.naze-list .num{flex:none;width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+.naze-close{text-align:center;font-weight:800;font-size:1.05rem;margin-top:24px}
 </style>
 </head>
 <body>
@@ -69,7 +73,16 @@ footer a{color:#7a6f64}
   <div class="sec"><img src="lp_02_kyokan.jpg" alt="いつか絵本を、と思ったまま何年も経っていませんか"></div>
 
   <!-- 3. なぜ完成しないのか -->
-  <div class="sec"><img src="lp_03_naze.jpg" alt="なぜ完成しないのか。止まる場所は決まっています"></div>
+  <div class="txt">
+    <h2><span>なぜ、完成しないのか</span></h2>
+    <p>止まる場所は、決まっています。</p>
+    <ul class="naze-list">
+      <li><span class="num">1</span><span>どんなお話にしていいか、まとまらない</span></li>
+      <li><span class="num">2</span><span>キャラクターデザインが、うまくできない</span></li>
+      <li><span class="num">3</span><span>仕上げと出版の手順で、力尽きてしまう</span></li>
+    </ul>
+    <p class="naze-close">才能の問題ではありません。<br>順番の問題です。</p>
+  </div>
 
   <!-- 4. 届くまでの地図 -->
   <div class="sec"><img src="lp_04_michisuji.jpg" alt="お渡しするのは届くまでの地図です"></div>
