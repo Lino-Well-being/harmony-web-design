@@ -14,7 +14,7 @@
 1. 千穂さんに③の感想を聞く。見てほしいと伝えた点: トップの動き（速さ・言葉の数・手書き風の印象）、色の組み合わせ、ロゴの見せ方（Harmony＋小さくDESIGN）。
 2. 直しを入れる（`git checkout renewal` で作業）。
 3. 乃舞さん側からお客様の声が届いたら VOICE 欄に追加（原稿に「追加予定」と記載済み）。
-4. 写真が増えたら METHOD・PROFILE 欄に足す（今はプロフィール写真1枚のみ）。
+4. 写真が増えたら METHOD 欄などに足す。プロフィール写真は2026-10-04に「ちほお外アイコン.jpg」（グレーのジャケット・屋外の光）へ差し替え済み（renewal/img/profile.jpg・1000×1000）。
 5. 公開（④）: `renewal/` の中身をトップ（ルート）に置き換える。その際
    - `renewal/index.html` の `<meta name="robots" content="noindex, nofollow">` を必ず外す
    - 画像パス `../works/` `../line-setup/` をルート基準に直す
