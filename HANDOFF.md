@@ -2,7 +2,7 @@
 
 最終更新: 2026-10-04（作業日 2026-10-02〜04）
 
-【2026-10-04 公開済み】renewal/ の中身をルートへ移して main にマージし、harmonyweb-design.com で公開した（noindex は外した）。以後の修正はルートの index.html / style.css / site.js / img/ / line-setup/ を直接直す。mainにpushすると即公開。
+【2026-10-04 公開済み】renewal/ の中身をルートへ移して main にマージし、harmonyweb-design.com で公開した（noindex は外した）。以後の修正はルートの index.html / style.css / site.js / img/ / line-setup/ を直接直す。mainにpushすると即公開。旧サイトの不要ファイル（script.js, hero-bg.png, hero-visual.jpg, 旧profile.jpg, services/）は同日に千穂さん確認のうえ削除済み（e188e55。git履歴から復元可）。renewal/ フォルダにはGit管理外の画像原本（PNG）だけが残っている。
 
 ## 現在地
 
@@ -20,7 +20,6 @@
 5. 公開（④）: `renewal/` の中身をトップ（ルート）に置き換える。その際
    - `renewal/index.html` の `<meta name="robots" content="noindex, nofollow">` を必ず外す
    - 画像パス `../works/` `../line-setup/` をルート基準に直す
-   - 旧トップの `services/` 画像・`hero-*.png/jpg` は不要になる（削除は千穂さん確認後）
    - /line-setup/ は renewal/line-setup/ で置き換える（新デザイン・屋号修正済み）。画像パス ../img/ ../style.css も公開時の配置に合わせて確認
    - Mothership-lab 側に残る旧屋号（.claude/commands/weekend.md, generate.md、UTAGE・LINE設定スキル）もこのタイミングで直す
 6. 公開後、`002 wiki/products-master.md` の「11. Harmony Design」を公開済みに更新。
