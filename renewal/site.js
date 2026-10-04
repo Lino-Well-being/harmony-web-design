@@ -2,31 +2,94 @@
 (() => {
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* Hero: scattered words gather, then the copy appears */
+  /* Hero: scattered words gather, a pen writes the copy, then the rest appears */
+  const stage = document.querySelector('.hero-stage');
   const scatter = document.querySelector('.scatter');
   const copy = document.querySelector('.hero-copy');
   const hint = document.querySelector('.hero-scroll');
-  const setState = (p, q) => {
+  const pen = document.querySelector('.pen');
+  const title = document.querySelector('#hero-title');
+  title.setAttribute('aria-label', title.textContent.trim());
+  const chars = [];
+  const wrapChars = node => {
+    [...node.childNodes].forEach(child => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        const frag = document.createDocumentFragment();
+        [...child.textContent].forEach(ch => {
+          const span = document.createElement('span');
+          span.className = 'c';
+          span.setAttribute('aria-hidden', 'true');
+          span.textContent = ch;
+          chars.push(span);
+          frag.append(span);
+        });
+        child.replaceWith(frag);
+      } else {
+        wrapChars(child);
+      }
+    });
+  };
+  wrapChars(title);
+
+  const penAt = (el, rest = false, atLeft = false) => {
+    const r = el.getBoundingClientRect();
+    const s = stage.getBoundingClientRect();
+    const half = pen.getBoundingClientRect().height / 2;
+    const x = (atLeft ? r.left : r.right) - s.left + (rest ? r.height * .35 : 0);
+    const y = (rest ? r.bottom + r.height * .08 : r.bottom - r.height * .18) - s.top - half;
+    pen.style.transform = `translate(${x}px, ${y}px) rotate(${rest ? -24 : -35}deg)`;
+  };
+  const setVars = (p, e, q) => {
     scatter.style.setProperty('--p', p);
+    copy.style.setProperty('--e', e);
     copy.style.setProperty('--q', q);
     hint.style.setProperty('--q', q);
   };
+  let done = false;
+  const finish = () => {
+    done = true;
+    chars.forEach(c => c.classList.add('on'));
+    pen.classList.add('is-on', 'is-rest');
+    penAt(chars[chars.length - 1], true);
+  };
+
   if (motion.matches) {
-    setState(1, 1);
+    setVars(1, 1, 1);
+    finish();
   } else {
     const ease = t => 1 - Math.pow(1 - t, 3);
-    const delay = 1400, gather = 1600, appear = 1100;
+    const clamp = v => Math.min(Math.max(v, 0), 1);
+    const delay = 1200, gather = 1500, perChar = 70, appear = 1000;
+    const writeStart = gather * .7;
+    const writeEnd = writeStart + chars.length * perChar;
     let start = null;
+    let shown = 0;
     const tick = now => {
       if (start === null) start = now;
       const t = now - start - delay;
-      const p = ease(Math.min(Math.max(t / gather, 0), 1));
-      const q = ease(Math.min(Math.max((t - gather * .55) / appear, 0), 1));
-      setState(p, q);
-      if (q < 1) requestAnimationFrame(tick);
+      const p = ease(clamp(t / gather));
+      const e = ease(clamp((t - gather * .45) / 600));
+      const q = ease(clamp((t - writeEnd - 350) / appear));
+      setVars(p, e, q);
+      if (t >= writeStart - 300 && !pen.classList.contains('is-on')) {
+        penAt(chars[0], false, true);
+        pen.classList.add('is-on');
+      }
+      const target = Math.min(chars.length, Math.floor((t - writeStart) / perChar));
+      while (shown < target) {
+        chars[shown].classList.add('on');
+        if (chars[shown].textContent.trim()) penAt(chars[shown]);
+        shown++;
+      }
+      if (t >= writeEnd + 200 && !pen.classList.contains('is-rest')) {
+        pen.classList.add('is-rest');
+        penAt(chars[chars.length - 1], true);
+      }
+      if (q < 1) requestAnimationFrame(tick); else done = true;
     };
     requestAnimationFrame(tick);
   }
+  window.addEventListener('resize', () => { if (done || pen.classList.contains('is-rest')) penAt(chars[chars.length - 1], true); });
 
   /* Big titles: letters rise one by one */
   document.querySelectorAll('.js-title').forEach(title => {

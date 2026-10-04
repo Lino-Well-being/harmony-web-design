@@ -48,6 +48,13 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .js .hero-copy{--q:0}
 .hero-copy>*{opacity:var(--q);transform:translateY(calc((1 - var(--q)) * 24px))}
 .hero-eyebrow{font:500 .875rem/1.6 var(--serif);letter-spacing:.4em;color:var(--sage-deep);margin-bottom:22px}
+.js .hero-copy .hero-eyebrow{opacity:var(--e,0)}
+.hero-copy h1{opacity:1;transform:none}
+.js .hero h1 .c{opacity:0;filter:blur(4px);transition:opacity .45s ease,filter .45s ease}
+.hero h1 .c.on{opacity:1;filter:none}
+.pen{position:absolute;left:0;top:0;z-index:3;width:clamp(78px,8.5vw,118px);height:auto;pointer-events:none;opacity:0;transform-origin:0 50%;transition:opacity .5s ease,transform .12s linear;filter:drop-shadow(4px 8px 6px rgba(31,45,68,.18))}
+.pen.is-on{opacity:1}
+.pen.is-rest{transition:opacity .5s ease,transform 1.1s cubic-bezier(.2,.8,.2,1)}
 .hero h1{font:600 clamp(1.75rem,4.2vw,3.4rem)/1.65 var(--serif);letter-spacing:.08em;color:var(--navy)}
 .hero h1>span{display:block}
 .nb{display:inline-block}
@@ -188,6 +195,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .hero-paper{background:repeating-linear-gradient(180deg,transparent 0 39px,rgba(31,45,68,.07) 39px 40px),var(--paper)}
   .scatter li{font-size:.9375rem;transform:translate(-50%,-50%) translate(calc(var(--mx) * 1vw * (1 - var(--p))),calc(var(--my) * 1vh * (1 - var(--p)))) rotate(calc(var(--r) * .6deg * (1 - var(--p)))) scale(calc(1 - var(--p) * .35))}
   .hero h1{font-size:clamp(1.35rem,6.2vw,1.9rem);letter-spacing:.04em}
+  .pen{width:58px}
   .hero-sub{font-size:.875rem;letter-spacing:.04em}
   .hero-buttons .btn{width:100%}
   .block{padding:84px 0 92px}
@@ -214,6 +222,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   html{scroll-behavior:auto}
   *,*:before,*:after{transition-duration:.01ms!important;animation:none!important}
   .js .scatter{--p:1}
-  .js .hero-copy{--q:1}
+  .js .hero-copy{--q:1;--e:1}
+  .js .hero h1 .c{opacity:1;filter:none}
   .js .reveal,.js-title .ch>span{opacity:1!important;transform:none!important}
 }
