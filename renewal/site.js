@@ -8,6 +8,7 @@
   const copy = document.querySelector('.hero-copy');
   const hint = document.querySelector('.hero-scroll');
   const pen = document.querySelector('.pen');
+  const person = document.querySelector('.hero-person');
   const title = document.querySelector('#hero-title');
   title.setAttribute('aria-label', title.textContent.trim());
   const chars = [];
@@ -81,6 +82,7 @@
   let done = false;
   const finish = () => {
     done = true;
+    person.classList.add('is-on', 'is-solved');
     chars.forEach(c => c.classList.add('on'));
     pen.classList.add('is-on', 'is-rest');
     penAt(chars[chars.length - 1], true);
@@ -104,6 +106,8 @@
       const e = ease(clamp((t - gather * .45) / 600));
       const q = ease(clamp((t - writeEnd - 350) / appear));
       setVars(p, e, q);
+      if (now - start > 200) person.classList.add('is-on');
+      if (t >= writeEnd + 200) person.classList.add('is-solved');
       if (t >= writeStart - 300 && !pen.classList.contains('is-on')) {
         penAt(chars[0], false, true);
         pen.classList.add('is-on');
