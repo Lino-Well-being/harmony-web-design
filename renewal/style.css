@@ -133,11 +133,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 
 /* round images: gentle floating */
 @keyframes bob{0%,100%{translate:0 0}50%{translate:0 -8px}}
-.hero-face,.face-circle,.step-img{animation:bob 4.8s ease-in-out infinite}
+.hero-face,.face-circle{animation:bob 4.8s ease-in-out infinite}
 .face-bubble{animation:bob 4.8s ease-in-out infinite;animation-delay:-.6s}
-.step:nth-child(2) .step-img{animation-delay:-1.2s}
-.step:nth-child(3) .step-img{animation-delay:-2.4s}
-.step:nth-child(4) .step-img{animation-delay:-3.6s}
 .why .face-circle{animation-delay:-1.6s}
 .voice .face-circle{animation-delay:-3.2s}
 
