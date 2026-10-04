@@ -8,7 +8,8 @@
 html{scroll-behavior:smooth;scroll-padding-top:var(--header)}
 body{margin:0;background:var(--ivory);color:var(--ink);font:16px/2 var(--sans);letter-spacing:.04em;-webkit-font-smoothing:antialiased}
 p,li,dd,dt,h3,summary,blockquote,figcaption{text-wrap:pretty}
-h1,h2,h3,dt,summary{word-break:auto-phrase}
+h1,h2,h3,dt,summary,p,li,dd,blockquote,figcaption{word-break:auto-phrase}
+.wb-js p,.wb-js li,.wb-js dd,.wb-js dt,.wb-js h3,.wb-js summary,.wb-js blockquote,.wb-js figcaption{word-break:keep-all;overflow-wrap:anywhere}
 img{display:block;max-width:100%;height:auto}
 a{color:inherit;text-decoration:none}
 h1,h2,h3,p,figure,ul,ol,dl,dd,blockquote{margin:0}

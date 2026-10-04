@@ -124,6 +124,30 @@
   }
   window.addEventListener('resize', () => { if (done || pen.classList.contains('is-rest')) penAt(chars[chars.length - 1], true); });
 
+  /* Line breaks only between words (Safari etc. without word-break:auto-phrase) */
+  if (!CSS.supports('word-break', 'auto-phrase') && 'Segmenter' in Intl) {
+    const seg = new Intl.Segmenter('ja', {granularity: 'word'});
+    const glue = /^[、。」』）！？ー～ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ\s]/;
+    document.querySelectorAll('main p, main li, main dd, main dt, main h3, main summary, main blockquote, main figcaption').forEach(el => {
+      if (el.closest('.scatter, #hero-title')) return;
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(node => {
+        if (!/[぀-ヿ一-鿿]/.test(node.textContent)) return;
+        const frag = document.createDocumentFragment();
+        let first = true;
+        for (const {segment} of seg.segment(node.textContent)) {
+          if (!first && !glue.test(segment)) frag.append(document.createElement('wbr'));
+          frag.append(segment);
+          first = false;
+        }
+        node.replaceWith(frag);
+      });
+    });
+    document.documentElement.classList.add('wb-js');
+  }
+
   /* Big titles: letters rise one by one */
   document.querySelectorAll('.js-title').forEach(title => {
     const text = title.textContent.trim();
