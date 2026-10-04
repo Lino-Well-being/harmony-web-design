@@ -46,7 +46,7 @@ python3 -m http.server 8790
 - トップの演出（2026-10-04更新）: 雲の形の考えごとの吹き出し（「頭の中の想い」を表す。形はJSで言葉の長さに合わせて描画）が0.35秒ずつ、ふわっと1つずつ現れ（約3秒）、出そろってから集まる → 万年筆（ネイビー軸・金のペン先のSVG）が現れ、コピーを1文字ずつ書く（ペン先が文字を追う）→ 書き終えると「Webへ。」の右下で止まる → サブコピーとボタンが出る。千穂さんの「ペンで書いているみたいにしたい」による。
 - トップの人物（2026-10-04更新）: 千穂さんの写真ではなく、PROBLEM以降と同じイラストの女性を左下に配置（雲の吹き出しの「持ち主」＝読み手）。最初は困った顔（problem-woman.jpg）、万年筆が書き終えると「あ、そうか」の顔（why-woman.jpg）にふわっと切り替わる。理由: トップの主役は読み手。ページ全体で同じ女性が困る→気づく→ほっとする流れになる。
 - 千穂さんのひらめき写真（hero-chiho.jpg）は CONTACT のボタンの上へ移動（「誰に頼むか」を決める場面で顔を見せる）。
-- 各欄のイラスト（2026-10-04）: 千穂さんがGPTで作った同一人物の女性。PROBLEM=problem-woman.jpg「うーん…」、WHY=why-woman.jpg「あ、そうか」、VOICE=voice-woman.jpg「ほっ…」（困った→気づく→ほっとする、の流れ）。千穂さん本人ではなく読み手側の人物にした（本人の悩みに見えないように）。METHOD=step-talk（カフェで語らう二人）/step-write/step-word/step-make（ノートPCに向かう千穂さん風の写真。他3つはイラストで、そろえるならイラスト版に差し替え可）。GPT指示文= Mothership-lab 003 outputs/harmony_output/20261004-GPTイラスト指示文.txt。PNG原本は renewal/img/ に置いたままで、.gitignore で除外。
+- 各欄のイラスト（2026-10-04）: 千穂さんがGPTで作った同一人物の女性。PROBLEM=problem-woman.jpg「うーん…」、WHY=why-woman.jpg「あ、そうか」、VOICE=voice-woman.jpg「ほっ…」（困った→気づく→ほっとする、の流れ）。千穂さん本人ではなく読み手側の人物にした（本人の悩みに見えないように）。METHOD=step-talk（カフェで語らう二人）/step-write/step-word/step-make（イラスト「PC作業のちほ.png」から切り抜き。2026-10-04に写真風から差し替え）。GPT指示文= Mothership-lab 003 outputs/harmony_output/20261004-GPTイラスト指示文.txt。PNG原本は renewal/img/ に置いたままで、.gitignore で除外。
 - 動き: 丸い画像（トップ・PROBLEM・WHY・VOICE）と吹き出しは、上下8px・4.8秒周期でふわふわ浮く。METHODの4つは静止（千穂さん指定）。
 - 共通クラス: .icon-head / .face-icon / .face-bubble / .face-circle / .step-img。CSS・JSの読み込みには版番号（?v=）を付けていて、更新のたびに変える（ブラウザが古い版を使い続けるのを防ぐため）。
 - プロフィール文（2026-10-04）: 「セールスライティングとマーケティング、コーチングも学んでいます。」（師事先の名前は出さない）
