@@ -216,6 +216,37 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .contact .statement{margin-bottom:40px}
 .contact-buttons{display:flex;flex-direction:column;gap:16px;align-items:center}
 
+
+/* ===== line-setup page ===== */
+.line-hero{padding-top:110px}
+.line-hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:6%;align-items:center}
+.line-title{font:600 clamp(2rem,4.4vw,3.4rem)/1.5 var(--serif);letter-spacing:.08em;color:var(--navy);margin:6px 0 26px}
+.line-hero .btn{margin-top:6px}
+.phone{justify-self:center;width:min(260px,70vw);aspect-ratio:9/17;border-radius:36px;background:var(--navy);padding:12px;box-shadow:0 30px 60px rgba(31,45,68,.22);animation:bob 4.8s ease-in-out infinite}
+.phone-screen{position:relative;height:100%;border-radius:26px;background:#eef2ea;overflow:hidden;display:flex;flex-direction:column;gap:12px;padding:46px 14px 0}
+.phone-bar{position:absolute;top:0;left:0;right:0;padding:12px;background:#fff;font:700 .8125rem/1 var(--sans);color:var(--navy);text-align:center;border-bottom:1px solid var(--line)}
+.phone-msg{align-self:flex-start;max-width:86%;background:#fff;border-radius:16px 16px 16px 4px;padding:10px 12px;font-size:.75rem;line-height:1.6;color:var(--ink);box-shadow:0 2px 6px rgba(31,45,68,.06)}
+.phone-menu{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--sage-deep);margin-left:-14px;margin-right:-14px}
+.phone-menu span{display:grid;place-items:center;height:56px;background:var(--sage);font:700 .6875rem/1.3 var(--sans);color:var(--navy)}
+.for-list{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.for-list li{position:relative;background:var(--navy-2);border:1px solid rgba(198,212,191,.35);padding:24px 26px 24px 58px;font:500 1.05rem/1.9 var(--serif);border-radius:2px}
+.for-list li:before{content:'';position:absolute;left:24px;top:31px;width:16px;height:16px;border:1.5px solid var(--sage-light);border-radius:50%}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch}
+.plan{position:relative;background:var(--ivory);padding:40px 34px 34px;border:1px solid var(--line)}
+.plan-rec{border:2px solid var(--navy)}
+.plan-badge{position:absolute;top:-14px;left:28px;background:var(--navy);color:var(--ivory);font-size:.75rem;font-weight:700;letter-spacing:.06em;padding:4px 14px;border-radius:999px}
+.plan h3{font:600 1.6rem/1.4 var(--serif);color:var(--navy);letter-spacing:.08em}
+.plan h3 span{display:block;font:500 .9375rem/1.6 var(--sans);color:var(--sage-deep);letter-spacing:.06em;margin-top:4px}
+.plan-for{font-size:.875rem;color:var(--muted);margin:10px 0 18px}
+.plan ul{border-top:1px solid var(--line)}
+.plan li{position:relative;padding:12px 0 12px 26px;border-bottom:1px solid var(--line);font-size:.9375rem;line-height:1.8}
+.plan li:before{content:'';position:absolute;left:2px;top:21px;width:12px;height:7px;border-left:2px solid var(--sage-deep);border-bottom:2px solid var(--sage-deep);transform:rotate(-45deg)}
+.plan-goal{margin-top:20px;font:500 .9375rem/1.9 var(--serif);color:var(--navy)}
+.plan-note{margin-top:34px;padding:26px 30px;background:rgba(255,255,255,.5);border-left:3px solid var(--sage-deep)}
+.plan-note h3{font:600 1.05rem/1.6 var(--serif);color:var(--navy);margin-bottom:8px}
+.plan-note p{font-size:.875rem;line-height:2}
+.page-line .steps .step:after{top:56px}
+
 /* footer */
 .footer{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:34px var(--pad);background:var(--navy-2);color:var(--ivory)}
 .logo-footer{color:var(--ivory)}
@@ -227,6 +258,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .nav{display:none}
   .header-cta{margin-left:auto}
   .steps{grid-template-columns:1fr 1fr}
+  .line-hero-grid{grid-template-columns:1fr;gap:56px}
   .step:after{display:none}
   .why-grid,.profile-grid{grid-template-columns:1fr;gap:40px}
   .profile-photo{position:static;max-width:420px}
@@ -265,7 +297,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .work h3{font-size:1.15rem;letter-spacing:.02em}
   .menu-item dt,.step h3{letter-spacing:.06em}
   .faq-list summary{font-size:1rem}
-  .steps,.voices,.works-grid{grid-template-columns:1fr}
+  .steps,.voices,.works-grid,.for-list,.plans{grid-template-columns:1fr}
+  .line-hero{padding-top:70px}
+  .for-list li{font-size:.9375rem;padding:20px 20px 20px 50px}
+  .for-list li:before{left:20px;top:27px}
+  .plan{padding:36px 22px 26px}
+  .plans{gap:34px}
   .step{padding:28px 22px}
   .voice-card{padding:50px 24px 28px}
   .menu-item{grid-template-columns:1fr;gap:10px;padding:26px 0}

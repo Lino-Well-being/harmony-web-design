@@ -19,7 +19,7 @@
    - `renewal/index.html` の `<meta name="robots" content="noindex, nofollow">` を必ず外す
    - 画像パス `../works/` `../line-setup/` をルート基準に直す
    - 旧トップの `services/` 画像・`hero-*.png/jpg` は不要になる（削除は千穂さん確認後）
-   - /line-setup/ の屋号表記「Harmony Web Design」も「Harmony Design」に直す
+   - /line-setup/ は renewal/line-setup/ で置き換える（新デザイン・屋号修正済み）。画像パス ../img/ ../style.css も公開時の配置に合わせて確認
    - Mothership-lab 側に残る旧屋号（.claude/commands/weekend.md, generate.md、UTAGE・LINE設定スキル）もこのタイミングで直す
 6. 公開後、`002 wiki/products-master.md` の「11. Harmony Design」を公開済みに更新。
 
@@ -46,11 +46,12 @@ python3 -m http.server 8790
 - トップの演出（2026-10-04更新）: 雲の形の考えごとの吹き出し（「頭の中の想い」を表す。形はJSで言葉の長さに合わせて描画）が0.35秒ずつ、ふわっと1つずつ現れ（約3秒）、出そろってから集まる → 万年筆（ネイビー軸・金のペン先のSVG）が現れ、コピーを1文字ずつ書く（ペン先が文字を追う）→ 書き終えると「Webへ。」の右下で止まる → サブコピーとボタンが出る。千穂さんの「ペンで書いているみたいにしたい」による。
 - トップの人物（2026-10-04更新）: 千穂さんの写真ではなく、PROBLEM以降と同じイラストの女性を左下に配置（雲の吹き出しの「持ち主」＝読み手）。最初は困った顔（problem-woman.jpg）、万年筆が書き終えると「あ、そうか」の顔（why-woman.jpg）にふわっと切り替わる。理由: トップの主役は読み手。ページ全体で同じ女性が困る→気づく→ほっとする流れになる。
 - 千穂さんのひらめき写真（hero-chiho.jpg）は CONTACT のボタンの上へ移動（「誰に頼むか」を決める場面で顔を見せる）。
-- 各欄のイラスト（2026-10-04）: 千穂さんがGPTで作った同一人物の女性。PROBLEM=problem-woman.jpg「うーん…」、WHY=why-woman.jpg「あ、そうか」、VOICE=voice-woman.jpg「ほっ…」（困った→気づく→ほっとする、の流れ）。千穂さん本人ではなく読み手側の人物にした（本人の悩みに見えないように）。METHOD=step-talk（カフェで語らう二人）/step-write/step-word/step-make（イラスト「PC作業のちほ.png」から切り抜き。2026-10-04に写真風から差し替え）。GPT指示文= Mothership-lab 003 outputs/harmony_output/20261004-GPTイラスト指示文.txt。PNG原本は renewal/img/ に置いたままで、.gitignore で除外。
+- 各欄のイラスト（2026-10-04）: 千穂さんがGPTで作った同一人物の女性。PROBLEM=problem-woman.jpg「うーん…」、WHY=why-woman.jpg「あ、そうか」、VOICE=voice-woman.jpg「ほっ…」（困った→気づく→ほっとする、の流れ）。千穂さん本人ではなく読み手側の人物にした（本人の悩みに見えないように）。METHOD=step-talk（カフェで語らう二人）/step-write/step-word/step-make-illust.jpg（イラスト「PC作業のちほ.png」から切り抜き。2026-10-04に写真風から差し替え）。GPT指示文= Mothership-lab 003 outputs/harmony_output/20261004-GPTイラスト指示文.txt。PNG原本は renewal/img/ に置いたままで、.gitignore で除外。
 - 動き: 丸い画像（トップ・PROBLEM・WHY・VOICE）と吹き出しは、上下8px・4.8秒周期でふわふわ浮く。METHODの4つは静止（千穂さん指定）。
-- 共通クラス: .icon-head / .face-icon / .face-bubble / .face-circle / .step-img。CSS・JSの読み込みには版番号（?v=）を付けていて、更新のたびに変える（ブラウザが古い版を使い続けるのを防ぐため）。
+- 共通クラス: .icon-head / .face-icon / .face-bubble / .face-circle / .step-img。CSS・JSの読み込みには版番号（?v=）を付けていて、更新のたびに変える（ブラウザが古い版を使い続けるのを防ぐため）。画像を差し替えるときは、同じ名前で上書きせず、ファイル名を変える（画像には版番号を付けていないため）。
 - プロフィール文（2026-10-04）: 「セールスライティングとマーケティング、コーチングも学んでいます。」（師事先の名前は出さない）
 - 改行（2026-10-04）: 本文全体に word-break:auto-phrase（Chrome・Edgeの文節折り返し）。未対応のSafari等は site.js が Intl.Segmenter で単語の切れ目に <wbr> を入れ、keep-all で単語内の改行を防ぐ。それでも割れる語は <span class="nb"> で固定（「なぜ」「担当として」など）。確認はPC 1024/1280/1440・スマホ390で、単語内改行0（1024の文節境界のみ残り）。
+- 公式LINE構築ページ（2026-10-04）: 別ページのまま残す（千穂さん決定）。理由: 読み手が音楽仲間・イベント主催・お店でトップ（40〜50代女性の伴走）と違い、URLを単独で送れると便利。renewal/line-setup/index.html に新デザインで作り直し（文章は旧ページのまま・価格なし・屋号Harmony Design）。CSS/JSはトップと共通（../style.css, ../site.js。site.js のトップ演出は .hero-stage がある時だけ動く）。
 - トップの演出はスクロール連動ではなく自動再生（ページを開いて約1.4秒後に言葉が集まり、コピーが出る）。理由: スクロール連動だと、スクロールしない人にはコピーもボタンも見えないため。
 
 ## このプロジェクトのルールと地雷
