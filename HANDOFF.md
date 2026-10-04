@@ -2,6 +2,8 @@
 
 最終更新: 2026-10-04（作業日 2026-10-02〜04）
 
+【2026-10-04 公開済み】renewal/ の中身をルートへ移して main にマージし、harmonyweb-design.com で公開した（noindex は外した）。以後の修正はルートの index.html / style.css / site.js / img/ / line-setup/ を直接直す。mainにpushすると即公開。
+
 ## 現在地
 
 - 公開中のサイト https://harmonyweb-design.com/ は旧デザインのまま（GitHub Pages、`main` ブランチから公開）。

@@ -1,475 +1,218 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Harmony Web Design | 原稿は、いりません。Web制作＆マーケティング</title>
-  <meta name="description" content="あなたの想いを引き出して、売れる言葉と仕組みをまるごと作る。Web制作＆マーケティングのHarmony Web Design。原稿不要、Zoomでお話しするだけで大丈夫です。">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f2d44">
+  <title>Harmony Design｜まだ言葉になっていない魅力を、伝わる発信とWebへ。</title>
+  <meta name="description" content="女性の個人事業主のための、言葉と発信の伴走。対話とノートで経験や想いを整理し、プロフィール・SNS・Webサイトまで、伝わる形に整えます。">
+  <meta property="og:title" content="Harmony Design｜まだ言葉になっていない魅力を、伝わる発信とWebへ。">
+  <meta property="og:description" content="女性の個人事業主のための、言葉と発信の伴走。対話とノートで経験や想いを整理し、プロフィール・SNS・Webサイトまで、伝わる形に整えます。">
+  <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <noscript>
-    <style>.fade-in { opacity: 1 !important; transform: none !important; }</style>
-  </noscript>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Shippori+Mincho:wght@500;600&family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="style.css?v=20261004pub">
+  <script>document.documentElement.classList.add('js')</script>
+  <script src="site.js?v=20261004pub" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">本文へ移動</a>
 
-  <!-- ========== ヘッダー ========== -->
-  <header class="site-header" id="site-header">
-    <div class="header-inner">
-      <a href="#" class="logo">Harmony <span>Web Design</span></a>
-      <button class="hamburger" id="hamburger" aria-label="メニューを開く">
-        <span></span><span></span><span></span>
-      </button>
-      <nav class="global-nav" id="global-nav">
-        <a href="#problems">お悩み</a>
-        <a href="#reasons">選ばれる理由</a>
-        <a href="#services">サービス</a>
-        <a href="#flow">制作の流れ</a>
-        <a href="#works">制作実績</a>
-        <a href="#testimonials">お客様の声</a>
-        <a href="#profile">プロフィール</a>
-        <a href="#faq">FAQ</a>
-        <a href="https://lin.ee/rEQQALw" class="nav-cta" target="_blank" rel="noopener">無料相談</a>
-      </nav>
-    </div>
+  <header class="header">
+    <a class="logo" href="#" aria-label="Harmony Design トップへ"><span class="logo-main">Harmony</span><span class="logo-sub">Design</span></a>
+    <nav class="nav" aria-label="メインナビゲーション">
+      <a href="#method">METHOD</a><a href="#works">WORKS</a><a href="#menu">MENU</a><a href="#profile">PROFILE</a><a href="#faq">FAQ</a>
+    </nav>
+    <a class="header-cta" href="https://lin.ee/rEQQALw" target="_blank" rel="noopener noreferrer">まずは話してみる</a>
   </header>
 
-  <!-- ========== セクション1: ヒーロー ========== -->
-  <section class="hero" id="hero">
-    <div class="hero-inner">
-      <div class="hero-content fade-in">
-        <p class="hero-label">Harmony Web Design</p>
-        <h1 class="hero-title">原稿は、いりません。</h1>
-        <p class="hero-subtitle">あなたの想いを引き出して、<br>売れる言葉と仕組みをまるごと作る。<br class="sp-only">Web制作＆マーケティング。</p>
-        <div class="hero-cta-group">
-          <a href="https://ml.chiho-m.workers.dev/signup?list=harmony&amp;source=site" class="btn btn-primary btn-pulse" target="_blank" rel="noopener">
-            <span class="btn-icon">✦</span>
-            Web集客のヒントを受け取る（無料メルマガ）
-          </a>
-          <a href="https://lin.ee/rEQQALw" class="btn btn-sub" target="_blank" rel="noopener">
-            今すぐ相談したい方はLINEでどうぞ
-          </a>
-        </div>
-      </div>
-      <figure class="hero-visual fade-in">
-        <img src="hero-visual.jpg" alt="ノートパソコンと手帳を前に、ふたりで打ち合わせをしている手元" width="928" height="1152">
-      </figure>
-    </div>
-    <div class="hero-scroll-hint">
-      <span>scroll</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
-
-  <!-- ========== セクション2: お悩み ========== -->
-  <section class="section section-problems" id="problems">
-    <div class="container">
-      <div class="section-header fade-in">
-        <p class="section-label">Problems</p>
-        <h2 class="section-title">こんなお悩み<br class="sp-only">ありませんか？</h2>
-      </div>
-      <div class="problems-grid">
-        <div class="problem-card fade-in">
-          <div class="problem-icon">💭</div>
-          <p>Webで集客したいけど、何から始めればいいかわからない</p>
-        </div>
-        <div class="problem-card fade-in">
-          <div class="problem-icon">✍️</div>
-          <p>制作会社に「原稿を送ってください」と言われて、手が止まっている</p>
-        </div>
-        <div class="problem-card fade-in">
-          <div class="problem-icon">📭</div>
-          <p>ホームページはあるのに、お問い合わせがほとんど来ない</p>
-        </div>
-        <div class="problem-card fade-in">
-          <div class="problem-icon">🔍</div>
-          <p>自分のサービスの良さを、うまく言葉にできない</p>
-        </div>
-        <div class="problem-card fade-in">
-          <div class="problem-icon">⚙️</div>
-          <p>UTAGEやLINE公式を導入したいけど、設定が難しすぎる</p>
-        </div>
-        <div class="problem-card fade-in">
-          <div class="problem-icon">📊</div>
-          <p>きれいなサイトを作ったのに、集客につながっていない</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== セクション3: 選ばれる理由 ========== -->
-  <section class="section section-reasons" id="reasons">
-    <div class="container">
-      <div class="section-header fade-in">
-        <p class="section-label">Reasons</p>
-        <h2 class="section-title">選ばれる<span class="accent">5</span>つの理由</h2>
-      </div>
-
-      <div class="reasons-list">
-        <div class="reason-card fade-in">
-          <div class="reason-number">01</div>
-          <div class="reason-body">
-            <h3>原稿を書く必要がありません</h3>
-            <p>Zoomでお話を聞きながら、LP用・ウェブサイト用の文章を私がまとめます。「何を書けばいいかわからない」というストレスはゼロ。あなたはお話しするだけで大丈夫です。</p>
+  <main id="main">
+    <!-- 1. トップ：散らばった言葉が、1行に整う -->
+    <section class="hero" id="hero" aria-labelledby="hero-title">
+      <div class="hero-stage">
+        <div class="hero-paper" aria-hidden="true"></div>
+        <ul class="scatter" aria-hidden="true">
+          <li style="--x:-27;--y:-24;--r:-6;--mx:-12;--my:-24;--d:0"><span class="bub">私の強みって、何だろう</span></li>
+          <li style="--x:25;--y:-28;--r:5;--mx:12;--my:-12;--d:1"><span class="bub">何を発信すればいいの？</span></li>
+          <li style="--x:-24;--y:18;--r:4;--mx:-6;--my:12;--d:2"><span class="bub">ホームページに、何を書けばいい？</span></li>
+          <li style="--x:22;--y:26;--r:-4;--mx:2;--my:24;--d:3"><span class="bub">やりたいことが多すぎて、まとまらない</span></li>
+          <li style="--x:-2;--y:-40;--r:-2;--mx:0;--my:-36;--d:4"><span class="bub">経験はあるのに、うまく言葉にできない</span></li>
+          <li style="--x:-2;--y:38;--r:3;--mx:16;--my:35;--d:5"><span class="bub">私らしさって？</span></li>
+        </ul>
+        <div class="hero-copy">
+          <p class="hero-eyebrow">言葉と発信の伴走</p>
+          <h1 id="hero-title"><span><span class="nb">まだ言葉に</span><span class="nb">なっていない魅力を、</span></span><span>伝わる発信とWebへ。</span></h1>
+          <p class="hero-sub"><span class="nb">話すうちに、</span><span class="nb">あなたの「伝えたいこと」が言葉になる。</span></p>
+          <div class="hero-buttons">
+            <a class="btn btn-navy" href="https://lin.ee/rEQQALw" target="_blank" rel="noopener noreferrer">まずは話してみる（公式LINE）<span aria-hidden="true">→</span></a>
+            <a class="text-link" href="https://ml.chiho-m.workers.dev/signup?list=harmony&amp;source=site" target="_blank" rel="noopener noreferrer">発信のヒントを受け取る（メルマガ）</a>
           </div>
         </div>
+        <svg class="pen" viewBox="0 0 220 40" aria-hidden="true" focusable="false">
+          <path d="M1 20 L30 11 Q34 20 30 29 Z" fill="#c9a96a"/>
+          <path d="M1 20 L30 11 L30 15 Z" fill="#e3cc98"/>
+          <line x1="4" y1="20" x2="22" y2="20" stroke="#8a6d38" stroke-width="1.2"/>
+          <circle cx="20" cy="20" r="1.6" fill="#8a6d38"/>
+          <rect x="30" y="12" width="34" height="16" rx="3" fill="#2b3c58"/>
+          <rect x="62" y="10" width="6" height="20" fill="#c9a96a"/>
+          <path d="M68 9 H200 Q216 9 216 20 Q216 31 200 31 H68 Z" fill="#1f2d44"/>
+          <path d="M72 12 H198 Q208 12 210 17" stroke="#3d5276" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <rect x="120" y="5" width="70" height="4" rx="2" fill="#c9a96a"/>
+          <rect x="182" y="9" width="5" height="22" fill="#c9a96a"/>
+        </svg>
+        <figure class="hero-person" aria-hidden="true"><img class="hp-worry" src="img/problem-woman.jpg" alt="" width="420" height="420"><img class="hp-ah" src="img/why-woman.jpg" alt="" width="420" height="420"></figure>
+        <p class="hero-scroll" aria-hidden="true">scroll</p>
+      </div>
+    </section>
 
-        <div class="reason-card fade-in">
-          <div class="reason-number">02</div>
-          <div class="reason-body">
-            <h3>作るだけではなく、売れる仕組みごと作ります</h3>
-            <p>セールスライティングとマーケティングを、ステップメール教材で有名な上野健一郎氏に1年間直接師事して学びました。きれいなだけのページではなく、お問い合わせや申し込みにつながる言葉と導線を設計します。</p>
-          </div>
+    <!-- 2. お悩み -->
+    <section class="block tone-ivory problem" id="problem" aria-labelledby="problem-title">
+      <div class="inner">
+        <div class="icon-head">
+  <h2 class="big-title js-title" id="problem-title" data-ja="こんなところで、立ち止まっていませんか">PROBLEM</h2>
+          <div class="face-icon reveal" aria-hidden="true"><span class="face-bubble">うーん…</span><figure class="face-circle"><img src="img/problem-woman.jpg" alt="" width="420" height="420" loading="lazy"></figure></div>
         </div>
+        <p class="lead reveal">サービスへの想いはある。経験も、それなりに積み重ねてきた。<br>それなのに、いざ言葉にしようとすると手が止まる。</p>
+        <ul class="note-list reveal">
+          <li>発信したいことが多すぎて、まとまらない</li>
+          <li>「あなたの強みは？」と聞かれると、うまく答えられない</li>
+          <li><span><span class="nb">サービスはあるのに、</span><span class="nb">その魅力を言葉にできない</span></span></li>
+          <li>SNSを続けているのに、お仕事につながっている感じがしない</li>
+          <li>ホームページを作りたいけれど、何を書けばいいのかわからない</li>
+          <li>人の発信を見るほど、自分らしさがわからなくなる</li>
+        </ul>
+        <p class="body reveal">ひとつでも当てはまるなら、いきなり「もっと発信しよう」と頑張る前に、一度、自分の中を整理してみてもいい時期です。</p>
+      </div>
+    </section>
 
-        <div class="reason-card fade-in">
-          <div class="reason-number">03</div>
-          <div class="reason-body">
-            <h3>発注する側を15年間経験しています</h3>
-            <p>上場企業の広報部門でウェブ担当として15年。発注する側が何を求めていて、何があると嬉しいかを肌で知っています。進捗の共有、素材の準備、修正のやり取り。「制作会社とのやり取りが不安」という方にこそ、安心していただけるクライアントワークをお約束します。</p>
-          </div>
+    <!-- 3. 真の課題 -->
+    <section class="block tone-navy why" id="why" aria-labelledby="why-title">
+      <div class="inner why-grid">
+        <div class="why-head">
+          <h2 class="big-title js-title" id="why-title" data-ja="発信の前に、まず自分の中を整える">WHY</h2>
+          <div class="face-icon face-icon-why reveal" aria-hidden="true"><span class="face-bubble">あ、そうか</span><figure class="face-circle"><img src="img/why-woman.jpg" alt="" width="420" height="420" loading="lazy"></figure></div>
         </div>
-
-        <div class="reason-card fade-in">
-          <div class="reason-number">04</div>
-          <div class="reason-body">
-            <h3>まだ言葉にできていない想いを、一緒に引き出します</h3>
-            <p>コーチングや心理セラピーを学んでいるので、ヒアリングではあなたの本当の強みやお客様に届けたい想いを丁寧に引き出します。自分では気づいていなかった魅力が言語化される。そんなヒアリングの時間そのものに価値があると言ってくださるお客様もいます。</p>
-          </div>
-        </div>
-
-        <div class="reason-card fade-in">
-          <div class="reason-number">05</div>
-          <div class="reason-body">
-            <h3>LPからサイト、LINE、メール設計まで全部一人で対応できます</h3>
-            <p>30年のWeb開発経験があるので、LP制作はもちろん、サイト構築、ステップメール設計、LINE公式の立ち上げ・メニュー作成まで、すべてワンストップで対応できます。窓口が一つだから、やり取りもシンプル。「あの件はあっちに聞いて」ということがありません。</p>
-          </div>
+        <div class="why-text">
+          <p class="statement reveal">発信がまとまらないのは、センスや努力が足りないからではありません。<br>材料が多すぎて、まだ整理されていないだけです。</p>
+          <p class="body reveal">自分の強みは、自分ひとりではなかなか見えません。話してみる。書き出してみる。外から問いかけられる。そうしているうちに、少しずつ輪郭が見えてきます。</p>
+          <p class="body reveal">そして、軸になる言葉がひとつ決まると、プロフィールもSNSもWebサイトも、同じ軸でそろえられるようになります。発信は、そこから先がぐっと楽になります。</p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========== セクション4: サービス内容 ========== -->
-  <section class="section section-services" id="services">
-    <div class="container">
-      <div class="section-header fade-in">
-        <p class="section-label">Services</p>
-        <h2 class="section-title">サービス内容</h2>
+    <!-- 4. 私がしていること -->
+    <section class="block tone-greige method" id="method" aria-labelledby="method-title">
+      <div class="inner">
+        <h2 class="big-title js-title" id="method-title" data-ja="私がしていること">METHOD</h2>
+        <p class="lead reveal">対話から、Webまで。一人で、通しで伴走します。</p>
+        <ol class="steps">
+          <li class="step reveal"><figure class="step-img"><img src="img/step-talk.jpg" alt="カフェで向かい合って話す二人の女性" width="420" height="420" loading="lazy"></figure><span class="step-num">01</span><h3>話す</h3><p>まずは、じっくりお話を伺います。これまでの経験、大切にしていること、<span class="nb">なぜ</span>今の仕事をしているのか、どんな方の役に立ちたいのか。うまく説明できなくても大丈夫です。</p></li>
+          <li class="step reveal"><figure class="step-img"><img src="img/step-write.jpg" alt="ノートを手にほほえむ女性" width="420" height="420" loading="lazy"></figure><span class="step-num">02</span><h3>書き出す</h3><p>お話の中に出てきたことを、ご自身の手でノートに書き出して並べていきます。一見バラバラに見えることも、並べてみると、つながりが見えてきます。</p></li>
+          <li class="step reveal"><figure class="step-img"><img src="img/step-word.jpg" alt="ノートの言葉に丸をつけて見せる女性" width="420" height="420" loading="lazy"></figure><span class="step-num">03</span><h3>言葉にする</h3><p>「だから私は、これを届けたい」という軸を見つけて、誰に・何を・どんな言葉で伝えるのかを決めていきます。</p></li>
+          <li class="step reveal"><figure class="step-img"><img src="img/step-make-illust.jpg" alt="ノートパソコンで作業する益田千穂" width="420" height="420" loading="lazy"></figure><span class="step-num">04</span><h3>形にする</h3><p>見つかった言葉を、プロフィール、SNSの発信、サービスの見せ方、Webサイトへ。必要なら、公式LINEやメールの仕組みまで整えます。</p></li>
+        </ol>
+        <p class="closing reveal">誰かになりきるためのブランディングではなく、あなたがすでに持っている経験や魅力が、きちんと相手に伝わる状態をつくります。</p>
       </div>
+    </section>
 
-      <div class="services-grid">
-        <div class="service-card fade-in">
-          <figure class="service-shot">
-            <img src="services/lp-seisaku.jpg" alt="木のデスクを俯瞰したイメージ写真。ページのレイアウトを枠だけで表したワイヤーフレームが、横向きのタブレットと縦長の紙の両方に並び、金のペン、付箋、リネンのノート、多肉植物が添えられている" loading="lazy" width="1100" height="614">
+    <!-- 5. お客様の声 -->
+    <section class="block tone-ivory voice" id="voice" aria-labelledby="voice-title">
+      <div class="inner">
+        <div class="icon-head">
+          <h2 class="big-title js-title" id="voice-title" data-ja="話したあと、こう変わりました">VOICE</h2>
+          <div class="face-icon reveal" aria-hidden="true"><span class="face-bubble">ほっ…</span><figure class="face-circle"><img src="img/voice-woman.jpg" alt="" width="420" height="420" loading="lazy"></figure></div>
+        </div>
+        <div class="voices">
+          <figure class="voice-card reveal">
+            <blockquote><p>製作者側の好みやセンスではなく、こちらのブランディングをベースとしたアドバイスをもらえるのがありがたかったです。私のイメージを提案してくださいました。それがとても良い感じでした。前向きで素敵な女性で、専門性も高い。安心してお任せできました。</p></blockquote>
+            <figcaption>KEIKOさん<span>婚活コーチ</span></figcaption>
           </figure>
-          <div class="service-body">
-            <div class="service-number">①</div>
-            <h3>LP制作</h3>
-            <p>あなたのサービスの魅力を1ページに凝縮。Zoomインタビューから文章を起こし、デザインまで一貫して制作します。</p>
-          </div>
-        </div>
-        <div class="service-card fade-in">
-          <figure class="service-shot">
-            <img src="services/utage-kouchiku.jpg" alt="木のデスクを俯瞰したイメージ写真。グラフの並ぶダッシュボードを表示したノートパソコンを中心に、クリーム色の封筒、ピンクのカード、金のクリップ、トークの吹き出しが並ぶスマートフォンが配置されている" loading="lazy" width="1100" height="614">
+          <figure class="voice-card reveal">
+            <blockquote><p>忙しくてなかなか原稿を書く時間が取れませんでしたが、丁寧なヒアリングをしていただき、思い通りのサイトが完成しました。素敵に表現してくださり、満足しています。</p></blockquote>
+            <figcaption>YUKIKOさん<span>Hōkū Lei 旅するヒーリングサロン オーナー・セラピスト</span></figcaption>
           </figure>
-          <div class="service-body">
-            <div class="service-number">②</div>
-            <h3>UTAGE構築</h3>
-            <p>LP・メルマガ・LINE・決済。バラバラだった仕組みをUTAGEで一元管理。「登録→教育→販売」の流れを自動化して、あなたが本業に集中できる環境を作ります。</p>
-          </div>
-        </div>
-        <div class="service-card fade-in">
-          <figure class="service-shot">
-            <img src="services/lp-step-line.jpg" alt="木のデスクを俯瞰したイメージ写真。左にページのレイアウトを表示したタブレット、右にトークの吹き出しが並ぶスマートフォンが置かれ、その間に3枚の付箋が順番に重なるように縦に並び、金の置き時計とペン、リネンのノートが添えられている" loading="lazy" width="1100" height="614">
-          </figure>
-          <div class="service-body">
-            <div class="service-number">③</div>
-            <h3>LP + ステップLINE セット</h3>
-            <p>LPで興味を持ってくれた方に、ステップLINEで信頼を積み重ねて申し込みにつなげる仕組みをセットで構築。「寝ている間に申し込みが入っていた」を実現します。</p>
-          </div>
-        </div>
-        <div class="service-card fade-in">
-          <figure class="service-shot">
-            <img src="services/sns-support.jpg" alt="木のデスクを俯瞰したイメージ写真。写真がタイル状に並んだスマートフォンが中央にあり、その左上に正方形のプリント写真が重ねて置かれ、パンパスグラス、金のペン、ラテ、リネンのノート、多肉植物が添えられている" loading="lazy" width="1100" height="614">
-          </figure>
-          <div class="service-body">
-            <div class="service-number">④</div>
-            <h3>SNS運用サポート</h3>
-            <p>Instagramの投稿設計・プロフィール改善・LPへの導線づくりをサポート。「毎日投稿しているのに反応がない」を解消します。</p>
-          </div>
         </div>
       </div>
+    </section>
 
-      <div class="services-more fade-in" style="text-align: center; margin-top: 40px;">
-        <p style="margin-bottom: 16px; color: var(--text-secondary);">「まずは公式LINEだけ整えたい」という方には、単体プランもあります。</p>
-        <a href="line-setup/" class="btn btn-sub">公式LINE構築サービスを見る →</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== セクション5: 制作の流れ ========== -->
-  <section class="section section-flow" id="flow">
-    <div class="container">
-      <div class="section-header fade-in">
-        <p class="section-label">Flow</p>
-        <h2 class="section-title">制作の流れ</h2>
-      </div>
-
-      <div class="flow-timeline">
-        <div class="flow-step fade-in">
-          <div class="flow-step-marker">
-            <span class="flow-step-num">1</span>
-          </div>
-          <div class="flow-step-content">
-            <h3>無料相談（30分）</h3>
-            <p>30分のZoomで現状のお悩みをお聞きします。「こんなこと聞いていいのかな」ということでも大丈夫です。まずはお気軽にお話ししましょう。</p>
-          </div>
-        </div>
-
-        <div class="flow-step fade-in">
-          <div class="flow-step-marker">
-            <span class="flow-step-num">2</span>
-          </div>
-          <div class="flow-step-content">
-            <h3>ヒアリング＆プランご提案</h3>
-            <p>あなたのサービスや理想のお客様像を深くお聞きします。「自分の中身ってこれだったんだ」と気づく方も多いです。最適なプランをご提案します。</p>
-          </div>
-        </div>
-
-        <div class="flow-step fade-in">
-          <div class="flow-step-marker">
-            <span class="flow-step-num">3</span>
-          </div>
-          <div class="flow-step-content">
-            <h3>制作スタート</h3>
-            <p>インタビュー内容をもとに文章とデザインを制作します。原稿を書いていただく必要はありません。途中経過を共有しながら一緒に作り上げていきます。</p>
-          </div>
-        </div>
-
-        <div class="flow-step fade-in">
-          <div class="flow-step-marker">
-            <span class="flow-step-num">4</span>
-          </div>
-          <div class="flow-step-content">
-            <h3>納品＆公開</h3>
-            <p>修正を重ねて完成させます。公開後の操作方法もお伝えします。</p>
-          </div>
-        </div>
-
-        <div class="flow-step fade-in">
-          <div class="flow-step-marker">
-            <span class="flow-step-num">5</span>
-          </div>
-          <div class="flow-step-content">
-            <h3>公開後フォローアップ</h3>
-            <p>1ヶ月後に「成果はいかがですか」とご連絡します。次のステップとしてUTAGEの導入や自動化が必要になったときも、いつでもご相談ください。</p>
-          </div>
+    <!-- 6. 実績 -->
+    <section class="block tone-navy works" id="works" aria-labelledby="works-title">
+      <div class="inner">
+        <h2 class="big-title js-title" id="works-title" data-ja="形にしたもの">WORKS</h2>
+        <p class="lead reveal">ヒアリングから、言葉・デザイン・仕組みまで、まるごとお手伝いしたものです。</p>
+        <div class="works-grid">
+          <article class="work reveal"><a href="https://nobu-musicland.com/" target="_blank" rel="noopener noreferrer"><figure><img src="works/nobu.jpg" alt="乃舞 -NOBU- 公式サイトのトップページ" loading="lazy" width="900" height="563"></figure><p class="work-cat">作曲家・ピアニスト／サイト制作・公式LINE構築・Instagram／YouTube整備</p><h3>乃舞 -NOBU- 公式サイト・公式LINE</h3><p class="work-text">「自然や花鳥風月を、まあるく、ゆるく」というご本人の温度を大切に、音楽とコンサートの案内が伝わるサイトと、ファンの方へお知らせが届く公式LINEを整え、InstagramとYouTubeの見せ方もそろえました。</p><span class="work-link">サイトを見る →</span></a></article>
+          <article class="work reveal"><a href="https://la-flora.pink/" target="_blank" rel="noopener noreferrer"><figure><img src="works/laflora.jpg" alt="La Flora アロマパルファンサロンのサイト" loading="lazy" width="900" height="563"></figure><p class="work-cat">サイト制作</p><h3>La Flora アロマパルファンサロン</h3><p class="work-text">100%天然精油のオートクチュール香水サロン。ブランドの上質な世界観がそのまま伝わるよう、構成から文章・デザインまでまるごと制作しました。</p><span class="work-link">サイトを見る →</span></a></article>
+          <article class="work reveal"><a href="https://www.hokuleiyukiko.com/" target="_blank" rel="noopener noreferrer"><figure><img src="works/hokulei.jpg" alt="Hōkū Lei 旅するヒーリングサロンのサイト" loading="lazy" width="900" height="563"></figure><p class="work-cat">サイト制作</p><h3>Hōkū Lei 旅するヒーリングサロン</h3><p class="work-text">忙しくて原稿を書く時間が取れない、というご相談から。ヒアリングをもとに、文章もこちらでまとめました。</p><span class="work-link">サイトを見る →</span></a></article>
+          <article class="work reveal"><a href="https://ouchi-english.jp/" target="_blank" rel="noopener noreferrer"><figure><img src="works/kizuna.jpg" alt="おうち英語キズナClubのサイト" loading="lazy" width="900" height="563"></figure><p class="work-cat">自社ブランド</p><h3>おうち英語キズナClub</h3><p class="work-text">私自身が運営している発信ブランドです。コンセプト設計から、本の出版、メルマガの導線まで、一気通貫で形にしています。</p><span class="work-link">サイトを見る →</span></a></article>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========== 制作実績 ========== -->
-  <section class="section section-works" id="works">
-    <div class="container">
-      <div class="section-header fade-in">
-        <p class="section-label">Works</p>
-        <h2 class="section-title">制作実績</h2>
-        <p class="section-lead">ヒアリングから文章・デザインまで、まるごとお手伝いしたサイトです。</p>
+    <!-- 7. メニュー -->
+    <section class="block tone-sage menu" id="menu" aria-labelledby="menu-title">
+      <div class="inner">
+        <h2 class="big-title js-title" id="menu-title" data-ja="メニュー">MENU</h2>
+        <p class="lead reveal">ご相談の内容に合わせて、必要なものだけを組み合わせます。<br>料金は、お話を伺ったうえでご案内します。</p>
+        <dl class="menu-list">
+          <div class="menu-item menu-main reveal"><dt><span class="menu-tag">はじめての方へ</span>世界観整理セッション</dt><dd>Zoomで1時間、じっくりお話を伺いながら、経験・想い・強みを一緒に整理します。</dd></div>
+          <div class="menu-item menu-main reveal"><dt><span class="menu-tag">いちばんのおすすめ</span>言葉と発信の伴走</dt><dd>軸になる言葉を見つけ、プロフィール、SNSの固定投稿、発信の柱、サービスの見せ方まで、一緒に整えていきます。期間は3か月または6か月。進み具合に合わせて、セッションを重ねていきます。</dd></div>
+          <div class="menu-item reveal"><dt>Webサイト・LP制作</dt><dd>整えた言葉をもとに、Webサイトやランディングページを制作します。原稿をご用意いただく必要はありません。</dd></div>
+          <div class="menu-item reveal"><dt>公式LINE構築</dt><dd>開設から、あいさつメッセージ、リッチメニューまで。「使える状態」でお渡しします。<a href="line-setup/">公式LINE構築について詳しく →</a></dd></div>
+          <div class="menu-item reveal"><dt>UTAGE構築</dt><dd>LP・メルマガ・LINE・決済をまとめて、「登録→お知らせ→お申し込み」の流れを整えます。</dd></div>
+        </dl>
       </div>
+    </section>
 
-      <div class="works-grid">
-        <a class="work-card fade-in" href="https://la-flora.pink/" target="_blank" rel="noopener">
-          <figure class="work-shot">
-            <img src="works/laflora.jpg" alt="La Flora アロマパルファンサロンのウェブサイト" loading="lazy" width="900" height="563">
-          </figure>
-          <div class="work-body">
-            <h3>La Flora アロマパルファンサロン</h3>
-            <p class="work-meta">サイト制作 ／ アロマパルファンサロン</p>
-            <p class="work-note">100%天然精油のオートクチュール香水サロン。ブランドの上質な世界観がそのまま伝わるよう、構成から文章・デザインまでまるごと制作しました。</p>
-            <span class="work-link">サイトを見る →</span>
-          </div>
-        </a>
-
-        <a class="work-card fade-in" href="https://www.hokuleiyukiko.com/" target="_blank" rel="noopener">
-          <figure class="work-shot">
-            <img src="works/hokulei.jpg" alt="Hōkū Lei 旅するヒーリングサロンのウェブサイト" loading="lazy" width="900" height="563">
-          </figure>
-          <div class="work-body">
-            <h3>Hōkū Lei 旅するヒーリングサロン</h3>
-            <p class="work-meta">サイト制作 ／ ヒーリングサロン</p>
-            <p class="work-note">忙しくて原稿を書く時間が取れない、というご相談から。ヒアリングをもとに文章もこちらでまとめました。</p>
-            <span class="work-link">サイトを見る →</span>
-          </div>
-        </a>
-
-        <a class="work-card fade-in" href="https://ouchi-english.jp/" target="_blank" rel="noopener">
-          <figure class="work-shot">
-            <img src="works/kizuna.jpg" alt="おうち英語キズナClub のウェブサイト" loading="lazy" width="900" height="563">
-          </figure>
-          <div class="work-body">
-            <h3>おうち英語キズナClub</h3>
-            <p class="work-meta">サイト制作 ／ 自社ブランド</p>
-            <p class="work-note">私自身が運営するおうち英語の発信ブランド。コンセプト設計からメルマガ導線まで、一気通貫で構築しています。</p>
-            <span class="work-link">サイトを見る →</span>
-          </div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== セクション6: お客様の声 ========== -->
-  <section class="section section-testimonials" id="testimonials">
-    <div class="container">
-      <div class="section-header fade-in">
-        <p class="section-label">Voice</p>
-        <h2 class="section-title">お客様の声</h2>
-      </div>
-
-      <div class="testimonials-grid">
-        <div class="testimonial-card fade-in">
-          <div class="testimonial-quote">"</div>
-          <p class="testimonial-text">製作者側の好みやセンスではなく、こちらのブランディングをベースとしたアドバイスをもらえるのがありがたかったです。私のイメージを提案してくださいました。それがとても良い感じでした。前向きで素敵な女性で、専門性も高い。安心してお任せできました。</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">K</div>
-            <div>
-              <p class="testimonial-name">KEIKOさん</p>
-              <p class="testimonial-role">婚活コーチ・バナー制作</p>
-              <a href="https://www.ameba.jp/profile/general/lino071012/" class="testimonial-link" target="_blank" rel="noopener">恋愛・婚活 「あなただけのこころの仕組み」相談室 →</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card fade-in">
-          <div class="testimonial-quote">"</div>
-          <p class="testimonial-text">忙しくてなかなか原稿を書く時間が取れませんでしたが、丁寧なヒアリングをしていただき、思い通りのサイトが完成しました。素敵に表現してくださり、満足しています。</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">Y</div>
-            <div>
-              <p class="testimonial-name">YUKIKOさん</p>
-              <p class="testimonial-role">Hōkū Lei 旅するヒーリングサロン オーナー・セラピスト</p>
-              <a href="https://www.hokuleiyukiko.com/" class="testimonial-link" target="_blank" rel="noopener">Hōkū Lei 旅するヒーリングサロン →</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== セクション7: プロフィール ========== -->
-  <section class="section section-profile" id="profile">
-    <div class="container">
-      <div class="section-header fade-in">
-        <p class="section-label">Profile</p>
-        <h2 class="section-title">プロフィール</h2>
-      </div>
-
-      <div class="profile-content fade-in">
-        <div class="profile-photo">
-          <img src="profile.jpg" alt="Chiho / 益田千穂 プロフィール写真" class="profile-img">
-        </div>
+    <!-- 8. プロフィール -->
+    <section class="block tone-ivory profile" id="profile" aria-labelledby="profile-title">
+      <div class="inner profile-grid">
+        <figure class="profile-photo reveal"><img src="img/profile.jpg" alt="益田千穂" loading="lazy" width="1000" height="1000"></figure>
         <div class="profile-text">
-          <h3>Chiho / 益田千穂</h3>
-          <p class="profile-brand">Harmony Web Design</p>
-          <p>東京でWeb制作とマーケティングのコンサルティングをしています。</p>
-          <p>上場企業の広報部門でウェブ担当として15年勤務。セールスライティングとマーケティングは上野健一郎氏に1年間直接師事。コーチングも学んでいます。</p>
-          <p>本物の力を持っているのに「伝え方」で損している方が多い。そこを一緒に言語化して、仕組みに落とし込むのが、一番好きな仕事です。</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== セクション8: FAQ ========== -->
-  <section class="section section-faq" id="faq">
-    <div class="container">
-      <div class="section-header fade-in">
-        <p class="section-label">FAQ</p>
-        <h2 class="section-title">よくある質問</h2>
-      </div>
-
-      <div class="faq-list">
-        <div class="faq-item fade-in">
-          <button class="faq-question" aria-expanded="false">
-            <span>パソコンが苦手でも大丈夫ですか？</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>はい。Zoomでお話しいただくだけで制作を進められます。操作が必要な場面では画面を共有しながらご一緒します。</p>
-          </div>
-        </div>
-
-        <div class="faq-item fade-in">
-          <button class="faq-question" aria-expanded="false">
-            <span>原稿は本当に書かなくていいんですか？</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>はい。Zoomインタビューであなたのお話を聞きながら、私が文章をまとめます。「書くのが苦手」という方にこそ喜ばれています。</p>
-          </div>
-        </div>
-
-        <div class="faq-item fade-in">
-          <button class="faq-question" aria-expanded="false">
-            <span>どんな業種に対応していますか？</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>個人事業主の方を中心に、幅広い業種に対応しています。「自分のサービスに自信はあるけど、伝え方がわからない」という方のお力になれます。</p>
-          </div>
-        </div>
-
-        <div class="faq-item fade-in">
-          <button class="faq-question" aria-expanded="false">
-            <span>UTAGEって何ですか？</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>集客から販売までを自動化できるツールです。LP、メルマガ、LINE、決済をひとつにまとめられます。まずは無料相談で「自分に必要かどうか」からお話ししましょう。</p>
-          </div>
-        </div>
-
-        <div class="faq-item fade-in">
-          <button class="faq-question" aria-expanded="false">
-            <span>納期はどれくらいですか？</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>LP制作で約2〜3週間、UTAGE構築で約1ヶ月が目安です。</p>
+          <h2 class="big-title js-title" id="profile-title" data-ja="私について">PROFILE</h2>
+          <p class="profile-name reveal">益田千穂<span>Harmony Design</span></p>
+          <div class="reveal">
+            <p>Webと関わって、約30年になります。証券業界の上場企業で、広報部門のウェブ<span class="nb">担当として</span>15年。Webサイトや情報発信、SNSの運用に携わってきました。セールスライティングとマーケティング、コーチングも学んでいます。</p>
+            <p>仕事と並行して、フルタイムで働きながら一人息子を育ててきました。子育てで続けてきたおうち英語は、2026年10月に本になりました。</p>
+            <p>「話していると頭の中が整理される」「自分では気づかなかった視点が見つかった」。そう言っていただくことが増えて、気づいたことがあります。私はWebサイトを作ること以上に、その人の中にある想いや経験を一緒に整理して、伝わる形にしていくことが好きなのだと思います。Webも、SNSも、文章も、そのための手段です。</p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========== セクション9: CTA ========== -->
-  <section class="section section-cta" id="cta">
-    <div class="container">
-      <div class="cta-content fade-in">
-        <h2>まずはメルマガで、<br>Web集客のヒントを受け取りませんか？</h2>
-        <p>何から始めたらいいかわからない、でも大丈夫です。<br>週1回、個人事業主のためのWeb集客のコツをお届けします。</p>
-        <div class="cta-btn-group">
-          <a href="https://ml.chiho-m.workers.dev/signup?list=harmony&amp;source=site" class="btn btn-primary btn-pulse btn-large" target="_blank" rel="noopener">
-            <span class="btn-icon">✦</span>
-            無料メルマガに登録する
-          </a>
-          <a href="https://lin.ee/rEQQALw" class="btn btn-sub" target="_blank" rel="noopener">
-            すぐに相談したい方はLINEへ
-          </a>
+    <!-- 9. FAQ -->
+    <section class="block tone-greige faq" id="faq" aria-labelledby="faq-title">
+      <div class="inner faq-inner">
+        <h2 class="big-title js-title" id="faq-title" data-ja="よくある質問">FAQ</h2>
+        <div class="faq-list reveal">
+          <details><summary>原稿は、自分で書かなくていいのですか？</summary><p>はい、大丈夫です。お話を伺いながら、私が言葉にまとめます。「書くのが苦手」という方にこそ喜ばれています。</p></details>
+          <details><summary>話すのが得意ではないのですが、大丈夫ですか？</summary><p>大丈夫です。順番どおりに話せなくてもかまいません。私から問いかけながら、一緒に整理していきます。</p></details>
+          <details><summary>まだWebサイトもSNSもありません。相談できますか？</summary><p>はい。どこから始めるかを決めるところから、一緒に考えます。</p></details>
+          <details><summary>パソコンが苦手でも大丈夫ですか？</summary><p>はい。Zoomでお話しいただければ進められます。操作が必要なときは、画面を共有しながらご一緒します。</p></details>
+          <details><summary>ノートは、何か特別なものを使いますか？</summary><p>いいえ。お手持ちのノートで大丈夫です。セッションでは、話しながらご自身の手で書き出していただきます。自分の手で書いた言葉は、あとから読み返しても自分のものとして残ります。</p></details>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========== フッター ========== -->
-  <footer class="site-footer">
-    <div class="container">
-      <p class="footer-logo">Harmony <span>Web Design</span></p>
-      <p class="footer-copy">&copy; 2026 Harmony Web Design. All rights reserved.</p>
-    </div>
+    <!-- 10. CTA -->
+    <section class="block tone-navy contact" id="contact" aria-labelledby="contact-title">
+      <div class="inner contact-inner">
+        <h2 class="big-title js-title" id="contact-title" data-ja="まずは話してみる">CONTACT</h2>
+        <p class="statement reveal">うまく説明できなくても大丈夫です。<br>まだ言葉になっていない状態から、一緒に整理していきます。</p>
+        <figure class="hero-face contact-face reveal"><img src="img/hero-chiho.jpg" alt="人差し指を立てて笑顔の益田千穂" width="420" height="420" loading="lazy"></figure>
+        <div class="contact-buttons reveal">
+          <a class="btn btn-ivory" href="https://lin.ee/rEQQALw" target="_blank" rel="noopener noreferrer">公式LINEで相談する <span aria-hidden="true">→</span></a>
+          <a class="btn btn-outline" href="https://ml.chiho-m.workers.dev/signup?list=harmony&amp;source=site" target="_blank" rel="noopener noreferrer">メルマガで発信のヒントを受け取る（週1回お届けします）</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="logo logo-footer" href="#"><span class="logo-main">Harmony</span><span class="logo-sub">Design</span></a>
+    <small>© 2026 Harmony Design</small>
   </footer>
-
-  <script src="script.js"></script>
+  <div class="mobile-cta"><a href="https://lin.ee/rEQQALw" target="_blank" rel="noopener noreferrer">まずは話してみる（公式LINE）</a></div>
 </body>
 </html>
