@@ -58,6 +58,9 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .js .hero-copy{--q:0}
 .hero-copy>*{opacity:var(--q);transform:translateY(calc((1 - var(--q)) * 24px))}
 .hero-eyebrow{font:500 .875rem/1.6 var(--serif);letter-spacing:.4em;color:var(--sage-deep);margin-bottom:22px}
+.hero-face{width:clamp(84px,8vw,108px);aspect-ratio:1;margin:0 auto 18px;border-radius:50%;padding:4px;background:#fff;box-shadow:0 0 0 1.5px var(--sage-light),0 10px 24px rgba(31,45,68,.14)}
+.hero-face img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.js .hero-copy .hero-face{opacity:var(--e,0);transform:translateY(calc((1 - var(--e,0)) * 14px)) scale(calc(.9 + var(--e,0) * .1))}
 .js .hero-copy .hero-eyebrow{opacity:var(--e,0)}
 .hero-copy h1{opacity:1;transform:none}
 .js .hero h1 .c{opacity:0;filter:blur(4px);transition:opacity .45s ease,filter .45s ease}
@@ -207,6 +210,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .scatter li{font-size:.875rem;transform:translate(-50%,-50%) translate(calc(var(--mx) * 1vw * (1 - var(--p))),calc(var(--my) * 1vh * (1 - var(--p)))) rotate(calc(var(--r) * .6deg * (1 - var(--p)))) scale(calc(1 - var(--p) * .35))}
   .hero h1{font-size:clamp(1.35rem,6.2vw,1.9rem);letter-spacing:.04em}
   .pen{width:58px}
+  .hero-face{width:74px;margin-bottom:12px}
+  .hero-eyebrow{margin-bottom:14px}
   .hero-sub{font-size:.875rem;letter-spacing:.04em}
   .hero-buttons .btn{width:100%}
   .block{padding:84px 0 92px}
@@ -236,5 +241,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .js .hero-copy{--q:1;--e:1}
   .js .hero h1 .c{opacity:1;filter:none}
   .js .bub{opacity:1}
+  .js .hero-copy .hero-face{opacity:1;transform:none}
   .js .reveal,.js-title .ch>span{opacity:1!important;transform:none!important}
 }
