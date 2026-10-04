@@ -111,6 +111,15 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .js .reveal.is-in{opacity:1;transform:none}
 
 /* problem: notebook lines */
+.problem-head{display:flex;align-items:flex-start;gap:clamp(24px,5vw,72px)}
+.problem-head .big-title{margin-bottom:40px}
+.worry{position:relative;flex-shrink:0;margin-top:clamp(4px,1.5vw,18px);padding-top:44px}
+.worry-face{width:clamp(96px,9vw,124px);aspect-ratio:1;border-radius:50%;padding:4px;background:#fff;box-shadow:0 0 0 1.5px var(--sage-light),0 10px 24px rgba(31,45,68,.12)}
+.worry-face img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.worry-bubble{position:absolute;top:0;left:62%;white-space:nowrap;padding:.35em .95em;background:#fff;border:1.5px solid var(--sage-deep);border-radius:1.4em;font:600 .9375rem/1.4 var(--hand);color:var(--sage-deep)}
+.worry-bubble:before,.worry-bubble:after{content:'';position:absolute;background:#fff;border:1.5px solid var(--sage-deep);border-radius:50%}
+.worry-bubble:before{width:10px;height:10px;left:8px;bottom:-14px}
+.worry-bubble:after{width:6px;height:6px;left:0;bottom:-24px}
 .note-list{max-width:760px;margin-bottom:44px;background:repeating-linear-gradient(180deg,transparent 0 63px,var(--line) 63px 64px);border-top:1px solid var(--line)}
 .note-list li{position:relative;min-height:64px;display:flex;align-items:center;padding:8px 0 8px 46px;font:400 clamp(1rem,1.6vw,1.2rem)/1.6 var(--hand);color:var(--navy)}
 .note-list li:before{content:'';position:absolute;left:10px;top:50%;width:18px;height:18px;margin-top:-9px;border:1.5px solid var(--sage-deep);border-radius:50%}
@@ -218,6 +227,14 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .big-title{font-size:clamp(2.9rem,15vw,4.4rem);margin-bottom:30px}
   .lead{margin-bottom:36px}
   .lead br,.statement br{display:none}
+  .worry{padding-top:36px}
+  .worry-face{width:72px}
+  .worry-bubble{left:auto;right:58%;font-size:.8125rem}
+  .worry-bubble:before{left:auto;right:8px}
+  .worry-bubble:after{left:auto;right:0}
+  .problem-head{flex-direction:column;gap:0}
+  .worry{order:-1;align-self:flex-end;margin:-36px 4px 4px 0}
+  .problem-head .big-title{margin-bottom:30px}
   .note-list li{padding-left:40px;font-size:.9rem;letter-spacing:.02em}
   .big-title:after{font-size:1rem;letter-spacing:.06em}
   .work h3{font-size:1.15rem;letter-spacing:.02em}
