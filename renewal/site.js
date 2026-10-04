@@ -31,6 +31,39 @@
   };
   wrapChars(title);
 
+  /* Cloud-shaped thought bubbles sized to each phrase */
+  const NS = 'http://www.w3.org/2000/svg';
+  const drawClouds = () => {
+    document.querySelectorAll('.bub').forEach(bub => {
+      bub.querySelector('.cloud')?.remove();
+      const w = bub.offsetWidth, h = bub.offsetHeight;
+      const cx = w / 2, cy = h / 2, rx = w / 2, ry = h / 2;
+      const perim = Math.PI * (3 * (rx + ry) - Math.sqrt((3 * rx + ry) * (rx + 3 * ry)));
+      const n = Math.max(8, Math.round(perim / 30));
+      const pts = Array.from({length: n}, (_, i) => {
+        const a = (i / n) * Math.PI * 2 + .3;
+        return [cx + rx * Math.cos(a), cy + ry * Math.sin(a)];
+      });
+      let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+      pts.forEach((pt, i) => {
+        const next = pts[(i + 1) % n];
+        const r = Math.hypot(next[0] - pt[0], next[1] - pt[1]) * .62;
+        d += ` A${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${next[0].toFixed(1)} ${next[1].toFixed(1)}`;
+      });
+      const svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('class', 'cloud');
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.setAttribute('aria-hidden', 'true');
+      const path = document.createElementNS(NS, 'path');
+      path.setAttribute('d', d + ' Z');
+      svg.append(path);
+      bub.prepend(svg);
+    });
+  };
+  drawClouds();
+  if (document.fonts) document.fonts.ready.then(drawClouds);
+  window.addEventListener('resize', drawClouds);
+
   const penAt = (el, rest = false, atLeft = false) => {
     const r = el.getBoundingClientRect();
     const s = stage.getBoundingClientRect();
@@ -59,7 +92,7 @@
   } else {
     const ease = t => 1 - Math.pow(1 - t, 3);
     const clamp = v => Math.min(Math.max(v, 0), 1);
-    const delay = 1200, gather = 1500, perChar = 70, appear = 1000;
+    const delay = 3000, gather = 1500, perChar = 70, appear = 1000;
     const writeStart = gather * .7;
     const writeEnd = writeStart + chars.length * perChar;
     let start = null;
