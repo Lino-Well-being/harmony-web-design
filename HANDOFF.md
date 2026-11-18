@@ -4,6 +4,17 @@
 
 【2026-10-04 公開済み】renewal/ の中身をルートへ移して main にマージし、harmonyweb-design.com で公開した（noindex は外した）。以後の修正はルートの index.html / style.css / site.js / img/ / line-setup/ を直接直す。mainにpushすると即公開。旧サイトの不要ファイル（script.js, hero-bg.png, hero-visual.jpg, 旧profile.jpg, services/）は同日に千穂さん確認のうえ削除済み（e188e55。git履歴から復元可）。renewal/ フォルダにはGit管理外の画像原本（PNG）だけが残っている。
 
+【2026-11-18 公開】やわらかトーンへ全面変更（soft-tone ブランチ → main）
+- 色: 白地＋深いグレージュの文字＋淡いピンクの面＋ゴールドの差し色（La Floraのトーンを参考。紺の面はやめた）。トークンは style.css 冒頭の :root（変数名は旧来の --navy 等のまま中身を差し替え）。
+- 見出し: 英字は小さなゴールドの添え字、主役は明朝の日本語。ボタンはゴールドのグラデーション。カード・写真は角丸＋やわらかい影。
+- トップのヒーロー: 左に言葉・右にHiggsfieldで作ったサロン写真（img/top-hero-salon.jpg）＋イラストの女性。万年筆・ノート罫線・散らばる吹き出しの演出はやめた（site.js の該当処理は .hero-stage がないので動かない）。
+- 人物イラスト: サロンオーナー風の華やかな女性に差し替え（salon-worry / salon-ah / salon-joy.jpg、Higgsfield gpt_image_2_6、元ジョブ e9788146…）。進め方の絵も step-talk-salon / step-listen / step-read.jpg に。
+- 写真: プロフィールと「まずは話してみる」は花柄ブラウスの写真（profile-flower.jpg / contact-chiho-flower-wide.jpg）。プロフィールは幅320pxに小さく。
+- 「書かなくていい」をサイト全体の強みに（伴走も含めて千穂さんが聞き取ってまとめる。旧「ノートは自分の手で書く」は廃止）。
+- /line-setup/ は「サロンの集客支援パートナー｜公式LINE・インスタ構築」に。インスタ初期構築とスタートセットを追加、選ばれる理由4枚、関わり方4ステップ。店舗支援パートナーの働き方を型として取り入れたが、松尾さんの名前は出さない（千穂さん決定）。医療機関には触れない。
+- 旧画像（problem-woman, why-woman, joy-woman, step-talk, step-write, step-word, profile, hero-chiho.jpg）は未使用のまま残っている。削除は千穂さんの許可待ち。
+- 設計書: Mothership-lab 003 outputs/harmony_output/20261118-お店のインスタ×公式LINEスタートセット設計書.md
+
 ## 現在地
 
 - 公開中のサイト https://harmonyweb-design.com/ は旧デザインのまま（GitHub Pages、`main` ブランチから公開）。
