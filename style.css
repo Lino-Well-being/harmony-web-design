@@ -102,7 +102,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .hero-person.is-solved .hp-bubble{animation:bubbleIn .6s cubic-bezier(.3,1.5,.5,1) 1.4s both}
 @keyframes spark{0%{opacity:0;scale:.4}100%{opacity:1;scale:1}}
 @keyframes bubbleIn{to{opacity:1;translate:0 0;scale:1}}
-.contact-face{margin:0 auto 28px}
+.contact-face{width:clamp(110px,10vw,140px);margin:0 auto 28px}
 
 /* buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:56px;padding:14px 30px;border-radius:999px;font-weight:700;font-size:.9375rem;letter-spacing:.06em;transition:transform .25s,background .25s}
@@ -211,7 +211,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 /* profile */
 .profile-grid{display:grid;grid-template-columns:.9fr 1.3fr;gap:7%;align-items:start}
 .profile-photo{position:sticky;top:calc(var(--header) + 40px)}
-.profile-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 20%;border-radius:var(--radius);box-shadow:var(--shadow)}
+.profile-photo{max-width:320px;justify-self:center}
+.profile-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 30%;border-radius:var(--radius);box-shadow:var(--shadow)}
 .profile-name{font:600 1.6rem/1.5 var(--serif);letter-spacing:.14em;color:var(--navy);margin-bottom:26px}
 .profile-name span{display:block;font:400 .875rem var(--en);letter-spacing:.3em;color:var(--sage-deep);margin-top:4px}
 .profile-text p:not(.profile-name){font-size:.9375rem;line-height:2.2}
@@ -294,7 +295,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .phone.phone-overlay{left:-12%}
   .step:after{display:none}
   .why-grid,.profile-grid{grid-template-columns:1fr;gap:40px}
-  .profile-photo{position:static;max-width:420px}
+  .profile-photo{position:static;max-width:260px;justify-self:start}
 }
 @media (max-width:760px){
   :root{--header:60px;--pad:22px}
