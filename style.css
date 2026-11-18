@@ -104,6 +104,21 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 @keyframes bubbleIn{to{opacity:1;translate:0 0;scale:1}}
 .contact-face{width:clamp(110px,10vw,140px);margin:0 auto 28px}
 
+/* top hero: 左に言葉・右にサロンの写真（2026-11-18） */
+.top-hero{padding:96px 0 120px;background:linear-gradient(115deg,var(--ivory) 45%,#f8ecea 100%);overflow-x:clip}
+.top-hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:6%;align-items:center}
+.top-eyebrow{font:500 .8125rem/1.6 var(--en);letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.top-title{font:600 clamp(1.8rem,3.4vw,2.9rem)/1.6 var(--serif);letter-spacing:.08em;color:var(--ink)}
+.top-tag{display:inline-block;margin-top:24px;padding:4px 14px;border:1px solid var(--pink);border-radius:999px;font:500 .8125rem/1.8 var(--sans);letter-spacing:.06em;color:var(--ink);background:#fff}
+.top-sub{font:500 clamp(.95rem,1.3vw,1.05rem)/2.1 var(--serif);letter-spacing:.06em;color:var(--muted);margin:18px 0 34px}
+.top-buttons{display:flex;flex-wrap:wrap;gap:14px}
+.top-visual{position:relative;justify-self:end;width:min(440px,100%)}
+.top-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:var(--radius);box-shadow:var(--shadow)}
+.top-photo:after{content:'';position:absolute;inset:14px;border:1px solid rgba(255,255,255,.7);border-radius:12px;pointer-events:none}
+.top-person{position:absolute;left:-12%;bottom:-36px;padding-top:44px}
+.top-person .face-circle{width:clamp(110px,10vw,140px)}
+.top-person .face-bubble{left:58%}
+
 /* buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:56px;padding:14px 30px;border-radius:999px;font-weight:700;font-size:.9375rem;letter-spacing:.06em;transition:transform .25s,background .25s}
 .btn:hover{transform:translateY(-2px)}
@@ -290,6 +305,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .header-cta{margin-left:auto}
   .steps{grid-template-columns:1fr 1fr}
   .line-hero-grid{grid-template-columns:1fr;gap:56px}
+  .top-hero-grid{grid-template-columns:1fr;gap:56px}
+  .top-visual{justify-self:center;width:min(380px,82%)}
   .reasons{grid-template-columns:1fr 1fr}
   .line-visual{justify-self:center;width:min(380px,82%)}
   .phone.phone-overlay{left:-12%}
@@ -338,6 +355,14 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .reason{padding:24px 14px 20px}
   .reason h3{font-size:1rem;letter-spacing:.02em}
   .line-hero{padding-top:70px}
+  .top-hero{padding:60px 0 90px}
+  .top-sub br{display:none}
+  .top-visual{width:80%;margin:0 0 20px auto}
+  .top-person{left:-16%;bottom:-30px}
+  .top-person .face-circle{width:88px}
+  .top-person .face-bubble{left:60%;right:auto}
+  .top-tag{font-size:.75rem;letter-spacing:.02em}
+  .top-buttons .btn{width:100%}
   .line-visual{width:76%;margin:0 0 30px auto}
   .phone.phone-overlay{left:-20%;bottom:-30px;width:158px;aspect-ratio:9/15}
   .phone-overlay .phone-msg{font-size:.625rem;max-width:100%}
