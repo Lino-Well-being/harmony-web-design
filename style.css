@@ -270,11 +270,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .plan-note h3{font:600 1.05rem/1.6 var(--serif);color:var(--navy);margin-bottom:8px}
 .plan-note p{font-size:.875rem;line-height:2}
 .page-line .steps .step:after{top:56px}
-.nowrite-grid{display:grid;grid-template-columns:1fr 1fr;gap:7%;align-items:start}
-.nowrite-steps{display:grid;gap:14px}
-.nowrite-steps li{position:relative;background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:20px 24px 20px 70px;font-size:.9375rem;line-height:1.9}
-.nowrite-steps span{position:absolute;left:24px;top:18px;font:400 1.5rem/1.4 var(--en);color:var(--gold)}
-.nowrite-note{margin-top:44px;font:500 1rem/2 var(--serif);color:var(--muted)}
+.reasons{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.reason{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:34px 24px 30px;text-align:center}
+.reason-icon{display:grid;place-items:center;width:64px;height:64px;margin:0 auto 18px;border-radius:50%;background:var(--blush)}
+.reason-icon svg{width:30px;height:30px;fill:none;stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.reason h3{font:600 1.15rem/1.6 var(--serif);letter-spacing:.06em;color:var(--ink);margin-bottom:10px}
+.reason p{font-size:.875rem;line-height:1.9;color:var(--muted);text-align:left}
 
 /* footer */
 .footer{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:34px var(--pad);background:var(--navy-2);color:var(--ivory)}
@@ -288,6 +289,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .header-cta{margin-left:auto}
   .steps{grid-template-columns:1fr 1fr}
   .line-hero-grid{grid-template-columns:1fr;gap:56px}
+  .reasons{grid-template-columns:1fr 1fr}
   .line-visual{justify-self:center;width:min(380px,82%)}
   .phone.phone-overlay{left:-12%}
   .step:after{display:none}
@@ -330,10 +332,10 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .work h3{font-size:1.15rem;letter-spacing:.02em}
   .menu-item dt,.step h3{letter-spacing:.06em}
   .faq-list summary{font-size:1rem}
-  .steps,.voices,.works-grid,.for-list,.plans,.nowrite-grid{grid-template-columns:1fr}
-  .nowrite-grid{gap:30px}
-  .nowrite-steps li{padding:18px 18px 18px 58px}
-  .nowrite-steps span{left:18px}
+  .steps,.voices,.works-grid,.for-list,.plans{grid-template-columns:1fr}
+  .reasons{grid-template-columns:1fr 1fr;gap:14px}
+  .reason{padding:24px 14px 20px}
+  .reason h3{font-size:1rem;letter-spacing:.02em}
   .line-hero{padding-top:70px}
   .line-visual{width:76%;margin:0 0 30px auto}
   .phone.phone-overlay{left:-20%;bottom:-30px;width:158px;aspect-ratio:9/15}
