@@ -12,7 +12,7 @@
 - 写真: プロフィールと「まずは話してみる」は花柄ブラウスの写真（profile-flower.jpg / contact-chiho-flower-wide.jpg）。プロフィールは幅320pxに小さく。
 - 「書かなくていい」をサイト全体の強みに（伴走も含めて千穂さんが聞き取ってまとめる。旧「ノートは自分の手で書く」は廃止）。
 - /line-setup/ は「サロンの集客支援パートナー｜公式LINE・インスタ構築」に。インスタ初期構築とスタートセットを追加、選ばれる理由4枚、関わり方4ステップ。店舗支援パートナーの働き方を型として取り入れたが、松尾さんの名前は出さない（千穂さん決定）。医療機関には触れない。
-- 旧画像（problem-woman, why-woman, joy-woman, step-talk, step-write, step-word, profile, hero-chiho.jpg）は未使用のまま残っている。削除は千穂さんの許可待ち。
+- 旧画像8枚（problem-woman, why-woman, joy-woman, step-talk, step-write, step-word, profile, hero-chiho.jpg）は2026-11-18に千穂さんの許可を得て削除（git履歴から復元可）。
 - 設計書: Mothership-lab 003 outputs/harmony_output/20261118-お店のインスタ×公式LINEスタートセット設計書.md
 
 ## 現在地
