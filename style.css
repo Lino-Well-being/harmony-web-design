@@ -270,6 +270,11 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .plan-note h3{font:600 1.05rem/1.6 var(--serif);color:var(--navy);margin-bottom:8px}
 .plan-note p{font-size:.875rem;line-height:2}
 .page-line .steps .step:after{top:56px}
+.nowrite-grid{display:grid;grid-template-columns:1fr 1fr;gap:7%;align-items:start}
+.nowrite-steps{display:grid;gap:14px}
+.nowrite-steps li{position:relative;background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:20px 24px 20px 70px;font-size:.9375rem;line-height:1.9}
+.nowrite-steps span{position:absolute;left:24px;top:18px;font:400 1.5rem/1.4 var(--en);color:var(--gold)}
+.nowrite-note{margin-top:44px;font:500 1rem/2 var(--serif);color:var(--muted)}
 
 /* footer */
 .footer{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:34px var(--pad);background:var(--navy-2);color:var(--ivory)}
@@ -325,7 +330,10 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .work h3{font-size:1.15rem;letter-spacing:.02em}
   .menu-item dt,.step h3{letter-spacing:.06em}
   .faq-list summary{font-size:1rem}
-  .steps,.voices,.works-grid,.for-list,.plans{grid-template-columns:1fr}
+  .steps,.voices,.works-grid,.for-list,.plans,.nowrite-grid{grid-template-columns:1fr}
+  .nowrite-grid{gap:30px}
+  .nowrite-steps li{padding:18px 18px 18px 58px}
+  .nowrite-steps span{left:18px}
   .line-hero{padding-top:70px}
   .line-visual{width:76%;margin:0 0 30px auto}
   .phone.phone-overlay{left:-20%;bottom:-30px;width:158px;aspect-ratio:9/15}
