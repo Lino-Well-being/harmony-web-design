@@ -111,6 +111,16 @@ input[type=number]{width:96px}
 .q label{font-weight:500}
 .q .sub{font-size:12.5px;color:var(--muted)}
 .step-tag{font-family:var(--f-hand);color:var(--pen);font-weight:600;margin-right:6px}
+/* 質問 */
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px}
+.topic{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:6px 10px;font-size:13.5px;color:var(--ink)}
+.topic[aria-pressed=true]{border-color:var(--pen);box-shadow:inset 0 0 0 1px var(--pen)}
+.small.ok{color:var(--ok)}
+.qtext{font-size:18px;line-height:1.6}
+.hl-box{border-top:1px dashed var(--grid);padding-top:10px}
+.qa-list{margin:8px 0 0;padding-left:1.4em;display:flex;flex-direction:column;gap:8px}
+.qa-list li.on>.linkish{font-weight:600}
+.linkish{background:none;border:0;padding:0;color:var(--pen);text-align:left;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 /* マトリクス */
 .axes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .matrix{display:grid;grid-template-columns:24px minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr) auto;gap:6px;margin-top:10px}
@@ -158,7 +168,7 @@ input[type=number]{width:96px}
   <header class="head">
     <div class="stack" style="gap:6px">
       <h1>自分史ノート</h1>
-      <p class="muted small">1年1ページで書き写す → ハイライトを選ぶ → 深掘りする → キャッチコピーにする → 提出用と全体版にまとめる</p>
+      <p class="muted small">質問に答える → 1年1ページで書き足す → ハイライトを選ぶ → 深掘りする → 自分の軸とキャッチコピー → 提出用と全体版にまとめる</p>
     </div>
     <div class="who">
       <div class="field"><label for="f-name">呼び名</label><input id="f-name" type="text" placeholder="例：はなこ" style="width:140px"></div>
@@ -166,15 +176,16 @@ input[type=number]{width:96px}
       <span id="saved" class="saved" aria-live="polite"></span>
     </div>
   </header>
-  <p class="privacy">書いた内容は、この端末のブラウザの中にだけ保存されます。主催者にもほかの参加者にも見えません。「Cookieとサイトデータ」を消すと消えます。iPhoneのSafariは、7日ほど開かないと消えることがあるので、ホーム画面に追加して開くか、ときどき「6 まとめる」から控えを取ってください。</p>
+  <p class="privacy">書いた内容は、この端末のブラウザの中にだけ保存されます。主催者にもほかの参加者にも見えません。「Cookieとサイトデータ」を消すと消えます。iPhoneのSafariは、7日ほど開かないと消えることがあるので、ホーム画面に追加して開くか、ときどき「7 まとめる」から控えを取ってください。</p>
 
   <nav class="tabs" role="tablist" aria-label="手順">
-    <button class="tab" role="tab" data-step="years"><span class="n">1</span>1年1ページ</button>
-    <button class="tab" role="tab" data-step="write"><span class="n">2</span>ハイライト</button>
-    <button class="tab" role="tab" data-step="curve"><span class="n">3</span>気持ちの波</button>
-    <button class="tab" role="tab" data-step="deep"><span class="n">4</span>深掘りする</button>
-    <button class="tab" role="tab" data-step="oneword"><span class="n">5</span>自分の軸</button>
-    <button class="tab" role="tab" data-step="summary"><span class="n">6</span>まとめる</button>
+    <button class="tab" role="tab" data-step="ask"><span class="n">1</span>質問に答える</button>
+    <button class="tab" role="tab" data-step="years"><span class="n">2</span>1年1ページ</button>
+    <button class="tab" role="tab" data-step="write"><span class="n">3</span>ハイライト</button>
+    <button class="tab" role="tab" data-step="curve"><span class="n">4</span>気持ちの波</button>
+    <button class="tab" role="tab" data-step="deep"><span class="n">5</span>深掘りする</button>
+    <button class="tab" role="tab" data-step="oneword"><span class="n">6</span>自分の軸</button>
+    <button class="tab" role="tab" data-step="summary"><span class="n">7</span>まとめる</button>
   </nav>
 
   <main id="main"></main>
@@ -222,12 +233,12 @@ const OLD_AXES={xL:"苦しかった",xR:"楽しかった",yT:"ためになった
 function newMap(n){return{id:"m"+n,theme:"work",yT:"楽だった",yB:"苦しかった",xL:"ためにならなかった",xR:"ためになった",note:"",pos:{}};}
 
 let S=load();
-let view=(location.hash||"").replace("#","")||"years";
+let view=(location.hash||"").replace("#","")||"ask";
 let curDeep=null;
 let confirmId=null;
 let curYear=null;
 
-function blank(){return{name:"",birth:"",events:[],years:{},lastYear:0,maps:[newMap(1)],curMap:"m1",mapSeq:2,magic:{good:"",seek:"",s1:"",s2:"",s3:""},catch:{how:"",who:"",what:"",line:""},seq:1};}
+function blank(){return{name:"",birth:"",events:[],years:{},lastYear:0,qa:{a:{},skip:{},priv:{},cur:{t:"birth",q:0}},maps:[newMap(1)],curMap:"m1",mapSeq:2,magic:{good:"",seek:"",s1:"",s2:"",s3:""},catch:{how:"",who:"",what:"",line:""},seq:1};}
 function load(){
   try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);return normalize(d);}}catch(e){}
   return blank();
@@ -241,6 +252,12 @@ function normalize(d){
   o.events=Array.isArray(o.events)?o.events.filter(e=>e&&typeof e==="object").map(e=>({id:e.id||("e"+Math.random().toString(36).slice(2,8)),age:(e.age===""||e.age==null||isNaN(+e.age))?"":+e.age,col:COL[e.col]?e.col:"private",text:String(e.text||""),score:(e.score===""||e.score==null||isNaN(+e.score))?null:+e.score,star:!!e.star,priv:!!e.priv,deep:e.deep&&typeof e.deep==="object"?e.deep:{}})):[];
   o.seq=Math.max(+o.seq||1,o.events.length+1);
   normalizeMaps(o,d||{});
+  const qa=(d&&d.qa&&typeof d.qa==="object")?d.qa:{};
+  const obj=v=>(v&&typeof v==="object"&&!Array.isArray(v))?v:{};
+  const qaA={};for(const[k,v]of Object.entries(obj(qa.a)))if(typeof v==="string"&&/^[a-z]+:\d+$/.test(k))qaA[k]=v;
+  const flags=v=>{const r={};for(const[k,x]of Object.entries(obj(v)))if(x)r[k]=true;return r;};
+  const c=obj(qa.cur);
+  o.qa={a:qaA,skip:flags(qa.skip),priv:flags(qa.priv),cur:{t:typeof c.t==="string"?c.t:"birth",q:Math.max(0,+c.q||0)}};
   return o;
 }
 let saveTimer=null;
@@ -339,7 +356,7 @@ function go(v){view=v;try{history.replaceState(null,"","#"+v);}catch(e){}render(
 function render(){
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",String(t.dataset.step===view)));
   const m=document.getElementById("main");m.replaceChildren();
-  const f={years:vYears,write:vWrite,curve:vCurve,deep:vDeep,oneword:vOneword,summary:vSummary}[view]||vYears;
+  const f={ask:vAsk,years:vYears,write:vWrite,curve:vCurve,deep:vDeep,oneword:vOneword,summary:vSummary}[view]||vYears;
   m.append(f());
 }
 
@@ -351,6 +368,204 @@ function maxAge(){
   return Math.max(ca!=null?ca:60,...S.events.filter(e=>e.age!=="").map(e=>e.age),...Object.keys(S.years).map(Number),1);
 }
 function yearFilled(a){return!!((S.years[a]||"").trim())||S.events.some(e=>e.age===a);}
+/* ---------- 1 質問に答える ---------- */
+const TOPICS=[
+  {k:"birth",label:"0〜2歳（生まれたころ）",age:0,col:"private",sub:"覚えていなくて大丈夫です。親や家族から聞いた話、生まれたときの家や時代のことを書きます。聞いたことがなければ「知らない」で十分です。",qs:[
+    ["いつ、どこで生まれましたか？ そのころ住んでいた町や家は？","病院や町の名前、家のつくり、近所の様子"],
+    ["家族は誰がいましたか？ 親はそのころ何をしていましたか？","親の仕事や年齢、きょうだい、一緒に住んでいた人"],
+    ["名前の由来や、生まれたときの話を聞いたことはありますか？","誰が名前をつけたか、生まれた日のこと、家族の反応"],
+    ["赤ちゃんのころの様子で、家族から言われてきたことは？","よく泣いた、おとなしかった、病気をした、など"],
+    ["そのころ、家族や世の中にはどんな出来事がありましたか？","引っ越し、家の仕事、時代の出来事"],
+    ["生まれたころの話を、今のあなたはどう受け止めていますか？",""]]},
+  {k:"young",label:"幼少期（小学校に入る前）",age:4,col:"private",sub:"",qs:[
+    ["いちばん古い記憶は何ですか？","場所、におい、音、誰がいたか"],
+    ["保育園・幼稚園、または家で、どう過ごしていましたか？","先生、友だち、毎日の流れ"],
+    ["夢中だった遊びや、好きだった絵本・テレビ・おもちゃは？",""],
+    ["よく一緒にいた人は誰ですか？","家族、近所の人、友だち、先生"],
+    ["ほめられたこと、しかられたことで覚えていることは？",""],
+    ["どんな子どもだったと思いますか？ 家族からは何と言われていましたか？",""]]},
+  {k:"low",label:"小学校低学年（1〜3年生）",age:7,col:"work",sub:"",qs:[
+    ["小学校はどんな学校でしたか？ 通学路で覚えていることは？",""],
+    ["好きだった教科、苦手だった教科は？",""],
+    ["習いごとや、放課後にしていたことは？",""],
+    ["仲のよかった友だちと、よくしていた遊びは？",""],
+    ["先生や家族に言われて、今も覚えている言葉は？",""],
+    ["うれしかったこと、くやしかったこと、さみしかったことは？",""]]},
+  {k:"high",label:"小学校高学年（4〜6年生）",age:10,col:"work",sub:"",qs:[
+    ["夢中になったもの、得意だったことは？",""],
+    ["塾・習いごと・クラブ・委員会で、覚えていることは？",""],
+    ["クラスや友だちの中で、どんな役まわりでしたか？","まとめ役、聞き役、目立たないほう、など"],
+    ["家の中で起きた出来事や、家での自分の役割は？",""],
+    ["やりたくてもできなかったこと、あきらめたことは？",""],
+    ["このころ、将来どんな人になりたいと思っていましたか？",""]]},
+  {k:"teen",label:"中学・高校",age:14,col:"work",sub:"",qs:[
+    ["部活や、打ち込んでいたことは？ そこでの役割は？",""],
+    ["好きだった教科、得意なこと・苦手なことは？",""],
+    ["友だちや、好きだった人のことで覚えていることは？",""],
+    ["家族との関係はどうでしたか？ ぶつかったこと、支えてもらったことは？",""],
+    ["人に教えたり、頼られたりしたことは？",""],
+    ["進路をどうやって決めましたか？ その理由は？",""],
+    ["いちばん心に残っている出来事と、そのときの気持ちは？",""]]},
+  {k:"college",label:"大学・短大・専門学校など",age:19,col:"work",sub:"進学しなかった人は、学校を出てから働き始めるまでのことを書いてください。",qs:[
+    ["どこで何を学びましたか？ その道を選んだ理由は？",""],
+    ["学校の外で打ち込んだことは？","サークル、アルバイト、趣味、旅"],
+    ["出会った人、本、考え方で、今も影響が残っているものは？",""],
+    ["一人暮らしや、家族との関係で変わったことは？",""],
+    ["仕事や進路を、どうやって選びましたか？",""],
+    ["このころの自分に、今なら何と声をかけますか？",""]]},
+  {k:"early",label:"社会人初期（働き始めて最初の数年）",age:22,col:"work",sub:"",qs:[
+    ["最初の仕事・職場はどこで、何をしていましたか？",""],
+    ["仕事で最初にぶつかった壁は？ どう越えましたか？",""],
+    ["教えてもらったこと、影響を受けた上司や先輩は？",""],
+    ["ほめられたこと、うまくいったことは？",""],
+    ["休みの日は、何をしていましたか？",""],
+    ["このころ、仕事や将来についてどう思っていましたか？",""]]},
+  {k:"mid",label:"社会人中堅以降（仕事の中盤から今まで）",age:35,col:"work",sub:"",qs:[
+    ["異動、転職、独立など、働き方が変わった出来事は？ その理由は？",""],
+    ["任された役割や、自分から手を挙げたことは？",""],
+    ["いちばん大変だった時期と、それをどう越えたかは？",""],
+    ["人から頼られること、よく相談されることは？",""],
+    ["仕事で大事にしてきたことは？",""],
+    ["手放したもの、やめたことと、その理由は？",""],
+    ["今の仕事や活動につながっていることは？",""]]},
+  {k:"love",label:"結婚・恋愛",age:"",col:"love",sub:"書きたいところだけで大丈夫です。上の「このトピックを非公開にする」で、提出用とAIに貼る文から外せます。",qs:[
+    ["心に残っている恋愛や、大切な人との出会いは？",""],
+    ["別れや、うまくいかなかった経験から学んだことは？",""],
+    ["結婚やパートナーとの暮らしを決めたきっかけは？","していない人は、そう選んできた理由でも"],
+    ["大切な人との関係で、変わってきたこと、続けていることは？",""],
+    ["人との関係で、いちばん大切にしていることは？",""]]},
+  {k:"kids",label:"子育て",age:"",col:"private",sub:"子育てに関わっていない人は、「このトピックは当てはまらない」で飛ばしてください。",qs:[
+    ["子どもが生まれたとき（家族になったとき）のことで、覚えていることは？",""],
+    ["子育てでいちばん大変だった時期は？",""],
+    ["子育ての中で、自分が始めたこと、やめたことは？",""],
+    ["子どもから教わったことは？",""],
+    ["子育てを通して、働き方や考え方はどう変わりましたか？",""],
+    ["子育てで大事にしてきたことは？",""]]},
+  {k:"hobby",label:"趣味・好きなこと",age:"",col:"hobby",sub:"",qs:[
+    ["子どものころから今まで、ずっと好きなことは？",""],
+    ["時間を忘れて夢中になれることは？",""],
+    ["習ったこと、続けてきたこと、一度やめてまた始めたことは？",""],
+    ["人からほめられる、頼まれる趣味や特技は？",""],
+    ["趣味を通して出会った人や、広がった世界は？",""],
+    ["これから始めたいこと、もう一度やりたいことは？",""]]},
+  {k:"friends",label:"交流関係",age:"",col:"love",sub:"",qs:[
+    ["人生の節目で出会った、大事な人は誰ですか？","名前を出したくなければ「〇〇さん」で"],
+    ["今もつながっている昔からの友だちは？ どんなつながりですか？",""],
+    ["仲間やグループの中で、自分はどんな役まわりですか？","地域、習いごと、職場、オンライン"],
+    ["人からよく相談されること、頼まれることは？",""],
+    ["離れた関係や、距離を置いた人から学んだことは？",""],
+    ["これから出会いたいのは、どんな人ですか？",""]]},
+  {k:"now",label:"今とこれから",age:"now",col:"work",sub:"ここで書いたことは、「6 自分の軸」でキャッチコピーを考えるときの材料になります。",qs:[
+    ["今、いちばん時間とエネルギーを使っていることは？",""],
+    ["振り返ると、何度も同じように選んできたことは？","自分のくせ、いつも戻ってくる場所"],
+    ["人生でずっと大事にしてきたものは？",""],
+    ["これまでの経験で、誰かの役に立てそうなことは？",""],
+    ["これからやってみたいこと、届けたい人は？",""],
+    ["今の自分に、ひとこと声をかけるとしたら？",""]]}
+];
+const TOPIC=Object.fromEntries(TOPICS.map(t=>[t.k,t]));
+function qaKey(t,i){return t+":"+i;}
+function qaAns(t,i){return(S.qa.a[qaKey(t,i)]||"").trim();}
+function qaCount(t){return TOPIC[t].qs.filter((_,i)=>qaAns(t,i)).length;}
+function topicAge(t){const a=TOPIC[t].age;if(a==="now"){const c=currentAge();return c==null?"":c;}return a;}
+function vAsk(){
+  const box=h("div",{class:"stack"});
+  box.append(h("div",{class:"intro"},tip("質問に答えるだけで、大まかな自分史ができます",[
+    "トピックを選んで、質問に1つずつ答えます。思い出せない質問は「次へ」で飛ばして大丈夫です。当てはまらないトピックは、まるごと飛ばせます。",
+    "話し言葉のまま、単語だけでも大丈夫です。分からないところは「？」のまま残してください。",
+    "大事な答えは「ハイライトにする」で、「3 ハイライト」に移せます。もっと細かく思い出したくなったら、「2 1年1ページ」で年ごとに書き足します。"
+  ])));
+  let cur=S.qa.cur;if(!TOPIC[cur.t]){cur=S.qa.cur={t:TOPICS[0].k,q:0};}
+  const T=TOPIC[cur.t];cur.q=Math.max(0,Math.min(T.qs.length-1,cur.q|0));
+  const go2=(t,q)=>{S.qa.cur={t,q};save();render();window.scrollTo({top:0});};
+
+  /* トピック一覧 */
+  box.append(h("div",{class:"sheet stack"},h("h2",{text:"トピック"}),h("div",{class:"topics"},
+    TOPICS.map(t=>{const n=qaCount(t.k),sk=!!S.qa.skip[t.k];
+      return h("button",{class:"topic",type:"button","aria-pressed":String(t.k===cur.t),onclick:()=>go2(t.k,0)},
+        h("span",{text:t.label}),
+        h("span",{class:"small "+(sk?"muted":n?"ok":"muted"),text:sk?"当てはまらない":`${n}／${t.qs.length}`}),
+        S.qa.priv[t.k]?h("span",{class:"small muted",text:"非公開"}):null);}))));
+
+  /* 今のトピック */
+  const sec=h("section",{class:"sheet stack"});
+  const ag=topicAge(T.k);
+  sec.append(h("div",{class:"stage-h"},h("h2",{text:T.label}),
+    ag!==""&&typeof T.age==="number"&&birth()?h("span",{class:"ages",text:`${birth()+T.age}年ごろ〜`}):null));
+  if(T.sub)sec.append(h("p",{class:"small muted",text:T.sub}));
+  const skipCb=h("input",{type:"checkbox",id:"qa-skip",checked:!!S.qa.skip[T.k]});
+  skipCb.addEventListener("change",()=>{if(skipCb.checked)S.qa.skip[T.k]=true;else delete S.qa.skip[T.k];save();render();});
+  const privCb=h("input",{type:"checkbox",id:"qa-priv",checked:!!S.qa.priv[T.k]});
+  privCb.addEventListener("change",()=>{if(privCb.checked)S.qa.priv[T.k]=true;else delete S.qa.priv[T.k];save();render();});
+  sec.append(h("div",{class:"row small"},
+    h("label",{class:"row",for:"qa-skip"},skipCb,"このトピックは当てはまらない"),
+    h("label",{class:"row",for:"qa-priv"},privCb,"このトピックを非公開にする")));
+  const ti=TOPICS.indexOf(T),nextT=TOPICS[ti+1];
+  if(S.qa.skip[T.k]){
+    sec.append(h("p",{class:"empty",text:"このトピックは飛ばしています。答えたくなったら、上のチェックを外してください。"}));
+    if(nextT)sec.append(h("div",{class:"row"},h("button",{class:"btn",type:"button",onclick:()=>go2(nextT.k,0)},"次のトピックへ →")));
+    box.append(sec);return box;
+  }
+  const qi=cur.q,[qt,qh]=T.qs[qi];
+  sec.append(h("p",{class:"small muted",text:`質問 ${qi+1}／${T.qs.length}`}));
+  sec.append(h("h3",{class:"qtext",text:qt}));
+  if(qh)sec.append(h("p",{class:"small muted",text:"思い出す手がかり："+qh}));
+  sec.append(voiceGuide());
+  const key=qaKey(T.k,qi);
+  const ta=h("textarea",{id:"qa-ans",class:"big",rows:"8",value:S.qa.a[key]||"","aria-label":qt});
+  ta.addEventListener("input",()=>{if(ta.value)S.qa.a[key]=ta.value;else delete S.qa.a[key];save();});
+  sec.append(ta);
+  const last=qi>=T.qs.length-1;
+  sec.append(h("div",{class:"row",style:"justify-content:space-between"},
+    h("button",{class:"btn ghost sm",type:"button",disabled:qi<=0,onclick:()=>go2(T.k,qi-1)},"← 前の質問"),
+    last?(nextT?h("button",{class:"btn",type:"button",onclick:()=>go2(nextT.k,0)},"次のトピックへ →"):h("span",{class:"small ok",text:"最後の質問です。おつかれさまでした"}))
+        :h("button",{class:"btn",type:"button",onclick:()=>go2(T.k,qi+1)},"次へ →")));
+
+  /* ハイライトにする */
+  const ageIn=h("input",{type:"number",min:"0",max:"120",value:ag,"aria-label":"何歳のことか",style:"width:72px"});
+  const colIn=h("select",{"aria-label":"ハイライトの分類"},COLS.map(c=>h("option",{value:c.k,selected:c.k===T.col},c.label)));
+  sec.append(h("div",{class:"hl-box stack"},
+    h("p",{class:"small muted",text:"答えの中の大事な文を選んで押すと、「3 ハイライト」に入ります。何も選ばずに押すと、答えの最初の1行が入ります。"}),
+    h("div",{class:"row"},h("span",{class:"small",text:"何歳のこと？"}),ageIn,colIn,
+      h("button",{class:"btn ghost sm",type:"button",onclick:()=>{
+        let s=ta.value.slice(ta.selectionStart,ta.selectionEnd);
+        if(!s.trim())s=(ta.value.split("\n").find(l=>l.trim())||"");
+        s=s.replace(/\s+/g," ").trim();
+        if(!s){toast("先に答えを書いてください");return;}
+        const a=ageIn.value===""||isNaN(+ageIn.value)?"":Math.max(0,Math.min(120,Math.round(+ageIn.value)));
+        S.events.push({id:"e"+(S.seq++),age:a,col:colIn.value,text:s.slice(0,140),score:null,star:false,priv:!!S.qa.priv[T.k],deep:{}});
+        save();toast(a===""?"ハイライトにしました（年齢はあとで入れられます）":"ハイライトにしました");
+      }},"ハイライトにする"))));
+
+  /* このトピックの答え一覧 */
+  const list=h("ol",{class:"qa-list"});
+  T.qs.forEach(([q],i)=>{const v=qaAns(T.k,i);
+    list.append(h("li",{class:i===qi?"on":null},h("button",{class:"linkish",type:"button",onclick:()=>go2(T.k,i)},q),
+      h("div",{class:"small "+(v?"":"muted"),text:v?v.replace(/\n+/g," ").slice(0,80)+(v.length>80?"…":""):"まだ答えていません"})));});
+  sec.append(h("details",{class:"tip"},h("summary",null,h("strong",{text:`このトピックの答えを一覧で見る（${qaCount(T.k)}／${T.qs.length}）`})),list));
+  box.append(sec);
+  return box;
+}
+function buildTopicDoc(){
+  const out=[`# ${S.name?S.name+"の":""}自分史（トピック別）`];
+  if(birth())out.push(`${birth()}年生まれ`);
+  const t=buildTopics(true,"##");
+  out.push(...(t.length?t:["","（「1 質問に答える」で答えると、ここに並びます）"]));
+  return out.join("\n").replace(/\n{3,}/g,"\n\n").trim();
+}
+function buildTopics(withPriv,heading){
+  const out=[];
+  TOPICS.forEach(t=>{
+    if(S.qa.skip[t.k])return;
+    if(S.qa.priv[t.k]&&!withPriv)return;
+    const qs=t.qs.map(([q],i)=>[q,qaAns(t.k,i)]).filter(x=>x[1]);
+    if(!qs.length)return;
+    out.push("",`${heading} ${t.label}${S.qa.priv[t.k]?"［非公開］":""}`);
+    qs.forEach(([q,a])=>out.push("",`Q. ${q}`,a.split("\n").map(l=>l.trim()).filter(Boolean).join("\n")));
+  });
+  return out;
+}
+
 function vYears(){
   const box=h("div",{class:"stack"});
   box.append(h("div",{class:"intro"},tip("1年1ページの書き方",[
@@ -422,8 +637,8 @@ function voiceGuide(){
   const ways={
     ios:"キーボード右下のマイクを押して話します。終わったらキーボードのボタンを押します。",
     android:"キーボードのマイクを押して話します（Gboardなど）。",
-    mac:"欄を押してから、fnキー（地球儀キー）を2回押して話します。",
-    win:"欄を押してから、Windowsキー＋Hを押して話します。",
+    mac:"fnキー（地球儀キー）を2回押して話します。",
+    win:"Windowsキー＋Hを押して話します。",
     other:"スマホならキーボードのマイク、Macはfnキーを2回、WindowsはWindowsキー＋Hで話せます。"
   };
   return h("details",{class:"tip voice",open:S.voiceOpen!==false?true:null,ontoggle:function(){S.voiceOpen=this.open;save();}},
@@ -443,14 +658,14 @@ function vWrite(){
   box.append(h("div",{class:"intro"},
     tip("ハイライトの選び方",[
       "1年1ページから選んだハイライトが、時代ごとに並びます。ここから直接書き足すこともできます。",
-      "提出用の箇条書きは、このハイライトから作ります。A4で4ページ以内が目安です。「6 まとめる」で今のページ数が分かります。",
+      "提出用の箇条書きは、このハイライトから作ります。A4で4ページ以内が目安です。「7 まとめる」で今のページ数が分かります。",
       "人生の曲がり角になった出来事、今の自分につながっている出来事を選ぶと、深掘りしやすくなります。",
       "人に見せたくない出来事には「非公開」を付けておくと、提出用から外れます。"
     ])
   ));
   if(!S.events.length){
     box.append(h("div",{class:"sheet row",style:"justify-content:space-between"},
-      h("p",{class:"muted",text:"まだハイライトがありません。「1 1年1ページ」で選ぶか、下の点線のヒントから書けます。"}),
+      h("p",{class:"muted",text:"まだハイライトがありません。「2 1年1ページ」で選ぶか、下の点線のヒントから書けます。"}),
       h("button",{class:"btn ghost sm",onclick:()=>{loadSample();}},"見本を入れて使い方を見る")
     ));
   }
@@ -523,7 +738,7 @@ function vCurve(){
   box.append(h("div",{class:"sheet chart-box"},chartSVG()));
   const list=h("div",{class:"sheet score-list"});
   const evs=sorted(S.events.filter(e=>e.age!==""));
-  if(!evs.length)list.append(h("p",{class:"empty",text:"「1 1年1ページ」でハイライトを選ぶと、年齢つきでここに並びます。"}));
+  if(!evs.length)list.append(h("p",{class:"empty",text:"「2 1年1ページ」でハイライトを選ぶと、年齢つきでここに並びます。"}));
   evs.forEach(e=>{
     const sel=h("select",{"aria-label":e.text+"の充実度"},
       h("option",{value:""},"付けない"),
@@ -598,9 +813,9 @@ function vDeep(){
   box.append(h("div",{class:"intro"},tip("深掘りのしかた",[
     "全部を深掘りしなくて大丈夫です。気になる出来事を3〜5個選びます。",
     "上から順に、事実 → 場面 → 気持ち → 理由 → 今へ → 見直す、と進みます。下に行くほど、自分の芯が見えてきます。",
-    "答えにくい問いは飛ばしてください。思い出したことが別の出来事につながったら、「1 1年1ページ」に足しておきます。"
+    "答えにくい問いは飛ばしてください。思い出したことが別の出来事につながったら、「2 1年1ページ」に足しておきます。"
   ])));
-  if(!S.events.length){box.append(h("div",{class:"sheet"},h("p",{class:"muted",text:"「1 1年1ページ」でハイライトを選ぶと、ここで選べるようになります。"})));return box;}
+  if(!S.events.length){box.append(h("div",{class:"sheet"},h("p",{class:"muted",text:"「2 1年1ページ」でハイライトを選ぶと、ここで選べるようになります。"})));return box;}
   const turns=turningPoints(), stars=S.events.filter(e=>e.star);
   if(!curDeep||!S.events.includes(curDeep))curDeep=stars[0]||turns[0]||sorted(S.events)[0];
   const pick=h("div",{class:"pick",role:"list"});
@@ -715,7 +930,7 @@ function matrixBox(){
 
   /* 振り分け */
   const place=h("div");
-  if(!evs.length)place.append(h("p",{class:"empty",text:mp.theme==="all"?"「2 ハイライト」に出来事を書くと、ここで4つのマスに分けられます。":`「${COL[mp.theme]}」の出来事がまだありません。題材を変えるか、「2 ハイライト」に書き足してください。`}));
+  if(!evs.length)place.append(h("p",{class:"empty",text:mp.theme==="all"?"「3 ハイライト」に出来事を書くと、ここで4つのマスに分けられます。":`「${COL[mp.theme]}」の出来事がまだありません。題材を変えるか、「3 ハイライト」に書き足してください。`}));
   evs.forEach(e=>{
     const p=mp.pos[e.id]||{x:"",y:""};
     const set=(k,v)=>{const n=Object.assign({x:"",y:""},mp.pos[e.id]||{});n[k]=v;if(!n.x&&!n.y)delete mp.pos[e.id];else mp.pos[e.id]=n;save();render();};
@@ -748,12 +963,13 @@ function vSummary(){
   ])));
   const subTA=h("textarea",{class:"out",readonly:true,"aria-label":"提出用ハイライト"});
   const fullTA=h("textarea",{class:"out",readonly:true,"aria-label":"全体ドキュメント"});
+  const topTA=h("textarea",{class:"out",readonly:true,"aria-label":"トピック別の自分史"});
   const aiTA=h("textarea",{class:"out",readonly:true,"aria-label":"AIに貼る文"});
   const meter=h("span",{class:"small"});
   const inclPriv=h("input",{type:"checkbox",id:"incl-priv"});
   const inclYears=h("input",{type:"checkbox",id:"incl-years",checked:true});
   const refresh=()=>{
-    subTA.value=buildSubmit();fullTA.value=buildFull();aiTA.value=buildAI(inclPriv.checked,inclYears.checked);
+    subTA.value=buildSubmit();fullTA.value=buildFull();topTA.value=buildTopicDoc();aiTA.value=buildAI(inclPriv.checked,inclYears.checked);
     const pg=pagesOf(subTA.value);
     meter.textContent=`今の分量：A4で約${pg.toFixed(1)}ページ（目安は4ページまで）`;
     meter.style.color=pg>4?"var(--warn)":"var(--ok)";
@@ -764,8 +980,13 @@ function vSummary(){
     h("div",{class:"row",style:"justify-content:space-between"},h("h2",{text:"提出用ハイライト"}),
       h("div",{class:"row"},copyBtn(()=>subTA.value,subTA),saveBtn(()=>subTA.value,base+"自分史ハイライト.md","text/markdown"))),
     meter,
-    h("p",{class:"small muted",text:"4ページを超えたら、「2 ハイライト」で似た出来事をまとめるか、非公開にして外してください。"}),
+    h("p",{class:"small muted",text:"4ページを超えたら、「3 ハイライト」で似た出来事をまとめるか、非公開にして外してください。"}),
     subTA));
+  box.append(h("div",{class:"sheet stack"},
+    h("div",{class:"row",style:"justify-content:space-between"},h("h2",{text:"トピック別の自分史（大まかな版）"}),
+      h("div",{class:"row"},copyBtn(()=>topTA.value,topTA),saveBtn(()=>topTA.value,base+"自分史・トピック別.md","text/markdown"))),
+    h("p",{class:"small muted",text:"「1 質問に答える」の答えを、トピックごとに並べたものです。非公開にしたトピックも［非公開］の印つきで入っています。"}),
+    topTA));
   box.append(h("div",{class:"sheet stack"},
     h("div",{class:"row",style:"justify-content:space-between"},h("h2",{text:"全体ドキュメント（自分用・時系列）"}),
       h("div",{class:"row"},copyBtn(()=>fullTA.value,fullTA),saveBtn(()=>fullTA.value,base+"自分史・全体.md","text/markdown"))),
@@ -884,10 +1105,12 @@ function buildFull(){
   if(un.length){out.push("","### 時期が分からないもの");un.forEach(e=>{out.push(`- ［${COL[e.col]}］${e.text}${e.priv?"［非公開］":""}`);const d=deepText(e);if(d)out.push(d);});}
   const seeds=sorted(S.events.filter(e=>e.star||(e.deep.now||"").trim()||(e.deep.reframe||"").trim()));
   out.push("","## 発信ネタの種");
-  out.push(seeds.length?seeds.map(e=>{const k=((e.deep.reframe||"").trim()||(e.deep.now||"").trim()).replace(/\n+/g," ");return `- ${e.age===""?"":e.age+"歳　"}${e.text}${k?" → "+k:""}${e.priv?"［非公開］":""}`;}).join("\n"):"（「4 深掘りする」で「今へ」「見直す」を書くと、ここに並びます）");
+  out.push(seeds.length?seeds.map(e=>{const k=((e.deep.reframe||"").trim()||(e.deep.now||"").trim()).replace(/\n+/g," ");return `- ${e.age===""?"":e.age+"歳　"}${e.text}${k?" → "+k:""}${e.priv?"［非公開］":""}`;}).join("\n"):"（「5 深掘りする」で「今へ」「見直す」を書くと、ここに並びます）");
   out.push("","## これからのサービスのストック");
   const sv=[["強み",m.s1],["届けられること",m.s2],["実績",m.s3],["求めているもの",m.seek]].filter(x=>(x[1]||"").trim());
-  out.push(sv.length?sv.map(x=>`- ${x[0]}：${x[1].trim().replace(/\n+/g," ")}`).join("\n"):"（「5 自分の軸」の強みの3つの文を書くと、ここに並びます）");
+  out.push(sv.length?sv.map(x=>`- ${x[0]}：${x[1].trim().replace(/\n+/g," ")}`).join("\n"):"（「6 自分の軸」の強みの3つの文を書くと、ここに並びます）");
+  const tq=buildTopics(true,"###");
+  if(tq.length)out.push("","## 質問への答え（トピック別）",...tq);
   const ml=mapLines(true);
   if(ml.length)out.push("","## 自分理解マトリクス",...ml.map(l=>l.startsWith("■ ")?"### "+l.slice(2):l));
   const turns=turningPoints();
@@ -923,6 +1146,8 @@ function buildAI(withPriv,withYears){
   const m=S.magic;
   const mm=[["得意なこと（一言）",m.good],["求めているもの",m.seek],["優れていること",m.s1],["相手に届けられること",m.s2],["実現したこと",m.s3]].filter(x=>(x[1]||"").trim());
   if(mm.length){out.push("","【自分を一言で・強み（下書き）】");mm.forEach(x=>out.push(`- ${x[0]}：${x[1].trim()}`));}
+  const tq=buildTopics(withPriv,"■");
+  if(tq.length)out.push("","【質問への答え（トピック別）】",...tq);
   const ml=mapLines(withPriv);
   if(ml.length)out.push("","【自分理解マトリクス（出来事を2本の軸で4つに分けたもの）】",...ml);
   if(withYears){
