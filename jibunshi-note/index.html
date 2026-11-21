@@ -1,0 +1,1360 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="自分史ノート">
+<title>自分史ノート</title>
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: 方眼ノートの1冊。上に名前と生まれ年、5つの手順をタブで進む。各手順は「書き方のコツ」→作業面の順 */
+:root{
+  --paper:#f7faef; --sheet:#ffffff; --grid:#e3edd2; --ink:#27331d; --muted:#5e6b50;
+  --pen:#4e7d22; --pen-soft:#eaf3d5; --marker:#ffe27a; --marker-ink:#4a3b00;
+  --line:#d2dfba; --warn:#b4432f; --ok:#2f7a4f;
+  --c-work:#2b66a8; --c-private:#2f7a4f; --c-love:#b4527a; --c-hobby:#a8701e;
+  --f-hand:"Klee One","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#13190f; --sheet:#1b2415; --grid:#26321c; --ink:#e9efdf; --muted:#a2af8e;
+  --pen:#b3d67a; --pen-soft:#2a3a1d; --marker:#e9c94a; --marker-ink:#2a2100;
+  --line:#3a4a2b; --warn:#ec8a76; --ok:#7cc79a;
+  --c-work:#7fb0ea; --c-private:#7cc79a; --c-love:#e597b8; --c-hobby:#e2b26a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#13190f; --sheet:#1b2415; --grid:#26321c; --ink:#e9efdf; --muted:#a2af8e;
+  --pen:#b3d67a; --pen-soft:#2a3a1d; --marker:#e9c94a; --marker-ink:#2a2100;
+  --line:#3a4a2b; --warn:#ec8a76; --ok:#7cc79a;
+  --c-work:#7fb0ea; --c-private:#7cc79a; --c-love:#e597b8; --c-hobby:#e2b26a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;}
+.wrap{max-width:980px;margin:0 auto;padding-block:20px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));}
+h1,h2,h3{font-family:var(--f-hand);font-weight:600;text-wrap:balance;margin:0;line-height:1.4}
+h1{font-size:30px}
+.beta{display:inline-block;vertical-align:middle;font-family:var(--f-body);font-size:13px;font-weight:700;color:var(--pen);background:var(--pen-soft);border:1px solid var(--pen);border-radius:999px;padding:1px 10px;margin-left:6px;letter-spacing:.05em}
+.beta-note{color:var(--pen);margin:0} h2{font-size:22px} h3{font-size:17px}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--pen);outline-offset:2px}
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.head{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+.who{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:2px}
+.field label{font-size:12px;color:var(--muted)}
+input[type=text],input[type=number],select,textarea{background:var(--sheet);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:0}
+textarea{width:100%;resize:vertical;min-height:84px;line-height:1.7;font-size:16px}
+textarea.big{min-height:320px}
+.voice summary{cursor:pointer}
+.voice ul{margin:6px 0 0}
+input[type=number]{width:96px}
+.privacy{font-size:12.5px;color:var(--muted);max-width:420px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin:6px 0 16px;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:6px 14px;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.tab .n{font-family:var(--f-hand);font-weight:600;color:var(--pen)}
+.tab[aria-selected=true]{background:var(--pen);border-color:var(--pen);color:var(--sheet)}
+.tab[aria-selected=true] .n{color:var(--sheet)}
+.intro{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:16px}
+.tip{background:var(--pen-soft);border-radius:var(--r);padding:12px 14px;font-size:14px}
+.tip strong{font-weight:700}
+.tip ul{margin:6px 0 0;padding-left:1.2em}
+.btn{border:1px solid var(--pen);background:var(--pen);color:var(--sheet);border-radius:8px;padding:7px 14px;font-weight:500}
+.btn.ghost{background:transparent;color:var(--pen)}
+.btn.warn{border-color:var(--warn);color:var(--warn);background:transparent}
+.btn.sm{padding:3px 10px;font-size:13px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.stack{display:flex;flex-direction:column;gap:14px}
+/* 年表 */
+.stage{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.stage-h{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:space-between}
+.stage-h .ages{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.hints{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0}
+.hint-col{font-size:12.5px;color:var(--muted);min-width:0}
+.hint-col b{display:block;font-weight:700;margin-bottom:2px}
+.chip{display:inline-block;border:1px dashed var(--line);border-radius:6px;padding:0 6px;margin:2px 4px 2px 0;background:transparent;font-size:12.5px;color:var(--muted)}
+.chip:hover{border-color:var(--pen);color:var(--pen)}
+.add{display:grid;grid-template-columns:84px 150px minmax(0,1fr) auto;gap:8px;align-items:center;margin-top:6px}
+.add input[type=number]{width:100%}
+.ev{display:grid;grid-template-columns:96px 104px minmax(0,1fr) auto;gap:8px;align-items:start;padding:7px 0;border-top:1px dashed var(--grid)}
+.ev:first-child{border-top:0}
+.ev .age{font-variant-numeric:tabular-nums;font-size:13.5px}
+.ev .age .yr{display:block;color:var(--muted);font-size:12px}
+.tag{display:inline-block;font-size:12px;border-radius:999px;padding:1px 8px;border:1px solid currentColor;white-space:nowrap}
+.t-work{color:var(--c-work)} .t-private{color:var(--c-private)} .t-love{color:var(--c-love)} .t-hobby{color:var(--c-hobby)}
+.ev .txt{min-width:0;overflow-wrap:anywhere}
+.ev .txt input{width:100%}
+.ev .acts{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.icon-btn{border:1px solid var(--line);background:transparent;border-radius:6px;padding:1px 7px;font-size:12.5px;color:var(--muted)}
+.icon-btn[aria-pressed=true]{background:var(--marker);color:var(--marker-ink);border-color:var(--marker)}
+.lock[aria-pressed=true]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.empty{color:var(--muted);font-size:13.5px;padding:4px 0}
+/* カーブ */
+.chart-box{overflow-x:auto}
+.chart-box svg{display:block;width:100%;min-width:560px;height:auto}
+.score-list .ev{grid-template-columns:96px minmax(0,1fr) 120px}
+/* 深掘り */
+.deep{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:16px}
+.pick{display:flex;flex-direction:column;gap:4px;max-height:560px;overflow:auto;padding-right:4px}
+.pick button{text-align:left;border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:6px 10px;font-size:13.5px}
+.pick button[aria-current=true]{border-color:var(--pen);box-shadow:inset 3px 0 0 var(--pen)}
+.pick .grp{font-size:12px;color:var(--muted);margin-top:8px}
+.ladder{display:flex;flex-direction:column;gap:12px}
+.q{display:flex;flex-direction:column;gap:4px}
+.q label{font-weight:500}
+.q .sub{font-size:12.5px;color:var(--muted)}
+.step-tag{font-family:var(--f-hand);color:var(--pen);font-weight:600;margin-right:6px}
+/* 質問 */
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px}
+.topic{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:6px 10px;font-size:13.5px;color:var(--ink)}
+.topic[aria-pressed=true]{border-color:var(--pen);box-shadow:inset 0 0 0 1px var(--pen)}
+.small.ok{color:var(--ok)}
+.qtext{font-size:18px;line-height:1.6}
+.hl-box{border-top:1px dashed var(--grid);padding-top:10px}
+.imp summary{cursor:pointer}
+.imp-steps{margin:8px 0;padding-left:1.4em}
+.imp textarea{width:100%;margin:6px 0}
+.imp-item{border-top:1px dashed var(--grid);padding-top:8px}
+.imp-item input[type=number]{width:5.5em}
+.imp-pre{white-space:pre-wrap;word-break:break-word;font:inherit;font-size:14px;margin:6px 0 0;max-height:12em;overflow:auto}
+.warn-t{color:var(--warn,#b3261e)}
+.gap{border-top:2px dashed var(--line);margin-top:14px;padding-top:12px}
+.gap details summary{cursor:pointer}
+.qa-list{margin:8px 0 0;padding-left:1.4em;display:flex;flex-direction:column;gap:8px}
+.qa-list li.on>.linkish{font-weight:600}
+.linkish{background:none;border:0;padding:0;color:var(--pen);text-align:left;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+/* マトリクス */
+.axes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.matrix{display:grid;grid-template-columns:24px minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr) auto;gap:6px;margin-top:10px}
+.quad{position:relative}
+.quad .cnt{position:absolute;right:6px;bottom:4px;font-size:11px;color:var(--muted)}
+.mid{margin-top:6px;margin-left:30px;border:1px dashed var(--line);border-radius:8px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12.5px}
+.mid .q-chip{font-size:12.5px;background:var(--pen-soft);border-radius:6px;padding:1px 7px}
+.maps{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.maps .btn[aria-pressed=true]{background:var(--pen);color:var(--sheet);border-color:var(--pen)}
+.axrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 150px;gap:8px;align-items:end}
+.quad{background:var(--sheet);border:1px solid var(--line);border-radius:8px;min-height:120px;padding:8px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start}
+.quad .q-chip{font-size:12.5px;background:var(--pen-soft);border-radius:6px;padding:1px 7px}
+.ax-y{writing-mode:vertical-rl;font-size:12px;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.ax-x{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;grid-column:2 / 4}
+.place{display:grid;grid-template-columns:minmax(0,1fr) 130px 130px;gap:6px;align-items:center;padding:5px 0;border-top:1px dashed var(--grid);font-size:13.5px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+/* まとめ */
+.out{width:100%;min-height:240px;font-size:13px;font-family:ui-monospace,Menlo,monospace;line-height:1.6}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--sheet);padding:8px 16px;border-radius:999px;font-size:13.5px;z-index:20}
+.saved{font-size:12px;color:var(--ok)}
+.confirm{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--warn)}
+@media (max-width:760px){
+  .hints{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .add{grid-template-columns:72px minmax(0,1fr)}
+  .add input[type=text]{grid-column:1 / -1}
+  .add .btn{grid-column:1 / -1}
+  .ev{grid-template-columns:72px minmax(0,1fr)}
+  .ev .txt{grid-column:1 / -1}
+  .ev .acts{grid-column:1 / -1;justify-content:flex-start}
+  .score-list .ev{grid-template-columns:72px minmax(0,1fr)}
+  .score-list .ev select{grid-column:1 / -1}
+  .deep,.two{grid-template-columns:1fr}
+  .pick{max-height:260px}
+  .place{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .place .ptxt{grid-column:1 / -1}
+  .axrow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .axrow select{grid-column:1 / -1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="head">
+    <div class="stack" style="gap:6px">
+      <h1>自分史ノート <span class="beta">ベータ版</span></h1>
+      <p class="small beta-note">自分史シェア会の参加者向けの試用版です。使ってみた感想を、アンケートで聞かせてください。</p>
+      <p class="muted small">質問に答える → 1年1ページで書き足す → ハイライトを選ぶ → 深掘りする → 自分の軸とキャッチコピー → 提出用と全体版にまとめる</p>
+    </div>
+    <div class="who">
+      <div class="field"><label for="f-name">呼び名</label><input id="f-name" type="text" placeholder="例：はなこ" style="width:140px"></div>
+      <div class="field"><label for="f-birth">生まれ年（西暦）</label><input id="f-birth" type="number" min="1920" max="2025" placeholder="1975"></div>
+      <span id="saved" class="saved" aria-live="polite"></span>
+    </div>
+  </header>
+  <p class="privacy">書いた内容は、この端末のブラウザの中にだけ保存されます。主催者にもほかの参加者にも見えません。「Cookieとサイトデータ」を消すと消えます。iPhoneのSafariは、7日ほど開かないと消えることがあるので、ホーム画面に追加して開くか、ときどき「7 まとめる」から控えを取ってください。</p>
+
+  <nav class="tabs" role="tablist" aria-label="手順">
+    <button class="tab" role="tab" data-step="ask"><span class="n">1</span>質問に答える</button>
+    <button class="tab" role="tab" data-step="years"><span class="n">2</span>1年1ページ</button>
+    <button class="tab" role="tab" data-step="write"><span class="n">3</span>ハイライト</button>
+    <button class="tab" role="tab" data-step="curve"><span class="n">4</span>気持ちの波</button>
+    <button class="tab" role="tab" data-step="deep"><span class="n">5</span>深掘りする</button>
+    <button class="tab" role="tab" data-step="oneword"><span class="n">6</span>自分の軸</button>
+    <button class="tab" role="tab" data-step="summary"><span class="n">7</span>まとめる</button>
+  </nav>
+
+  <main id="main"></main>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+(function(){
+"use strict";
+const KEY="jibunshi-note-v1";
+const COLS=[
+  {k:"work",label:"仕事・学校"},
+  {k:"private",label:"家族・暮らし"},
+  {k:"love",label:"恋愛・大切な人"},
+  {k:"hobby",label:"好きなこと・特技"}
+];
+const COL=Object.fromEntries(COLS.map(c=>[c.k,c.label]));
+const STAGES=[
+  {label:"生まれ〜幼稚園",from:0,to:5,hints:{work:["通っていた園","先生のひとこと"],private:["生まれた場所・育った町","家族の顔ぶれ","いちばん古い記憶"],love:["大好きだった人"],hobby:["夢中だった遊び","好きだった絵本・テレビ"]}},
+  {label:"小学校",from:6,to:11,hints:{work:["好きな教科・苦手な教科","習いごと・塾","先生に言われて残っている言葉"],private:["家での役割","家族の出来事","やりたくてもできなかったこと"],love:["初恋","仲良しの友だち"],hobby:["夢中になったもの","ほめられたこと"]}},
+  {label:"中学校",from:12,to:14,hints:{work:["部活","進路の決め方"],private:["家族との関係","初めて自分で決めたこと"],love:["好きだった人"],hobby:["ハマったもの","人に教えていたこと"]}},
+  {label:"高校",from:15,to:17,hints:{work:["部活・役割","進路を選んだ理由"],private:["アルバイト","家の事情"],love:["恋愛"],hobby:["好きだった音楽・本"]}},
+  {label:"学生時代・20代前半",from:18,to:24,hints:{work:["学校・専攻","就職先を選んだ理由","最初の仕事"],private:["一人暮らし・家族"],love:["恋愛・別れ"],hobby:["出会った本・人","続けていたこと"]}},
+  {label:"20代後半〜30代",from:25,to:39,hints:{work:["異動・転職","評価されたこと","壁にぶつかったこと"],private:["結婚・パートナー","出産・子育て","住まい"],love:["パートナーとの関係"],hobby:["学び直し","再開したこと"]}},
+  {label:"40代から今まで",from:40,to:120,hints:{work:["働き方を変えた理由","独立・挑戦"],private:["家族の変化","手放したもの"],love:["大切にしたい関係"],hobby:["今いちばん時間を使っていること"]}}
+];
+const LADDER=[
+  {k:"fact",step:"事実",label:"いつ、どこで、誰と？",sub:"何歳・何年・場所・一緒にいた人。分からないところは「？」のままで大丈夫です。"},
+  {k:"scene",step:"場面",label:"覚えている具体的なものは？",sub:"人の名前、言われた言葉、色、音、におい。固有名詞が出ると記憶がほどけます。"},
+  {k:"feel",step:"気持ち",label:"そのとき、どんな気持ちだった？",sub:"今の気持ちではなく、そのときの気持ちを。うれしい・くやしい・さみしい、一言でもいいです。"},
+  {k:"why",step:"理由",label:"なぜそうした？ なぜそうなった？",sub:"自分で選んだこと、選べなかったこと。きっかけになった人や出来事。"},
+  {k:"now",step:"今へ",label:"今の自分のどこにつながっている？",sub:"仕事のやり方、大事にしていること、苦手なこと、得意なこと。"},
+  {k:"reframe",step:"見直す",label:"今の自分から見ると、どう見える？",sub:"「相手の立場だったら？」「この経験がなかったら、今の私は？」「今なら誰に何を伝えたい？」から1つ選んで。無理に前向きにしなくて大丈夫です。"}
+];
+const AXIS_PRESETS=[
+  ["楽だった","苦しかった"],
+  ["ためになった","ためにならなかった"],
+  ["お金が儲かった","儲からなかった"],
+  ["たくさんの人と知り合えた","知り合えなかった"],
+  ["家から近かった","遠かった"],
+  ["体を使った（肉体系）","頭を使った（知能系）"],
+  ["楽しかった","つまらなかった"]
+];
+const OLD_AXES={xL:"苦しかった",xR:"楽しかった",yT:"ためになった",yB:"ためにならなかった"};
+function newMap(n){return{id:"m"+n,theme:"work",yT:"楽だった",yB:"苦しかった",xL:"ためにならなかった",xR:"ためになった",note:"",pos:{}};}
+
+let S=load();
+let view=(location.hash||"").replace("#","")||"ask";
+let curDeep=null;
+let confirmId=null;
+let curYear=null;
+
+function blank(){return{name:"",birth:"",events:[],years:{},lastYear:0,qa:{a:{},skip:{},priv:{},cur:{t:"birth",q:0}},maps:[newMap(1)],curMap:"m1",mapSeq:2,magic:{good:"",seek:"",s1:"",s2:"",s3:""},catch:{how:"",who:"",what:"",line:""},seq:1};}
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);return normalize(d);}}catch(e){}
+  return blank();
+}
+function normalize(d){
+  const b=blank();const o=Object.assign(b,d||{});
+  o.magic=Object.assign(blank().magic,o.magic||{});
+  o.catch=Object.assign(blank().catch,o.catch||{});
+  const ys={};if(o.years&&typeof o.years==="object")for(const[k,v]of Object.entries(o.years)){const a=Math.round(+k);if(a>=0&&a<=120&&typeof v==="string")ys[a]=v;}
+  o.years=ys;o.lastYear=Math.max(0,Math.min(120,Math.round(+o.lastYear||0)));
+  o.events=Array.isArray(o.events)?o.events.filter(e=>e&&typeof e==="object").map(e=>({id:e.id||("e"+Math.random().toString(36).slice(2,8)),age:(e.age===""||e.age==null||isNaN(+e.age))?"":+e.age,col:COL[e.col]?e.col:"private",text:String(e.text||""),score:(e.score===""||e.score==null||isNaN(+e.score))?null:+e.score,star:!!e.star,priv:!!e.priv,deep:e.deep&&typeof e.deep==="object"?e.deep:{}})):[];
+  o.seq=Math.max(+o.seq||1,o.events.length+1);
+  normalizeMaps(o,d||{});
+  const qa=(d&&d.qa&&typeof d.qa==="object")?d.qa:{};
+  const obj=v=>(v&&typeof v==="object"&&!Array.isArray(v))?v:{};
+  const qaA={};for(const[k,v]of Object.entries(obj(qa.a)))if(typeof v==="string"&&/^[a-z]+:\d+$/.test(k))qaA[k]=v;
+  const flags=v=>{const r={};for(const[k,x]of Object.entries(obj(v)))if(x)r[k]=true;return r;};
+  const c=obj(qa.cur);
+  o.qa={a:qaA,skip:flags(qa.skip),priv:flags(qa.priv),cur:{t:typeof c.t==="string"?c.t:"birth",q:Math.max(0,+c.q||0)}};
+  return o;
+}
+let saveTimer=null;
+function normalizeMaps(o,d){
+  const okX=v=>v==="L"||v==="C"||v==="R",okY=v=>v==="T"||v==="C"||v==="B";
+  if(Array.isArray(d.maps)&&d.maps.length){
+    o.maps=d.maps.filter(m=>m&&typeof m==="object").map((m,i)=>{
+      const b=newMap(i+1),r=Object.assign(b,m);
+      ["yT","yB","xL","xR","note"].forEach(k=>r[k]=String(r[k]==null?"":r[k]));
+      if(r.theme!=="all"&&!COL[r.theme])r.theme="all";
+      const pos={};if(m.pos&&typeof m.pos==="object")for(const[k,v]of Object.entries(m.pos)){if(v&&(okX(v.x)||okY(v.y)))pos[k]={x:okX(v.x)?v.x:"",y:okY(v.y)?v.y:""};}
+      r.pos=pos;return r;});
+    if(!o.maps.length)o.maps=[newMap(1)];
+  }else{
+    /* 旧版（軸1つ・出来事にmx/my）からの引き継ぎ */
+    const m=newMap(1);m.theme="all";
+    const ax=Object.assign({...OLD_AXES},d.axes||{});
+    const isOld=Object.keys(OLD_AXES).every(k=>ax[k]===OLD_AXES[k]);
+    if(!isOld){m.xL=ax.xL;m.xR=ax.xR;m.yT=ax.yT;m.yB=ax.yB;}
+    (Array.isArray(d.events)?d.events:[]).forEach(e=>{
+      if(!e||!e.id||!(e.mx||e.my))return;
+      if(isOld)m.pos[e.id]={x:e.my==="T"?"R":e.my==="B"?"L":"",y:e.mx==="R"?"T":e.mx==="L"?"B":""};
+      else m.pos[e.id]={x:okX(e.mx)?e.mx:"",y:okY(e.my)?e.my:""};
+    });
+    o.maps=[m];
+  }
+  o.maps.forEach((m,i)=>{if(!/^m\d+$/.test(m.id)||o.maps.findIndex(x=>x.id===m.id)!==i)m.id="m"+(100+i);});
+  o.mapSeq=Math.max(+o.mapSeq||1,...o.maps.map(m=>+m.id.slice(1)+1));
+  if(!o.maps.some(m=>m.id===o.curMap))o.curMap=o.maps[0].id;
+  delete o.axes;
+  o.events.forEach(e=>{delete e.mx;delete e.my;});
+}
+function curMapObj(){return S.maps.find(m=>m.id===S.curMap)||S.maps[0];}
+function mapTitle(m){return `${m.theme==="all"?"すべて":COL[m.theme]}｜${m.yT}↔${m.yB} × ${m.xL}↔${m.xR}`;}
+function mapPlaced(m,withPriv){
+  const ev=new Map(S.events.map(e=>[e.id,e]));
+  const k=e=>e.age===""?999:e.age;
+  return Object.entries(m.pos).map(([id,p])=>({e:ev.get(id),p})).filter(o=>o.e&&(o.p.x||o.p.y)&&(m.theme==="all"||o.e.col===m.theme)&&(withPriv||!o.e.priv)).sort((a,b)=>k(a.e)-k(b.e));
+}
+function posWord(m,p){
+  const y=p.y==="T"?m.yT:p.y==="B"?m.yB:p.y==="C"?"どちらとも言えない":"—";
+  const x=p.x==="L"?m.xL:p.x==="R"?m.xR:p.x==="C"?"どちらとも言えない":"—";
+  return `${y}・${x}`;
+}
+function mapLines(withPriv){
+  const out=[];
+  S.maps.forEach(m=>{
+    const pl=mapPlaced(m,withPriv);
+    if(!pl.length&&!(m.note||"").trim())return;
+    out.push("",`■ 題材：${m.theme==="all"?"すべて":COL[m.theme]}（縦：${m.yT}↔${m.yB}／横：${m.xL}↔${m.xR}）`);
+    pl.forEach(({e,p})=>out.push(`- ${e.age===""?"":e.age+"歳　"}${e.text}：${posWord(m,p)}`));
+    if((m.note||"").trim())out.push(`気づき：${m.note.trim().replace(/\n+/g," ")}`);
+  });
+  return out;
+}
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    try{localStorage.setItem(KEY,JSON.stringify(S));flashSaved("保存しました");}
+    catch(e){flashSaved("この画面では保存できません。控えを取ってください");}
+  },400);
+}
+function flashSaved(t){const el=document.getElementById("saved");el.textContent=t;clearTimeout(el._t);el._t=setTimeout(()=>{el.textContent="";},2200);}
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.hidden=false;clearTimeout(el._t);el._t=setTimeout(()=>{el.hidden=true;},2200);}
+
+function h(tag,attrs,...kids){
+  const el=document.createElement(tag);
+  if(attrs)for(const[k,v]of Object.entries(attrs)){
+    if(v==null||v===false)continue;
+    if(k==="class")el.className=v;
+    else if(k.startsWith("on"))el.addEventListener(k.slice(2),v);
+    else if(k==="text")el.textContent=v;
+    else if(k==="value")el.value=v;
+    else el.setAttribute(k,v===true?"":v);
+  }
+  for(const c of kids.flat()){if(c==null||c===false)continue;el.append(c.nodeType?c:document.createTextNode(String(c)));}
+  return el;
+}
+const birth=()=>{const b=+S.birth;return b>1900&&b<2100?b:null;};
+function yearOf(age){const b=birth();return(b!=null&&age!==""&&age!=null)?b+(+age):null;}
+function ageLabel(e){return e.age===""?"年齢？":e.age+"歳";}
+function sorted(list){return[...list].sort((a,b)=>(a.age===""?999:a.age)-(b.age===""?999:b.age));}
+function stageOf(age){if(age==="")return null;return STAGES.findIndex(s=>age>=s.from&&age<=s.to);}
+function currentAge(){const b=birth();return b?new Date().getFullYear()-b:null;}
+
+/* ---------- header ---------- */
+const fName=document.getElementById("f-name"),fBirth=document.getElementById("f-birth");
+fName.value=S.name;fBirth.value=S.birth;
+fName.addEventListener("input",()=>{S.name=fName.value;save();});
+fBirth.addEventListener("input",()=>{S.birth=fBirth.value;save();if(view!=="deep"&&view!=="oneword")render();});
+
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{go(t.dataset.step);}));
+window.addEventListener("hashchange",()=>{const v=location.hash.replace("#","");if(v&&v!==view){view=v;render();}});
+function go(v){view=v;try{history.replaceState(null,"","#"+v);}catch(e){}render();window.scrollTo({top:0});}
+
+function render(){
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",String(t.dataset.step===view)));
+  const m=document.getElementById("main");m.replaceChildren();
+  const f={ask:vAsk,years:vYears,write:vWrite,curve:vCurve,deep:vDeep,oneword:vOneword,summary:vSummary}[view]||vYears;
+  m.append(f());
+}
+
+function tip(title,items){return h("div",{class:"tip"},h("strong",{text:title}),h("ul",null,items.map(i=>h("li",{text:i}))));}
+
+/* ---------- 1 1年1ページ ---------- */
+function maxAge(){
+  const ca=currentAge();
+  return Math.max(ca!=null?ca:60,...S.events.filter(e=>e.age!=="").map(e=>e.age),...Object.keys(S.years).map(Number),1);
+}
+function yearFilled(a){return!!((S.years[a]||"").trim())||S.events.some(e=>e.age===a);}
+/* ---------- 1 質問に答える ---------- */
+const TOPICS=[
+  {k:"birth",label:"0〜2歳（生まれたころ）",age:0,col:"private",sub:"覚えていなくて大丈夫です。親や家族から聞いた話、生まれたときの家や時代のことを書きます。聞いたことがなければ「知らない」で十分です。",qs:[
+    ["いつ、どこで生まれましたか？ そのころ住んでいた町や家は？","病院や町の名前、家のつくり、近所の様子"],
+    ["家族は誰がいましたか？ 親はそのころ何をしていましたか？","親の仕事や年齢、きょうだい、一緒に住んでいた人"],
+    ["名前の由来や、生まれたときの話を聞いたことはありますか？","誰が名前をつけたか、生まれた日のこと、家族の反応"],
+    ["赤ちゃんのころの様子で、家族から言われてきたことは？","よく泣いた、おとなしかった、病気をした、など"],
+    ["そのころ、家族や世の中にはどんな出来事がありましたか？","引っ越し、家の仕事、時代の出来事"],
+    ["生まれたころの話を、今のあなたはどう受け止めていますか？",""]]},
+  {k:"young",label:"幼少期（小学校に入る前）",age:4,col:"private",sub:"",qs:[
+    ["いちばん古い記憶は何ですか？","場所、におい、音、誰がいたか"],
+    ["保育園・幼稚園、または家で、どう過ごしていましたか？","先生、友だち、毎日の流れ"],
+    ["夢中だった遊びや、好きだった絵本・テレビ・おもちゃは？",""],
+    ["よく一緒にいた人は誰ですか？","家族、近所の人、友だち、先生"],
+    ["ほめられたこと、しかられたことで覚えていることは？",""],
+    ["どんな子どもだったと思いますか？ 家族からは何と言われていましたか？",""]]},
+  {k:"low",label:"小学校低学年（1〜3年生）",age:7,col:"work",sub:"",qs:[
+    ["小学校はどんな学校でしたか？ 通学路で覚えていることは？",""],
+    ["好きだった教科、苦手だった教科は？",""],
+    ["習いごとや、放課後にしていたことは？",""],
+    ["仲のよかった友だちと、よくしていた遊びは？",""],
+    ["先生や家族に言われて、今も覚えている言葉は？",""],
+    ["うれしかったこと、くやしかったこと、さみしかったことは？",""]]},
+  {k:"high",label:"小学校高学年（4〜6年生）",age:10,col:"work",sub:"",qs:[
+    ["夢中になったもの、得意だったことは？",""],
+    ["塾・習いごと・クラブ・委員会で、覚えていることは？",""],
+    ["クラスや友だちの中で、どんな役まわりでしたか？","まとめ役、聞き役、目立たないほう、など"],
+    ["家の中で起きた出来事や、家での自分の役割は？",""],
+    ["やりたくてもできなかったこと、あきらめたことは？",""],
+    ["このころ、将来どんな人になりたいと思っていましたか？",""]]},
+  {k:"teen",label:"中学・高校",age:14,col:"work",sub:"",qs:[
+    ["部活や、打ち込んでいたことは？ そこでの役割は？",""],
+    ["好きだった教科、得意なこと・苦手なことは？",""],
+    ["友だちや、好きだった人のことで覚えていることは？",""],
+    ["家族との関係はどうでしたか？ ぶつかったこと、支えてもらったことは？",""],
+    ["人に教えたり、頼られたりしたことは？",""],
+    ["進路をどうやって決めましたか？ その理由は？",""],
+    ["いちばん心に残っている出来事と、そのときの気持ちは？",""]]},
+  {k:"college",label:"大学・短大・専門学校など",age:19,col:"work",sub:"進学しなかった人は、学校を出てから働き始めるまでのことを書いてください。",qs:[
+    ["どこで何を学びましたか？ その道を選んだ理由は？",""],
+    ["学校の外で打ち込んだことは？","サークル、アルバイト、趣味、旅"],
+    ["出会った人、本、考え方で、今も影響が残っているものは？",""],
+    ["一人暮らしや、家族との関係で変わったことは？",""],
+    ["仕事や進路を、どうやって選びましたか？",""],
+    ["このころの自分に、今なら何と声をかけますか？",""]]},
+  {k:"early",label:"社会人初期（働き始めて最初の数年）",age:22,col:"work",sub:"",qs:[
+    ["最初の仕事・職場はどこで、何をしていましたか？",""],
+    ["仕事で最初にぶつかった壁は？ どう越えましたか？",""],
+    ["教えてもらったこと、影響を受けた上司や先輩は？",""],
+    ["ほめられたこと、うまくいったことは？",""],
+    ["休みの日は、何をしていましたか？",""],
+    ["このころ、仕事や将来についてどう思っていましたか？",""]]},
+  {k:"mid",label:"社会人中堅以降（仕事の中盤から今まで）",age:35,col:"work",sub:"",qs:[
+    ["異動、転職、独立など、働き方が変わった出来事は？ その理由は？",""],
+    ["任された役割や、自分から手を挙げたことは？",""],
+    ["いちばん大変だった時期と、それをどう越えたかは？",""],
+    ["人から頼られること、よく相談されることは？",""],
+    ["仕事で大事にしてきたことは？",""],
+    ["手放したもの、やめたことと、その理由は？",""],
+    ["今の仕事や活動につながっていることは？",""]]},
+  {k:"love",label:"結婚・恋愛",age:"",col:"love",sub:"書きたいところだけで大丈夫です。上の「このトピックを非公開にする」で、提出用とAIに貼る文から外せます。",qs:[
+    ["心に残っている恋愛や、大切な人との出会いは？",""],
+    ["別れや、うまくいかなかった経験から学んだことは？",""],
+    ["結婚やパートナーとの暮らしを決めたきっかけは？","していない人は、そう選んできた理由でも"],
+    ["大切な人との関係で、変わってきたこと、続けていることは？",""],
+    ["人との関係で、いちばん大切にしていることは？",""]]},
+  {k:"kids",label:"子育て",age:"",col:"private",sub:"子育てに関わっていない人は、「このトピックは当てはまらない」で飛ばしてください。",qs:[
+    ["子どもが生まれたとき（家族になったとき）のことで、覚えていることは？",""],
+    ["子育てでいちばん大変だった時期は？",""],
+    ["子育ての中で、自分が始めたこと、やめたことは？",""],
+    ["子どもから教わったことは？",""],
+    ["子育てを通して、働き方や考え方はどう変わりましたか？",""],
+    ["子育てで大事にしてきたことは？",""]]},
+  {k:"hobby",label:"趣味・好きなこと",age:"",col:"hobby",sub:"",qs:[
+    ["子どものころから今まで、ずっと好きなことは？",""],
+    ["時間を忘れて夢中になれることは？",""],
+    ["習ったこと、続けてきたこと、一度やめてまた始めたことは？",""],
+    ["人からほめられる、頼まれる趣味や特技は？",""],
+    ["趣味を通して出会った人や、広がった世界は？",""],
+    ["これから始めたいこと、もう一度やりたいことは？",""]]},
+  {k:"friends",label:"交流関係",age:"",col:"love",sub:"",qs:[
+    ["人生の節目で出会った、大事な人は誰ですか？","名前を出したくなければ「〇〇さん」で"],
+    ["今もつながっている昔からの友だちは？ どんなつながりですか？",""],
+    ["仲間やグループの中で、自分はどんな役まわりですか？","地域、習いごと、職場、オンライン"],
+    ["人からよく相談されること、頼まれることは？",""],
+    ["離れた関係や、距離を置いた人から学んだことは？",""],
+    ["これから出会いたいのは、どんな人ですか？",""]]},
+  {k:"now",label:"今とこれから",age:"now",col:"work",sub:"ここで書いたことは、「6 自分の軸」でキャッチコピーを考えるときの材料になります。",qs:[
+    ["今、いちばん時間とエネルギーを使っていることは？",""],
+    ["振り返ると、何度も同じように選んできたことは？","自分のくせ、いつも戻ってくる場所"],
+    ["人生でずっと大事にしてきたものは？",""],
+    ["これまでの経験で、誰かの役に立てそうなことは？",""],
+    ["これからやってみたいこと、届けたい人は？",""],
+    ["今の自分に、ひとこと声をかけるとしたら？",""]]}
+];
+const TOPIC=Object.fromEntries(TOPICS.map(t=>[t.k,t]));
+function qaKey(t,i){return t+":"+i;}
+function qaAns(t,i){return(S.qa.a[qaKey(t,i)]||"").trim();}
+function qaCount(t){return TOPIC[t].qs.filter((_,i)=>qaAns(t,i)).length;}
+function topicAge(t){const a=TOPIC[t].age;if(a==="now"){const c=currentAge();return c==null?"":c;}return a;}
+function vAsk(){
+  const box=h("div",{class:"stack"});
+  box.append(h("div",{class:"intro"},tip("質問に答えるだけで、大まかな自分史ができます",[
+    "トピックを選んで、質問に1つずつ答えます。思い出せない質問は「次へ」で飛ばして大丈夫です。当てはまらないトピックは、まるごと飛ばせます。",
+    "話し言葉のまま、単語だけでも大丈夫です。分からないところは「？」のまま残してください。",
+    "大事な答えは「ハイライトにする」で、「3 ハイライト」に移せます。もっと細かく思い出したくなったら、「2 1年1ページ」で年ごとに書き足します。"
+  ])));
+  let cur=S.qa.cur;if(!TOPIC[cur.t]){cur=S.qa.cur={t:TOPICS[0].k,q:0};}
+  const T=TOPIC[cur.t];cur.q=Math.max(0,Math.min(T.qs.length-1,cur.q|0));
+  const go2=(t,q)=>{S.qa.cur={t,q};save();render();window.scrollTo({top:0});};
+
+  /* トピック一覧 */
+  box.append(h("div",{class:"sheet stack"},h("h2",{text:"トピック"}),h("div",{class:"topics"},
+    TOPICS.map(t=>{const n=qaCount(t.k),sk=!!S.qa.skip[t.k];
+      return h("button",{class:"topic",type:"button","aria-pressed":String(t.k===cur.t),onclick:()=>go2(t.k,0)},
+        h("span",{text:t.label}),
+        h("span",{class:"small "+(sk?"muted":n?"ok":"muted"),text:sk?"当てはまらない":`${n}／${t.qs.length}`}),
+        S.qa.priv[t.k]?h("span",{class:"small muted",text:"非公開"}):null);}))));
+
+  /* 今のトピック */
+  const sec=h("section",{class:"sheet stack"});
+  const ag=topicAge(T.k);
+  sec.append(h("div",{class:"stage-h"},h("h2",{text:T.label}),
+    ag!==""&&typeof T.age==="number"&&birth()?h("span",{class:"ages",text:`${birth()+T.age}年ごろ〜`}):null));
+  if(T.sub)sec.append(h("p",{class:"small muted",text:T.sub}));
+  const skipCb=h("input",{type:"checkbox",id:"qa-skip",checked:!!S.qa.skip[T.k]});
+  skipCb.addEventListener("change",()=>{if(skipCb.checked)S.qa.skip[T.k]=true;else delete S.qa.skip[T.k];save();render();});
+  const privCb=h("input",{type:"checkbox",id:"qa-priv",checked:!!S.qa.priv[T.k]});
+  privCb.addEventListener("change",()=>{if(privCb.checked)S.qa.priv[T.k]=true;else delete S.qa.priv[T.k];save();render();});
+  sec.append(h("div",{class:"row small"},
+    h("label",{class:"row",for:"qa-skip"},skipCb,"このトピックは当てはまらない"),
+    h("label",{class:"row",for:"qa-priv"},privCb,"このトピックを非公開にする")));
+  const ti=TOPICS.indexOf(T),nextT=TOPICS[ti+1];
+  if(S.qa.skip[T.k]){
+    sec.append(h("p",{class:"empty",text:"このトピックは飛ばしています。答えたくなったら、上のチェックを外してください。"}));
+    if(nextT)sec.append(h("div",{class:"row"},h("button",{class:"btn",type:"button",onclick:()=>go2(nextT.k,0)},"次のトピックへ →")));
+    box.append(sec);return box;
+  }
+  const qi=cur.q,[qt,qh]=T.qs[qi];
+  sec.append(h("p",{class:"small muted",text:`質問 ${qi+1}／${T.qs.length}`}));
+  sec.append(h("h3",{class:"qtext",text:qt}));
+  if(qh)sec.append(h("p",{class:"small muted",text:"思い出す手がかり："+qh}));
+  sec.append(voiceGuide());
+  const key=qaKey(T.k,qi);
+  const ta=h("textarea",{id:"qa-ans",class:"big",rows:"8",value:S.qa.a[key]||"","aria-label":qt});
+  ta.addEventListener("input",()=>{if(ta.value)S.qa.a[key]=ta.value;else delete S.qa.a[key];save();});
+  sec.append(ta);
+  const last=qi>=T.qs.length-1;
+  sec.append(h("div",{class:"row",style:"justify-content:space-between"},
+    h("button",{class:"btn ghost sm",type:"button",disabled:qi<=0,onclick:()=>go2(T.k,qi-1)},"← 前の質問"),
+    last?(nextT?h("button",{class:"btn",type:"button",onclick:()=>go2(nextT.k,0)},"次のトピックへ →"):h("span",{class:"small ok",text:"最後の質問です。おつかれさまでした"}))
+        :h("button",{class:"btn",type:"button",onclick:()=>go2(T.k,qi+1)},"次へ →")));
+
+  /* ハイライトにする */
+  const ageIn=h("input",{type:"number",min:"0",max:"120",value:ag,"aria-label":"何歳のことか",style:"width:72px"});
+  const colIn=h("select",{"aria-label":"ハイライトの分類"},COLS.map(c=>h("option",{value:c.k,selected:c.k===T.col},c.label)));
+  sec.append(h("div",{class:"hl-box stack"},
+    h("p",{class:"small muted",text:"答えの中の大事な文を選んで押すと、「3 ハイライト」に入ります。何も選ばずに押すと、答えの最初の1行が入ります。"}),
+    h("div",{class:"row"},h("span",{class:"small",text:"何歳のこと？"}),ageIn,colIn,
+      h("button",{class:"btn ghost sm",type:"button",onclick:()=>{
+        let s=ta.value.slice(ta.selectionStart,ta.selectionEnd);
+        if(!s.trim())s=(ta.value.split("\n").find(l=>l.trim())||"");
+        s=s.replace(/\s+/g," ").trim();
+        if(!s){toast("先に答えを書いてください");return;}
+        const a=ageIn.value===""||isNaN(+ageIn.value)?"":Math.max(0,Math.min(120,Math.round(+ageIn.value)));
+        S.events.push({id:"e"+(S.seq++),age:a,col:colIn.value,text:s.slice(0,140),score:null,star:false,priv:!!S.qa.priv[T.k],deep:{}});
+        save();toast(a===""?"ハイライトにしました（年齢はあとで入れられます）":"ハイライトにしました");
+      }},"ハイライトにする"))));
+
+  /* このトピックの答え一覧 */
+  const list=h("ol",{class:"qa-list"});
+  T.qs.forEach(([q],i)=>{const v=qaAns(T.k,i);
+    list.append(h("li",{class:i===qi?"on":null},h("button",{class:"linkish",type:"button",onclick:()=>go2(T.k,i)},q),
+      h("div",{class:"small "+(v?"":"muted"),text:v?v.replace(/\n+/g," ").slice(0,80)+(v.length>80?"…":""):"まだ答えていません"})));});
+  sec.append(h("details",{class:"tip"},h("summary",null,h("strong",{text:`このトピックの答えを一覧で見る（${qaCount(T.k)}／${T.qs.length}）`})),list));
+  box.append(sec);
+  return box;
+}
+function buildTopicDoc(){
+  const out=[`# ${S.name?S.name+"の":""}自分史（トピック別）`];
+  if(birth())out.push(`${birth()}年生まれ`);
+  const t=buildTopics(true,"##");
+  out.push(...(t.length?t:["","（「1 質問に答える」で答えると、ここに並びます）"]));
+  return out.join("\n").replace(/\n{3,}/g,"\n\n").trim();
+}
+function buildTopics(withPriv,heading){
+  const out=[];
+  TOPICS.forEach(t=>{
+    if(S.qa.skip[t.k])return;
+    if(S.qa.priv[t.k]&&!withPriv)return;
+    const qs=t.qs.map(([q],i)=>[q,qaAns(t.k,i)]).filter(x=>x[1]);
+    if(!qs.length)return;
+    out.push("",`${heading} ${t.label}${S.qa.priv[t.k]?"［非公開］":""}`);
+    qs.forEach(([q,a])=>out.push("",`Q. ${q}`,a.split("\n").map(l=>l.trim()).filter(Boolean).join("\n")));
+  });
+  return out;
+}
+
+function vYears(){
+  const box=h("div",{class:"stack"});
+  box.append(h("div",{class:"intro"},tip("1年1ページの書き方",[
+    "決まったやり方はありません。1ページを1年として、その年にあったことを思い出せる限り書き写していきます。",
+    "文章にしなくて大丈夫です。単語、箇条書き、話し言葉のままで書いてください。「こんなことは書かなくていいかも」と思うことほど書きます。",
+    "大事だと思った行は、選んで「選んだ文をハイライトにする」を押します。提出用の箇条書きは、このハイライトから作ります。",
+    "思い出せない年は飛ばして大丈夫です。分からないところは「？」のまま残し、推測で埋めないでください。"
+  ])));
+  box.append(importBox());
+  const max=maxAge();
+  if(curYear==null)curYear=S.lastYear||0;
+  curYear=Math.max(0,Math.min(curYear,max));
+  const a=curYear,y=yearOf(a),si=stageOf(a),st=STAGES[si>=0?si:0];
+  const setYear=n=>{curYear=Math.max(0,Math.min(max,n));S.lastYear=curYear;save();render();window.scrollTo({top:0});};
+  const filled=[];for(let i=0;i<=max;i++)if(yearFilled(i))filled.push(i);
+  const jump=h("select",{"aria-label":"年を選ぶ"},Array.from({length:max+1},(_,i)=>h("option",{value:String(i),selected:i===a},`${i}歳${yearOf(i)?"（"+yearOf(i)+"年）":""}${yearFilled(i)?" ✓":""}`)));
+  jump.addEventListener("change",()=>setYear(+jump.value));
+  box.append(h("div",{class:"sheet row",style:"justify-content:space-between"},
+    h("div",{class:"row"},
+      h("button",{class:"btn ghost sm",type:"button",disabled:a<=0,onclick:()=>setYear(a-1)},"← 前の年"),
+      jump,
+      h("button",{class:"btn ghost sm",type:"button",disabled:a>=max,onclick:()=>setYear(a+1)},"次の年 →")),
+    h("span",{class:"small muted",text:`書いた年：${filled.length}／${max+1}ページ`+(birth()?"":"（生まれ年を入れると西暦が出ます）")})
+  ));
+  const page=h("section",{class:"sheet stack"});
+  page.append(h("div",{class:"stage-h"},h("h2",{text:`${a}歳${y?"（"+y+"年）":""}`}),h("span",{class:"ages",text:st.label})));
+  const ta=h("textarea",{id:"yr-"+a,class:"big",rows:"16",value:S.years[a]||"",placeholder:"この年にあったこと、覚えていること、そのときの気持ちを、思い出せる限り。話して入れても、書いても大丈夫です。"});
+  ta.addEventListener("input",()=>{S.years[a]=ta.value;save();});
+  const hints=h("div",{class:"hints"});
+  COLS.forEach(c=>{
+    hints.append(h("div",{class:"hint-col"},h("b",{class:"t-"+c.k,text:c.label}),
+      (st.hints[c.k]||[]).map(t=>h("button",{class:"chip",type:"button",onclick:()=>{
+        const ins=(ta.value&&!ta.value.endsWith("\n")?"\n":"")+`【${c.label}】${t}：`;
+        ta.value+=ins;S.years[a]=ta.value;save();ta.focus();ta.selectionStart=ta.selectionEnd=ta.value.length;
+      }},t))));
+  });
+  page.append(h("p",{class:"small muted",text:"点線のヒントを押すと、見出しが入ります。"}),hints,voiceGuide(),ta);
+  const colIn=h("select",{"aria-label":"ハイライトの分類"},COLS.map(c=>h("option",{value:c.k},c.label)));
+  const txtIn=h("input",{type:"text","aria-label":"ハイライトを書く",placeholder:"または、ハイライトを1行で書く"});
+  const addHl=t=>{
+    t=(t||"").replace(/^【[^】]*】/,"").replace(/\s+/g," ").trim();
+    if(!t)return false;
+    S.events.push({id:"e"+(S.seq++),age:a,col:colIn.value,text:t.slice(0,140),score:null,star:false,priv:false,deep:{}});
+    save();render();toast("ハイライトにしました");return true;
+  };
+  page.append(h("div",{class:"row"},colIn,
+    h("button",{class:"btn",type:"button",onclick:()=>{
+      const s=ta.value.slice(ta.selectionStart,ta.selectionEnd);
+      if(!s.trim()){toast("ハイライトにしたい文を選んでから押してください");return;}
+      addHl(s);
+    }},"選んだ文をハイライトにする")));
+  txtIn.addEventListener("keydown",ev=>{if(ev.key==="Enter"&&!ev.isComposing){ev.preventDefault();if(!addHl(txtIn.value))txtIn.focus();}});
+  page.append(h("div",{class:"add",style:"grid-template-columns:minmax(0,1fr) auto"},txtIn,h("button",{class:"btn ghost",type:"button",onclick:()=>{if(!addHl(txtIn.value))txtIn.focus();}},"追加")));
+  const hl=sorted(S.events.filter(e=>e.age===a));
+  const list=h("div");
+  if(hl.length)hl.forEach(e=>list.append(evRow(e)));else list.append(h("p",{class:"empty",text:"この年のハイライトはまだありません"}));
+  page.append(h("h3",{text:"この年のハイライト"}),list);
+  box.append(page);
+  if(!S.events.length&&!filled.length){
+    box.append(h("div",{class:"sheet row",style:"justify-content:space-between"},
+      h("p",{class:"muted",text:"使い方を先に見たいときは、見本を入れてみてください。"}),
+      h("button",{class:"btn ghost sm",onclick:()=>{loadSample();}},"見本を入れて使い方を見る")));
+  }
+  return box;
+}
+
+/* ---------- 手書きノートの取り込み ---------- */
+const SCAN_PROMPT=`添付した写真は、私が手書きで書いた自分史のノートです。次のルールで、文字に書き起こしてください。
+・書いてあるとおりに書き写す。言葉を足したり、整えたり、要約したりしない
+・読めない字は［？］にする
+・年齢や年ごとに、見出しを行の頭に「■ 14歳」または「■ 1985年」の形で付ける。ノートに書いてある年齢・年に合わせる
+・年齢も年も書いていない部分は、「■ 年がわからない」の見出しの下にまとめる
+・写真が何枚かあるときは、写真の順番どおりに続けて書く
+・見出しと書き起こした文だけを出す。説明やまとめは付けない`;
+let impOpen=false,impText="",impChunks=null;
+function zen2han(s){return s.replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0));}
+function parseImport(src){
+  const chunks=[];let cur=null;
+  const push=(label,age)=>{cur={label,age,lines:[]};chunks.push(cur);};
+  src.replace(/\r/g,"").split("\n").forEach(raw=>{
+    const line=zen2han(raw).trim();
+    const dated=/\d{1,4}\s*(歳|才|年)/;
+    const hm=line.match(/^(?:■|#{1,4})\s*(.*)$/),bm=line.match(/^【([^】]*)】$/);
+    const head=hm?hm[1]:(bm&&dated.test(bm[1]))?bm[1]:(/^\d{1,4}\s*(歳|才|年)/.test(line)&&line.length<=16)?line:null;
+    if(head!=null){
+      const am=head.match(/(\d{1,3})\s*(?:歳|才)/),ym=head.match(/((?:19|20)\d\d)\s*年?/);
+      let age=null;
+      if(am)age=+am[1];else if(ym&&birth())age=+ym[1]-birth();
+      if(age!=null&&(age<0||age>120))age=null;
+      push(head.replace(/^[■#\s]+/,"")||"見出しなし",age);return;
+    }
+    if(!cur){if(!line)return;push("見出しの前の部分",null);}
+    cur.lines.push(raw.replace(/\s+$/,""));
+  });
+  return chunks.map(c=>({label:c.label,age:c.age,text:c.lines.join("\n").replace(/^\n+|\n+$/g,"")})).filter(c=>c.text.trim());
+}
+function importBox(){
+  const d=h("details",{class:"tip imp",open:impOpen});
+  d.addEventListener("toggle",()=>{impOpen=d.open;});
+  d.append(h("summary",null,h("strong",{text:"手書きのノートから取り込む"})));
+  d.append(h("ol",{class:"imp-steps"},
+    h("li",{text:"ノートのページを、スマホで1ページずつ撮ります。"}),
+    h("li",{text:"下の「読み取り用の文をコピー」を押して、その文と写真を、ふだん使っているAI（ChatGPTなど）に送ります。"}),
+    h("li",{text:"AIが書き起こした文をコピーして、下の欄に貼り、「中身を確かめる」を押します。"}),
+    h("li",{text:"どの年に入るかを確かめてから「取り込む」を押します。"}),
+    h("li",{text:"最後に、いちばん下の「ノートに書いていないことだけ、AIに聞いてもらう」で、足りないところを埋めます。"})));
+  d.append(h("p",{class:"small muted",text:"写真はこのアプリには送られません。送り先は、あなたが使っているAIだけです。AIの読み間違いがあるので、取り込んだあとに読み返して直してください。"}));
+  const pr=h("textarea",{rows:"6",readonly:true,"aria-label":"AIに送る読み取り用の文",value:SCAN_PROMPT});
+  d.append(h("div",{class:"row"},copyBtn(()=>SCAN_PROMPT,pr,"読み取り用の文をコピー")),pr);
+  const src=h("textarea",{id:"imp-src",rows:"8","aria-label":"AIが書き起こした文を貼る",placeholder:"AIが書き起こした文をここに貼ります",value:impText});
+  src.addEventListener("input",()=>{impText=src.value;});
+  d.append(h("h3",{text:"AIが書き起こした文"}),src,h("div",{class:"row"},
+    h("button",{class:"btn",type:"button",onclick:()=>{
+      impText=src.value;impChunks=parseImport(impText);
+      if(!impChunks.length)toast("取り込める文が見つかりませんでした");
+      impOpen=true;render();
+    }},"中身を確かめる"),
+    impText||impChunks?h("button",{class:"btn ghost sm",type:"button",onclick:()=>{impText="";impChunks=null;impOpen=true;render();}},"欄を空にする"):null));
+  if(impChunks&&impChunks.length){
+    const list=h("div",{class:"imp-list stack"});
+    if(!birth()&&impChunks.some(c=>/(19|20)\d\d/.test(c.label)&&c.age==null))
+      list.append(h("p",{class:"small warn-t",text:"「〇〇年」の見出しを年齢に直すには、上の「生まれた年」を入れてください。"}));
+    impChunks.forEach(c=>{
+      const ageIn=h("input",{type:"number",min:"0",max:"120",inputmode:"numeric","aria-label":c.label+"の年齢",value:c.age==null?"":String(c.age)});
+      ageIn.addEventListener("input",()=>{const v=ageIn.value.trim();c.age=v===""?null:Math.max(0,Math.min(120,Math.round(+v)));});
+      const has=c.age!=null&&(S.years[c.age]||"").trim();
+      list.append(h("div",{class:"imp-item"},
+        h("div",{class:"row"},h("b",{text:"■ "+c.label}),h("span",{class:"small muted",text:"→"}),ageIn,h("span",{class:"small",text:"歳のページへ"}),
+          c.age==null?h("span",{class:"small warn-t",text:"年齢を入れてください"}):has?h("span",{class:"small muted",text:"（すでに書いた文の後ろに足します）"}):null),
+        h("pre",{class:"imp-pre",text:c.text})));
+    });
+    list.append(h("div",{class:"row"},h("button",{class:"btn",type:"button",onclick:()=>{
+      const ok=impChunks.filter(c=>c.age!=null),rest=impChunks.filter(c=>c.age==null);
+      if(!ok.length){toast("年齢が入っている項目がありません");return;}
+      ok.forEach(c=>{const old=(S.years[c.age]||"").replace(/\s+$/,"");S.years[c.age]=old?old+"\n\n"+c.text:c.text;});
+      const first=Math.min(...ok.map(c=>c.age));
+      impChunks=rest.length?rest:null;if(!rest.length)impText="";
+      curYear=first;S.lastYear=first;save();impOpen=!!rest.length;render();
+      toast(`${ok.length}件を取り込みました`+(rest.length?`。年齢のない${rest.length}件が残っています`:""));
+    }},"取り込む"),h("span",{class:"small muted",text:"年齢が空の項目は取り込まずに残します。"})));
+    d.append(h("h3",{text:"取り込む前の確認"}),list);
+  }
+  d.append(gapBox());
+  return d;
+}
+
+/* ---------- ノートに書いていないことだけAIに聞いてもらう ---------- */
+let gapText="",gapItems=null;
+function gapPrompt(){
+  const b=birth(),out=[];
+  out.push("あなたは、自分史づくりの聞き手です。下に「私が手書きのノートに書いたこと」と「自分史ノートアプリの質問の一覧」があります。");
+  out.push("","【お願い】");
+  out.push("・質問の一覧のうち、ノートにもう答えが書いてある質問は聞かないでください。");
+  out.push("・ノートに書いていない質問だけを、1回に1問ずつ、やさしく聞いてください。番号どおりの順でなくて大丈夫です。");
+  out.push("・ノートに少しだけ書いてある質問は、「ノートには〇〇と書いてありますが」と添えて、足りないところだけ聞いてください。");
+  out.push("・私が「覚えていない」「答えたくない」「パス」と言ったら、その質問は飛ばして次へ進んでください。");
+  out.push("・私の答えを、言い換えたり、足したり、整えたりしないでください。");
+  out.push("・私が「おわり」と言うか、聞く質問がなくなったら、最後に私の答えだけを、次の形でまとめて出してください。説明やまとめは付けないでください。");
+  out.push("","［2-3］質問文","答え：私が答えたとおりの文","","（［ ］の中は、下の一覧の番号をそのまま使ってください。飛ばした質問は書かないでください。）");
+  out.push("","【私のこと】",`呼び名：${S.name||"（なし）"}`,b?`生まれ年：${b}年`:"生まれ年：（未入力）");
+  out.push("","【私が手書きのノートに書いたこと】");
+  const ys=Object.keys(S.years).map(Number).filter(a=>(S.years[a]||"").trim()).sort((x,y)=>x-y);
+  if(ys.length)ys.forEach(a=>{const y=yearOf(a);out.push("",`■ ${a}歳${y?"（"+y+"年）":""}`,S.years[a].trim());});else out.push("（まだありません）");
+  const ev=sorted(S.events.filter(e=>e.text));
+  if(ev.length){out.push("","【ハイライト（大事な出来事）】");ev.forEach(e=>out.push(`・${e.age!==""?e.age+"歳　":""}${e.text}`));}
+  out.push("","【自分史ノートアプリの質問の一覧】");
+  let n=0;
+  TOPICS.forEach((t,ti)=>{
+    if(S.qa.skip[t.k])return;
+    const open=t.qs.map((q,qi)=>[q,qi]).filter(([,qi])=>!qaAns(t.k,qi));
+    if(!open.length)return;
+    out.push("",`■ ${t.label}`);
+    open.forEach(([q,qi])=>{out.push(`［${ti+1}-${qi+1}］${q[0]}`);n++;});
+  });
+  if(!n)out.push("（まだ答えていない質問はありません）");
+  return out.join("\n");
+}
+function parseGap(src){
+  const items=[];let cur=null;
+  src.replace(/\r/g,"").split("\n").forEach(raw=>{
+    const line=zen2han(raw).trim();
+    const m=line.match(/^[［\[](\d{1,2})\s*[-－ー‐]\s*(\d{1,2})[］\]]\s*(.*)$/);
+    if(m){
+      const t=TOPICS[+m[1]-1],qi=+m[2]-1;
+      cur=t&&t.qs[qi]?{t:t.k,qi,label:t.label,q:t.qs[qi][0],lines:[]}:null;
+      if(cur)items.push(cur);return;
+    }
+    if(!cur)return;
+    cur.lines.push(raw.replace(/^\s*(答え|A)\s*[：:]\s*/,"").replace(/\s+$/,""));
+  });
+  return items.map(c=>({t:c.t,qi:c.qi,label:c.label,q:c.q,text:c.lines.join("\n").replace(/^\n+|\n+$/g,"")})).filter(c=>c.text.trim());
+}
+function gapBox(){
+  const box=h("div",{class:"gap stack"});
+  box.append(h("h3",{text:"ノートに書いていないことだけ、AIに聞いてもらう"}));
+  box.append(h("p",{class:"small",text:"取り込んだあとに使います。AIがノートと「1 質問に答える」の質問を見比べて、ノートに書いていない質問だけを1問ずつ聞いてくれます。答え終わったら、AIのまとめを下に貼ると「1 質問に答える」の答えに入ります。"}));
+  const gp=h("textarea",{rows:"6",readonly:true,"aria-label":"AIに聞いてもらう文",value:gapPrompt()});
+  box.append(h("div",{class:"row"},copyBtn(()=>gp.value=gapPrompt(),gp,"聞いてもらう文をコピー")),
+    h("details",null,h("summary",{class:"small",text:"コピーできないときは、ここを開いて文を選んでください"}),gp));
+  const src=h("textarea",{id:"gap-src",rows:"6","aria-label":"AIがまとめた答えを貼る",placeholder:"AIが最後にまとめた答えを、ここに貼ります",value:gapText});
+  src.addEventListener("input",()=>{gapText=src.value;});
+  box.append(src,h("div",{class:"row"},
+    h("button",{class:"btn",type:"button",onclick:()=>{
+      gapText=src.value;gapItems=parseGap(gapText);
+      if(!gapItems.length)toast("［2-3］のような番号のついた答えが見つかりませんでした");
+      impOpen=true;render();
+    }},"答えを確かめる"),
+    gapText||gapItems?h("button",{class:"btn ghost sm",type:"button",onclick:()=>{gapText="";gapItems=null;impOpen=true;render();}},"欄を空にする"):null));
+  if(gapItems&&gapItems.length){
+    const list=h("div",{class:"imp-list stack"});
+    gapItems.forEach(c=>{
+      const has=qaAns(c.t,c.qi);
+      list.append(h("div",{class:"imp-item"},
+        h("div",null,h("b",{text:c.label}),h("span",{class:"small muted",text:has?"（すでにある答えの後ろに足します）":""})),
+        h("div",{class:"small",text:"質問："+c.q}),
+        h("pre",{class:"imp-pre",text:c.text})));
+    });
+    list.append(h("div",{class:"row"},h("button",{class:"btn",type:"button",onclick:()=>{
+      gapItems.forEach(c=>{const k=qaKey(c.t,c.qi),old=(S.qa.a[k]||"").replace(/\s+$/,"");S.qa.a[k]=old?old+"\n"+c.text:c.text;});
+      const n=gapItems.length;gapItems=null;gapText="";save();impOpen=true;render();
+      toast(`${n}問の答えを「1 質問に答える」に入れました`);
+    }},"「1 質問に答える」に入れる"),h("span",{class:"small muted",text:`${gapItems.length}問`})));
+    box.append(h("h3",{text:"入れる前の確認"}),list);
+  }
+  return box;
+}
+
+function voiceGuide(){
+  const ua=navigator.userAgent||"";
+  const dev=/iPhone|iPad|iPod/.test(ua)?"ios":/Android/.test(ua)?"android":/Mac/.test(ua)?"mac":/Windows/.test(ua)?"win":"other";
+  const ways={
+    ios:"キーボード右下のマイクを押して話します。終わったらキーボードのボタンを押します。",
+    android:"キーボードのマイクを押して話します（Gboardなど）。",
+    mac:"fnキー（地球儀キー）を2回押して話します。",
+    win:"Windowsキー＋Hを押して話します。",
+    other:"スマホならキーボードのマイク、Macはfnキーを2回、WindowsはWindowsキー＋Hで話せます。"
+  };
+  return h("details",{class:"tip voice",open:S.voiceOpen!==false?true:null,ontoggle:function(){S.voiceOpen=this.open;save();}},
+    h("summary",null,h("strong",{text:"話して書けます（音声入力）"})),
+    h("p",{style:"margin-top:6px",text:"下の欄を押して、"+ways[dev]}),
+    h("ul",null,
+      h("li",{text:"話し言葉のまま、言い直しや「えーと」も消さずに残して大丈夫です。気持ちがそのまま残ります。"}),
+      h("li",{text:"整えるのはあとで。大事なところだけ「ハイライトにする」で1行にします。"}),
+      h("li",{text:"人の名前や地名は聞き間違えやすいので、あとで見直してください。"}),
+      dev!=="ios"&&dev!=="android"?h("li",{text:"スマホでは、キーボードのマイクを押すだけで話せます。"}):null)
+  );
+}
+
+/* ---------- 2 ハイライト ---------- */
+function vWrite(){
+  const box=h("div",{class:"stack"});
+  box.append(h("div",{class:"intro"},
+    tip("ハイライトの選び方",[
+      "1年1ページから選んだハイライトが、時代ごとに並びます。ここから直接書き足すこともできます。",
+      "提出用の箇条書きは、このハイライトから作ります。A4で4ページ以内が目安です。「7 まとめる」で今のページ数が分かります。",
+      "人生の曲がり角になった出来事、今の自分につながっている出来事を選ぶと、深掘りしやすくなります。",
+      "人に見せたくない出来事には「非公開」を付けておくと、提出用から外れます。"
+    ])
+  ));
+  if(!S.events.length){
+    box.append(h("div",{class:"sheet row",style:"justify-content:space-between"},
+      h("p",{class:"muted",text:"まだハイライトがありません。「2 1年1ページ」で選ぶか、下の点線のヒントから書けます。"}),
+      h("button",{class:"btn ghost sm",onclick:()=>{loadSample();}},"見本を入れて使い方を見る")
+    ));
+  }
+  STAGES.forEach((st,i)=>box.append(stageCard(st,i)));
+  const noAge=S.events.filter(e=>e.age==="");
+  if(noAge.length){
+    const c=h("div",{class:"stage"},h("div",{class:"stage-h"},h("h3",{text:"年齢が分からないもの"})));
+    const list=h("div");noAge.forEach(e=>list.append(evRow(e)));c.append(list);box.append(c);
+  }
+  return box;
+}
+function stageCard(st,i){
+  const b=birth();
+  const ages=st.to>100?`${st.from}歳〜`:`${st.from}〜${st.to}歳`;
+  const yrs=b?(st.to>100?`（${b+st.from}年〜）`:`（${b+st.from}〜${b+st.to}年）`):"";
+  const evs=sorted(S.events.filter(e=>stageOf(e.age)===i));
+  const card=h("section",{class:"stage"});
+  card.append(h("div",{class:"stage-h"},h("h3",{text:st.label}),h("span",{class:"ages",text:ages+yrs})));
+  const hints=h("div",{class:"hints"});
+  const ageIn=h("input",{type:"number",min:"0",max:"120","aria-label":st.label+"の年齢",placeholder:"歳",value:String(st.from)});
+  const colIn=h("select",{"aria-label":"分類"},COLS.map(c=>h("option",{value:c.k},c.label)));
+  const txtIn=h("input",{type:"text","aria-label":st.label+"の出来事"});
+  COLS.forEach(c=>{
+    hints.append(h("div",{class:"hint-col"},h("b",{class:"t-"+c.k,text:c.label}),
+      (st.hints[c.k]||[]).map(t=>h("button",{class:"chip",type:"button",onclick:()=>{colIn.value=c.k;txtIn.value=t+"：";txtIn.focus();}},t))));
+  });
+  card.append(hints);
+  const add=()=>{
+    const t=txtIn.value.trim();if(!t){txtIn.focus();return;}
+    const a=ageIn.value===""?"":Math.max(0,Math.min(120,Math.round(+ageIn.value)));
+    S.events.push({id:"e"+(S.seq++),age:a,col:colIn.value,text:t,score:null,star:false,priv:false,deep:{}});
+    save();render();
+    requestAnimationFrame(()=>{const again=document.querySelectorAll(".stage")[i];if(again){const inp=again.querySelector(".add input[type=text]");if(inp)inp.focus();}});
+  };
+  txtIn.addEventListener("keydown",ev=>{if(ev.key==="Enter"&&!ev.isComposing){ev.preventDefault();add();}});
+  const list=h("div");
+  if(evs.length)evs.forEach(e=>list.append(evRow(e)));else list.append(h("p",{class:"empty",text:"まだありません"}));
+  card.append(list);
+  card.append(h("div",{class:"add"},ageIn,colIn,txtIn,h("button",{class:"btn",type:"button",onclick:add},"書く")));
+  return card;
+}
+function evRow(e){
+  const y=yearOf(e.age);
+  const txt=h("input",{type:"text",value:e.text,"aria-label":"出来事"});
+  txt.addEventListener("input",()=>{e.text=txt.value;save();});
+  const age=h("input",{type:"number",min:"0",max:"120",value:e.age===""?"":String(e.age),"aria-label":"年齢",style:"width:64px"});
+  age.addEventListener("change",()=>{e.age=age.value===""?"":Math.max(0,Math.min(120,Math.round(+age.value)));save();render();});
+  const col=h("select",{"aria-label":"分類",class:"t-"+e.col},COLS.map(c=>h("option",{value:c.k,selected:c.k===e.col},c.label)));
+  col.addEventListener("change",()=>{e.col=col.value;save();render();});
+  const star=h("button",{class:"icon-btn",type:"button","aria-pressed":String(e.star),title:"深掘りしたい出来事に印を付けます",onclick:()=>{e.star=!e.star;save();render();}},"★ 気になる");
+  const lock=h("button",{class:"icon-btn lock",type:"button","aria-pressed":String(e.priv),title:"まとめの共有用から外します",onclick:()=>{e.priv=!e.priv;save();render();}},e.priv?"非公開":"公開");
+  const del=confirmId===e.id
+    ?h("span",{class:"confirm"},"消しますか？",h("button",{class:"btn warn sm",type:"button",onclick:()=>{S.events=S.events.filter(x=>x!==e);confirmId=null;save();render();}},"消す"),h("button",{class:"btn ghost sm",type:"button",onclick:()=>{confirmId=null;render();}},"やめる"))
+    :h("button",{class:"icon-btn",type:"button",onclick:()=>{confirmId=e.id;render();}},"削除");
+  return h("div",{class:"ev"},
+    h("div",{class:"age"},age,y?h("span",{class:"yr",text:y+"年"}):null),
+    col,
+    h("div",{class:"txt"},txt),
+    h("div",{class:"acts"},star,lock,del));
+}
+
+/* ---------- 2 気持ちの波 ---------- */
+function vCurve(){
+  const box=h("div",{class:"stack"});
+  box.append(h("div",{class:"intro"},tip("気持ちの波の見方",[
+    "書き出した出来事に、そのときの充実度を＋5〜−5で付けます。全部に付けなくて大丈夫です。",
+    "線が大きく下がったところ、上がり始めたところが「曲がり角」です。深掘りする候補になります。",
+    "下がった時期は、悪い時期とは限りません。あとから見ると、そこで何かを選んでいることが多いです。"
+  ])));
+  box.append(h("div",{class:"sheet chart-box"},chartSVG()));
+  const list=h("div",{class:"sheet score-list"});
+  const evs=sorted(S.events.filter(e=>e.age!==""));
+  if(!evs.length)list.append(h("p",{class:"empty",text:"「2 1年1ページ」でハイライトを選ぶと、年齢つきでここに並びます。"}));
+  evs.forEach(e=>{
+    const sel=h("select",{"aria-label":e.text+"の充実度"},
+      h("option",{value:""},"付けない"),
+      [5,4,3,2,1,0,-1,-2,-3,-4,-5].map(v=>h("option",{value:String(v),selected:e.score===v},(v>0?"+":"")+v)));
+    sel.addEventListener("change",()=>{e.score=sel.value===""?null:+sel.value;save();render();});
+    const y=yearOf(e.age);
+    list.append(h("div",{class:"ev"},h("div",{class:"age"},ageLabel(e),y?h("span",{class:"yr",text:y+"年"}):null),
+      h("div",{class:"txt"},h("span",{class:"tag t-"+e.col,text:COL[e.col]})," ",e.text),sel));
+  });
+  box.append(list);
+  return box;
+}
+function chartSVG(){
+  const NS="http://www.w3.org/2000/svg";
+  const W=1000,H=420,L=56,R=24,T=28,B=46;
+  const pts=sorted(S.events.filter(e=>e.age!==""&&e.score!=null));
+  const maxAge=Math.max(currentAge()||0,...S.events.filter(e=>e.age!=="").map(e=>e.age),40);
+  const top=Math.ceil(maxAge/10)*10;
+  const x=a=>L+(a/top)*(W-L-R), y=s=>T+((5-s)/10)*(H-T-B);
+  const svg=document.createElementNS(NS,"svg");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.setAttribute("role","img");
+  svg.setAttribute("aria-label","年齢ごとの充実度の線グラフ");
+  const el=(n,a,t)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;svg.append(e);return e;};
+  for(let s=-5;s<=5;s+=5){el("line",{x1:L,x2:W-R,y1:y(s),y2:y(s),stroke:s===0?"var(--muted)":"var(--grid)","stroke-width":s===0?1.5:1});}
+  el("text",{x:L-10,y:y(5)+5,"text-anchor":"end","font-size":15,fill:"var(--muted)"},"+5");
+  el("text",{x:L-10,y:y(0)+5,"text-anchor":"end","font-size":15,fill:"var(--muted)"},"0");
+  el("text",{x:L-10,y:y(-5)+5,"text-anchor":"end","font-size":15,fill:"var(--muted)"},"−5");
+  for(let a=0;a<=top;a+=10){
+    el("line",{x1:x(a),x2:x(a),y1:T,y2:H-B,stroke:"var(--grid)","stroke-width":1});
+    el("text",{x:x(a),y:H-B+24,"text-anchor":"middle","font-size":15,fill:"var(--muted)"},a===0?"0歳":a+"代");
+  }
+  el("text",{x:14,y:T+4,"font-size":14,fill:"var(--muted)"},"充実度");
+  if(pts.length<2){
+    el("text",{x:W/2,y:H/2-8,"text-anchor":"middle","font-size":18,fill:"var(--muted)"},pts.length?"あと1つ以上、充実度を付けると線になります":"下の一覧で充実度を付けると、ここに線が引かれます");
+    pts.forEach(p=>el("circle",{cx:x(p.age),cy:y(p.score),r:6,fill:"var(--pen)"}));
+    return svg;
+  }
+  const P=pts.map(p=>[x(p.age),y(p.score)]);
+  let d=`M${P[0][0]},${P[0][1]}`;
+  for(let i=0;i<P.length-1;i++){
+    const p0=P[i-1]||P[i],p1=P[i],p2=P[i+1],p3=P[i+2]||p2;
+    const c1=[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6],c2=[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];
+    c1[1]=Math.max(T,Math.min(H-B,c1[1]));c2[1]=Math.max(T,Math.min(H-B,c2[1]));
+    d+=` C${c1[0]},${c1[1]} ${c2[0]},${c2[1]} ${p2[0]},${p2[1]}`;
+  }
+  el("path",{d,fill:"none",stroke:"var(--pen)","stroke-width":3,"stroke-linecap":"round"});
+  const turns=new Set(turningPoints().map(e=>e.id));
+  pts.forEach((p,i)=>{
+    const cx=x(p.age),cy=y(p.score),isT=turns.has(p.id);
+    el("circle",{cx,cy,r:isT?8:5.5,fill:isT?"var(--marker)":"var(--pen)",stroke:"var(--pen)","stroke-width":isT?2.5:0});
+    const label=p.text.length>11?p.text.slice(0,11)+"…":p.text;
+    const above=p.score>=0?(i%2===0):(i%2!==0);
+    const ty=above?cy-14:cy+24;
+    const tx=Math.max(L+40,Math.min(W-R-40,cx));
+    el("text",{x:tx,y:Math.max(T+12,Math.min(H-B-6,ty)),"text-anchor":"middle","font-size":14,fill:"var(--ink)"},label);
+  });
+  return svg;
+}
+function turningPoints(){
+  const pts=sorted(S.events.filter(e=>e.age!==""&&e.score!=null));
+  const out=[];
+  pts.forEach((p,i)=>{
+    const prev=pts[i-1];
+    if(Math.abs(p.score)>=4||(prev&&(Math.sign(prev.score)!==Math.sign(p.score)||Math.abs(prev.score-p.score)>=4)))out.push(p);
+  });
+  return out;
+}
+
+/* ---------- 3 深掘り ---------- */
+function vDeep(){
+  const box=h("div",{class:"stack"});
+  box.append(h("div",{class:"intro"},tip("深掘りのしかた",[
+    "全部を深掘りしなくて大丈夫です。気になる出来事を3〜5個選びます。",
+    "上から順に、事実 → 場面 → 気持ち → 理由 → 今へ → 見直す、と進みます。下に行くほど、自分の芯が見えてきます。",
+    "答えにくい問いは飛ばしてください。思い出したことが別の出来事につながったら、「2 1年1ページ」に足しておきます。"
+  ])));
+  if(!S.events.length){box.append(h("div",{class:"sheet"},h("p",{class:"muted",text:"「2 1年1ページ」でハイライトを選ぶと、ここで選べるようになります。"})));return box;}
+  const turns=turningPoints(), stars=S.events.filter(e=>e.star);
+  if(!curDeep||!S.events.includes(curDeep))curDeep=stars[0]||turns[0]||sorted(S.events)[0];
+  const pick=h("div",{class:"pick",role:"list"});
+  const btn=e=>h("button",{type:"button","aria-current":String(e===curDeep),onclick:()=>{curDeep=e;render();}},`${ageLabel(e)}　${e.text}`,doneMark(e));
+  if(stars.length){pick.append(h("div",{class:"grp",text:"★ 気になる"}));stars.forEach(e=>pick.append(btn(e)));}
+  const t2=turns.filter(e=>!e.star);
+  if(t2.length){pick.append(h("div",{class:"grp",text:"曲がり角の候補（気持ちの波から）"}));t2.forEach(e=>pick.append(btn(e)));}
+  const rest=sorted(S.events.filter(e=>!e.star&&!turns.includes(e)));
+  if(rest.length){pick.append(h("div",{class:"grp",text:"そのほか"}));rest.forEach(e=>pick.append(btn(e)));}
+  const e=curDeep, y=yearOf(e.age);
+  const lad=h("div",{class:"ladder sheet"});
+  lad.append(h("div",null,h("h2",{text:e.text}),h("p",{class:"muted small"},`${ageLabel(e)}${y?"（"+y+"年）":""}・${COL[e.col]}${e.priv?"・非公開":""}`)));
+  LADDER.forEach(q=>{
+    const id="q-"+e.id+"-"+q.k;
+    const ta=h("textarea",{id,rows:"4",value:e.deep[q.k]||"",placeholder:"話して入れても大丈夫です"});
+    ta.addEventListener("input",()=>{e.deep[q.k]=ta.value;save();});
+    lad.append(h("div",{class:"q"},h("label",{for:id},h("span",{class:"step-tag",text:q.step}),q.label),h("span",{class:"sub",text:q.sub}),ta));
+  });
+  box.append(h("div",{class:"deep"},pick,lad));
+  return box;
+}
+function doneMark(e){const n=LADDER.filter(q=>(e.deep[q.k]||"").trim()).length;return n?h("span",{class:"muted small",text:`　${n}/${LADDER.length}`}):null;}
+
+/* ---------- 5 自分の軸 ---------- */
+function vOneword(){
+  const box=h("div",{class:"stack"});
+  box.append(h("div",{class:"intro"},tip("ここでやること",[
+    "まず「自分理解マトリクス」で出来事を4つのマスに分けて、自分が何を選んできたか（自分の軸）を見つけます。",
+    "次に「自分への2つの質問」と「強みを3つの文にする」で、得意なことを言葉にします。",
+    "最後に、ここまでの材料を組み立てて、キャッチコピーにします。謙遜しないで書きます。ここは自分のためのノートです。"
+  ])));
+  box.append(matrixBox());
+
+  const m=S.magic;
+  const q=(k,label,sub,rows)=>{const id="m-"+k;const ta=h("textarea",{id,rows:String(rows||2),value:m[k]});ta.addEventListener("input",()=>{m[k]=ta.value;save();});return h("div",{class:"q"},h("label",{for:id,text:label}),sub?h("span",{class:"sub",text:sub}):null,ta);};
+  box.append(h("div",{class:"two"},
+    h("div",{class:"sheet stack"},h("h2",{text:"自分への2つの質問"}),
+      q("good","一言で言うと、私は何が得意？","得意なことを全部並べてから、共通するものを一言に。"),
+      q("seek","私が人生で本当に求めているものは？","好きなこと、夢中になったことに共通しているものは？")),
+    h("div",{class:"sheet stack"},h("h2",{text:"強みを3つの文にする"}),
+      q("s1","私が人より優れていることは？"),
+      q("s2","それで、相手にどんな良いことを届けられる？"),
+      q("s3","それで実現したこと（実績）は？","数字や具体的な出来事で。小さくても大丈夫です。"))
+  ));
+
+  const c=S.catch;
+  const cIn=(k,label,ph)=>{const id="c-"+k;const i=h("input",{type:"text",id,value:c[k],placeholder:ph});i.addEventListener("input",()=>{c[k]=i.value;save();});return h("div",{class:"field"},h("label",{for:id,text:label}),i);};
+  const lineTA=h("textarea",{id:"c-line",rows:"2",value:c.line,placeholder:"例：20年の経理の仕事と子育てで、数字が苦手な個人事業主のお金の不安をほどく人"});
+  lineTA.addEventListener("input",()=>{c.line=lineTA.value;save();});
+  box.append(h("div",{class:"sheet stack"},
+    h("h2",{text:"キャッチコピーを組み立てる"}),
+    h("p",{class:"small muted",text:"3つの材料を書いて「組み立てる」を押すと、下書きが入ります。そこから自分の言葉に直してください。"}),
+    h("div",{class:"axes"},
+      cIn("how","① どんな経験・強みで","例：20年の経理の仕事と子育てで"),
+      cIn("who","② 誰の","例：数字が苦手な個人事業主の"),
+      cIn("what","③ 何をする人","例：お金の不安をほどく人")),
+    h("div",{class:"row"},h("button",{class:"btn ghost sm",type:"button",onclick:()=>{
+      const d=[c.how,c.who,c.what].map(s=>(s||"").trim()).filter(Boolean).join("");
+      if(!d){toast("①〜③のどれかを書いてください");return;}
+      c.line=d;lineTA.value=d;save();
+    }},"組み立てる")),
+    h("label",{for:"c-line",text:"私のキャッチコピー"}),lineTA
+  ));
+  return box;
+}
+function matrixBox(){
+  const mp=curMapObj();
+  const mxBox=h("div",{class:"sheet stack"});
+  mxBox.append(h("h2",{text:"自分理解マトリクス"}));
+  mxBox.append(tip("使い方",[
+    "題材を1つに絞って、出来事を2本の軸で4つのマスに分けます。最初は本の例のとおり「楽だった↔苦しかった」と「ためになった↔ためにならなかった」で分けてみてください。",
+    "「楽」は楽しさではなく、ラクだったかどうかです。やることが多くて大変だったけど楽しかったことは「苦しかった」の側に入ります。楽しさで分けたいときは、軸を「楽しかった↔つまらなかった」に変えてください。",
+    "軸は自由に変えて大丈夫です（お金が儲かったか、たくさんの人と知り合えたか、など）。どちらとも言えないものは「真ん中」に置きます。",
+    "題材や軸を変えたマップをいくつか作ると、何度も同じマスに集まる出来事が出てきます。それが、あなたが選んできたもの＝自分の軸です。"
+  ]));
+
+  /* マップの切り替え */
+  const del=confirmId==="map:"+mp.id
+    ?h("span",{class:"confirm"},"このマップを消しますか？",h("button",{class:"btn warn sm",type:"button",onclick:()=>{S.maps=S.maps.filter(x=>x!==mp);S.curMap=S.maps[0].id;confirmId=null;save();render();}},"消す"),h("button",{class:"btn ghost sm",type:"button",onclick:()=>{confirmId=null;render();}},"やめる"))
+    :(S.maps.length>1?h("button",{class:"icon-btn",type:"button",onclick:()=>{confirmId="map:"+mp.id;render();}},"このマップを消す"):null);
+  mxBox.append(h("div",{class:"maps"},
+    S.maps.map((m,i)=>h("button",{class:"btn ghost sm",type:"button","aria-pressed":String(m===mp),title:mapTitle(m),onclick:()=>{S.curMap=m.id;confirmId=null;save();render();}},`マップ${i+1}（${m.theme==="all"?"すべて":COL[m.theme]}）`)),
+    h("button",{class:"btn ghost sm",type:"button",onclick:()=>{const m=newMap(S.mapSeq++);m.theme=mp.theme;S.maps.push(m);S.curMap=m.id;save();render();}},"＋ 新しいマップ"),
+    del));
+
+  /* 題材 */
+  const th=h("select",{id:"mx-theme"},h("option",{value:"all",selected:mp.theme==="all"},"すべての出来事"),COLS.map(c=>h("option",{value:c.k,selected:mp.theme===c.k},c.label)));
+  th.addEventListener("change",()=>{mp.theme=th.value;save();render();});
+  mxBox.append(h("div",{class:"field"},h("label",{for:"mx-theme",text:"題材（どの出来事を並べるか）"}),th));
+
+  /* 軸 */
+  const axIn=(k,label)=>{const id="ax-"+mp.id+"-"+k;const i=h("input",{type:"text",id,value:mp[k]});i.addEventListener("input",()=>{mp[k]=i.value;save();});i.addEventListener("change",()=>render());return h("div",{class:"field"},h("label",{for:id,text:label}),i);};
+  const preset=(a,b,label)=>{const s=h("select",{"aria-label":label+"を例から選ぶ"},h("option",{value:""},"例から選ぶ"),AXIS_PRESETS.map((p,i)=>h("option",{value:String(i)},`${p[0]}↔${p[1]}`)));
+    s.addEventListener("change",()=>{const p=AXIS_PRESETS[+s.value];if(!p)return;mp[a]=p[0];mp[b]=p[1];save();render();});return s;};
+  mxBox.append(h("div",{class:"axrow"},axIn("yT","縦軸・上"),axIn("yB","縦軸・下"),preset("yT","yB","縦軸")));
+  mxBox.append(h("div",{class:"axrow"},axIn("xL","横軸・左"),axIn("xR","横軸・右"),preset("xR","xL","横軸")));
+  mxBox.append(h("p",{class:"small muted",text:"軸を変えても、置いた場所はそのまま残ります。別の軸で分け直すときは「＋ 新しいマップ」で作ってください。"}));
+
+  /* 図 */
+  const evs=sorted(S.events.filter(e=>mp.theme==="all"||e.col===mp.theme));
+  const Q={TL:[],TR:[],BL:[],BR:[]},mid=[];
+  evs.forEach(e=>{const p=mp.pos[e.id];if(!p||!(p.x||p.y))return;
+    if(p.x==="C"||p.y==="C"||!p.x||!p.y){if(p.x==="C"||p.y==="C")mid.push(e);return;}
+    Q[p.y+p.x].push(e);});
+  const quad=k=>h("div",{class:"quad"},Q[k].length?Q[k].map(e=>h("span",{class:"q-chip",text:`${ageLabel(e)} ${e.text}`})):h("span",{class:"muted small",text:"—"}),Q[k].length?h("span",{class:"cnt",text:Q[k].length+"件"}):null);
+  mxBox.append(h("div",{class:"matrix"},
+    h("div",{class:"ax-y",text:"↑ "+mp.yT}),quad("TL"),quad("TR"),
+    h("div",{class:"ax-y",text:mp.yB+" ↓"}),quad("BL"),quad("BR"),
+    h("div"),h("div",{class:"ax-x"},h("span",{text:"← "+mp.xL}),h("span",{text:mp.xR+" →"}))
+  ));
+  mxBox.append(h("div",{class:"mid"},h("span",{class:"muted",text:"真ん中（どちらとも言えない）："}),mid.length?mid.map(e=>h("span",{class:"q-chip",text:`${ageLabel(e)} ${e.text}`})):h("span",{class:"muted",text:"—"})));
+
+  /* 振り分け */
+  const place=h("div");
+  if(!evs.length)place.append(h("p",{class:"empty",text:mp.theme==="all"?"「3 ハイライト」に出来事を書くと、ここで4つのマスに分けられます。":`「${COL[mp.theme]}」の出来事がまだありません。題材を変えるか、「3 ハイライト」に書き足してください。`}));
+  evs.forEach(e=>{
+    const p=mp.pos[e.id]||{x:"",y:""};
+    const set=(k,v)=>{const n=Object.assign({x:"",y:""},mp.pos[e.id]||{});n[k]=v;if(!n.x&&!n.y)delete mp.pos[e.id];else mp.pos[e.id]=n;save();render();};
+    const sy=h("select",{"aria-label":"縦軸"},h("option",{value:""},"縦：—"),h("option",{value:"T",selected:p.y==="T"},mp.yT),h("option",{value:"C",selected:p.y==="C"},"真ん中"),h("option",{value:"B",selected:p.y==="B"},mp.yB));
+    const sx=h("select",{"aria-label":"横軸"},h("option",{value:""},"横：—"),h("option",{value:"R",selected:p.x==="R"},mp.xR),h("option",{value:"C",selected:p.x==="C"},"真ん中"),h("option",{value:"L",selected:p.x==="L"},mp.xL));
+    sy.addEventListener("change",()=>set("y",sy.value));
+    sx.addEventListener("change",()=>set("x",sx.value));
+    place.append(h("div",{class:"place"},h("span",{class:"ptxt",text:`${ageLabel(e)}　${e.text}`}),sy,sx));
+  });
+  mxBox.append(place);
+
+  /* 気づき */
+  const nid="mx-note-"+mp.id;
+  const note=h("textarea",{id:nid,rows:"3",value:mp.note,placeholder:"例：仕事では、苦しくても自分のためになることを選んできた。これが私の仕事観。"});
+  note.addEventListener("input",()=>{mp.note=note.value;save();});
+  mxBox.append(h("div",{class:"q"},
+    h("label",{for:nid,text:"一言で言うと、これが私の「〇〇観」"}),
+    h("span",{class:"sub",text:"いちばん多く集まったマスはどこ？ そこに共通するものは？ 逆に、すぐやめてしまったものはどのマス？"}),
+    note));
+  return mxBox;
+}
+
+/* ---------- 6 まとめる ---------- */
+function vSummary(){
+  const box=h("div",{class:"stack"});
+  box.append(h("div",{class:"intro"},tip("仕上げ方",[
+    "「提出用ハイライト」は、ハイライトを時代ごとの箇条書きにしたものです。非公開の出来事は外れます。A4で4ページ以内が目安です。",
+    "「全体ドキュメント」は、1年1ページの書き写しも深掘りも全部入った、自分用の時系列の記録です。発信のネタや、これからのサービスの種を探すときに使えます。",
+    "「AIに貼る文」を ChatGPT や Claude に貼ると、AIが一問ずつ質問しながら足りないところを埋め、提出用・キャッチコピー案・全体版・発信ネタまで一緒に作ってくれます。"
+  ])));
+  const subTA=h("textarea",{class:"out",readonly:true,"aria-label":"提出用ハイライト"});
+  const fullTA=h("textarea",{class:"out",readonly:true,"aria-label":"全体ドキュメント"});
+  const topTA=h("textarea",{class:"out",readonly:true,"aria-label":"トピック別の自分史"});
+  const aiTA=h("textarea",{class:"out",readonly:true,"aria-label":"AIに貼る文"});
+  const meter=h("span",{class:"small"});
+  const inclPriv=h("input",{type:"checkbox",id:"incl-priv"});
+  const inclYears=h("input",{type:"checkbox",id:"incl-years",checked:true});
+  const refresh=()=>{
+    subTA.value=buildSubmit();fullTA.value=buildFull();topTA.value=buildTopicDoc();aiTA.value=buildAI(inclPriv.checked,inclYears.checked);
+    const pg=pagesOf(subTA.value);
+    meter.textContent=`今の分量：A4で約${pg.toFixed(1)}ページ（目安は4ページまで）`;
+    meter.style.color=pg>4?"var(--warn)":"var(--ok)";
+  };
+  inclPriv.addEventListener("change",refresh);inclYears.addEventListener("change",refresh);refresh();
+  const base=(S.name?S.name+"の":"");
+  box.append(h("div",{class:"sheet stack"},
+    h("div",{class:"row",style:"justify-content:space-between"},h("h2",{text:"提出用ハイライト"}),
+      h("div",{class:"row"},copyBtn(()=>subTA.value,subTA),saveBtn(()=>subTA.value,base+"自分史ハイライト.md","text/markdown"))),
+    meter,
+    h("p",{class:"small muted",text:"4ページを超えたら、「3 ハイライト」で似た出来事をまとめるか、非公開にして外してください。"}),
+    subTA));
+  box.append(h("div",{class:"sheet stack"},
+    h("div",{class:"row",style:"justify-content:space-between"},h("h2",{text:"トピック別の自分史（大まかな版）"}),
+      h("div",{class:"row"},copyBtn(()=>topTA.value,topTA),saveBtn(()=>topTA.value,base+"自分史・トピック別.md","text/markdown"))),
+    h("p",{class:"small muted",text:"「1 質問に答える」の答えを、トピックごとに並べたものです。非公開にしたトピックも［非公開］の印つきで入っています。"}),
+    topTA));
+  box.append(h("div",{class:"sheet stack"},
+    h("div",{class:"row",style:"justify-content:space-between"},h("h2",{text:"全体ドキュメント（自分用・時系列）"}),
+      h("div",{class:"row"},copyBtn(()=>fullTA.value,fullTA),saveBtn(()=>fullTA.value,base+"自分史・全体.md","text/markdown"))),
+    h("p",{class:"small muted",text:"非公開の出来事も［非公開］の印つきで入っています。人に渡すときは提出用を使ってください。"}),
+    fullTA));
+  box.append(h("div",{class:"sheet stack"},
+    h("div",{class:"row",style:"justify-content:space-between"},h("h2",{text:"AIに貼る文"}),
+      h("div",{class:"row"},copyBtn(()=>aiTA.value,aiTA))),
+    h("label",{class:"row small",for:"incl-years"},inclYears,"1年1ページの書き写しも入れる"),
+    h("label",{class:"row small",for:"incl-priv"},inclPriv,"非公開にした出来事も入れる（自分だけが使うAIのとき）"),
+    aiTA));
+  const restore=h("textarea",{class:"out",style:"min-height:90px","aria-label":"控えを貼り付ける",placeholder:"別の端末で取った控え（データ）をここに貼り付けて「読み込む」"});
+  const msg=h("p",{class:"small muted","aria-live":"polite"});
+  box.append(h("div",{class:"sheet stack"},
+    h("h2",{text:"控え（データ）"}),
+    h("p",{class:"small muted",text:"書いたもの全部を、文字のかたまりとして書き出します。メモアプリなどに貼って保管してください。"}),
+    h("div",{class:"row"},copyBtn(()=>JSON.stringify(S),null,"控えをコピー"),saveBtn(()=>JSON.stringify(S,null,1),"自分史ノート控え.json","application/json","控えをファイルに保存")),
+    restore,
+    h("div",{class:"row"},h("button",{class:"btn ghost",type:"button",onclick:()=>{
+      try{const d=normalize(JSON.parse(restore.value));if(!d.events.length&&!d.name){msg.textContent="控えの形が読めませんでした。コピーした文字をそのまま貼ってください。";return;}
+        S=d;curDeep=null;save();fName.value=S.name;fBirth.value=S.birth;toast("控えを読み込みました");render();}
+      catch(e){msg.textContent="控えの形が読めませんでした。コピーした文字をそのまま貼ってください。";}
+    }},"読み込む（今の内容と入れ替わります）")),msg,
+    resetBlock()
+  ));
+  return box;
+}
+let resetArmed=false;
+function resetBlock(){
+  return resetArmed
+    ?h("div",{class:"confirm"},"全部消して白紙に戻しますか？",h("button",{class:"btn warn sm",type:"button",onclick:()=>{S=blank();resetArmed=false;curDeep=null;save();fName.value="";fBirth.value="";render();toast("白紙に戻しました");}},"全部消す"),h("button",{class:"btn ghost sm",type:"button",onclick:()=>{resetArmed=false;render();}},"やめる"))
+    :h("div",null,h("button",{class:"btn warn sm",type:"button",onclick:()=>{resetArmed=true;render();}},"白紙に戻す"));
+}
+function copyBtn(get,ta,label){
+  return h("button",{class:"btn sm",type:"button",onclick:async()=>{
+    const t=get();
+    try{await navigator.clipboard.writeText(t);toast("コピーしました");}
+    catch(e){if(ta){ta.focus();ta.select();toast("選択しました。コピーしてください");}else toast("コピーできませんでした");}
+  }},label||"コピー");
+}
+let dl=null;
+function saveBtn(get,filename,type,label){
+  const plain=!window.claude;
+  const b=h("button",{class:"btn ghost sm",type:"button",hidden:!dl&&!plain,onclick:async()=>{
+    const blob=new Blob([get()],{type:type+";charset=utf-8"});
+    if(dl){try{await dl.save({filename,data:blob});}catch(e){toast("保存しませんでした");}return;}
+    if(plain){const u=URL.createObjectURL(blob);const a=h("a",{href:u,download:filename});document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);}
+  }},label||"ファイルに保存");
+  b.dataset.dl="1";return b;
+}
+function lineOfEvent(e,withPriv){
+  const y=yearOf(e.age);
+  return `- ${e.age===""?"年齢不明":e.age+"歳"}${y?"（"+y+"年）":""}［${COL[e.col]}］${e.text}${e.score!=null?"（充実度 "+(e.score>0?"+":"")+e.score+"）":""}${withPriv&&e.priv?"［非公開］":""}`;
+}
+function deepText(e){
+  return LADDER.filter(q=>(e.deep[q.k]||"").trim()).map(q=>`  - ${q.step}：${e.deep[q.k].trim().replace(/\n+/g," ")}`).join("\n");
+}
+function pagesOf(t){
+  const CH=38,LINES=36;
+  const n=t.split("\n").reduce((acc,l)=>acc+Math.max(1,Math.ceil(l.length/CH)),0);
+  return n/LINES;
+}
+function stageHead(i){
+  const st=STAGES[i],b=birth();
+  const ages=st.to>100?`${st.from}歳〜`:`${st.from}〜${st.to}歳`;
+  const yrs=b?(st.to>100?`・${b+st.from}年〜`:`・${b+st.from}〜${b+st.to}年`):"";
+  return `## ${st.label}（${ages}${yrs}）`;
+}
+function hlLine(e){
+  const y=yearOf(e.age);
+  return `- ${e.age===""?"":e.age+"歳"}${y?"（"+y+"年）":""}${e.age===""?"":"　"}${e.text}`;
+}
+function buildSubmit(){
+  const out=[];
+  out.push(`# ${S.name?S.name+"の":""}自分史ハイライト`);
+  const meta=[];if(birth())meta.push(`${birth()}年生まれ`);
+  if(meta.length)out.push(meta.join("・"));
+  if((S.catch.line||"").trim())out.push("",`キャッチコピー：${S.catch.line.trim()}`);
+  const evs=sorted(S.events.filter(e=>!e.priv));
+  if(!evs.length){out.push("","（ハイライトはまだありません）");return out.join("\n");}
+  STAGES.forEach((st,i)=>{
+    const g=evs.filter(e=>stageOf(e.age)===i);
+    if(g.length){out.push("",stageHead(i));g.forEach(e=>out.push(hlLine(e)));}
+  });
+  const un=evs.filter(e=>e.age==="");
+  if(un.length){out.push("","## 時期が分からないもの");un.forEach(e=>out.push(hlLine(e)));}
+  const m=S.magic,mm=[["得意なこと",m.good],["求めているもの",m.seek],["強み",m.s1],["相手に届けられること",m.s2],["実現したこと",m.s3]].filter(x=>(x[1]||"").trim());
+  if(mm.length){out.push("","## いまの私");mm.forEach(x=>out.push(`- ${x[0]}：${x[1].trim().replace(/\n+/g," ")}`));}
+  return out.join("\n");
+}
+function buildFull(){
+  const out=[];
+  out.push(`# ${S.name?S.name+"の":""}自分史（全体・時系列）`);
+  if(birth())out.push(`${birth()}年生まれ`);
+  if((S.catch.line||"").trim())out.push("","## キャッチコピー",S.catch.line.trim());
+  const m=S.magic,mm=[["得意なこと（一言）",m.good],["人生で求めているもの",m.seek],["人より優れていること",m.s1],["相手に届けられること",m.s2],["実現したこと（実績）",m.s3]].filter(x=>(x[1]||"").trim());
+  if(mm.length){out.push("","## 自分を一言で・強み");mm.forEach(x=>out.push(`- ${x[0]}：${x[1].trim().replace(/\n+/g," ")}`));}
+  const ages=new Set([...Object.keys(S.years).filter(k=>(S.years[k]||"").trim()).map(Number),...S.events.filter(e=>e.age!=="").map(e=>e.age)]);
+  const list=[...ages].sort((x,y)=>x-y);
+  out.push("","## 年ごとの記録");
+  if(!list.length)out.push("（まだありません）");
+  let lastStage=-1;
+  list.forEach(a=>{
+    const si=stageOf(a);
+    if(si!==lastStage&&si>=0){out.push("",`### ${STAGES[si].label}`);lastStage=si;}
+    const y=yearOf(a);
+    out.push("",`#### ${a}歳${y?"（"+y+"年）":""}`);
+    const t=(S.years[a]||"").trim();if(t)out.push(t);
+    const hl=S.events.filter(e=>e.age===a);
+    if(hl.length){out.push("","ハイライト：");hl.forEach(e=>{
+      out.push(`- ［${COL[e.col]}］${e.text}${e.score!=null?"（充実度 "+(e.score>0?"+":"")+e.score+"）":""}${e.priv?"［非公開］":""}`);
+      const d=deepText(e);if(d)out.push(d);
+    });}
+  });
+  const un=S.events.filter(e=>e.age==="");
+  if(un.length){out.push("","### 時期が分からないもの");un.forEach(e=>{out.push(`- ［${COL[e.col]}］${e.text}${e.priv?"［非公開］":""}`);const d=deepText(e);if(d)out.push(d);});}
+  const seeds=sorted(S.events.filter(e=>e.star||(e.deep.now||"").trim()||(e.deep.reframe||"").trim()));
+  out.push("","## 発信ネタの種");
+  out.push(seeds.length?seeds.map(e=>{const k=((e.deep.reframe||"").trim()||(e.deep.now||"").trim()).replace(/\n+/g," ");return `- ${e.age===""?"":e.age+"歳　"}${e.text}${k?" → "+k:""}${e.priv?"［非公開］":""}`;}).join("\n"):"（「5 深掘りする」で「今へ」「見直す」を書くと、ここに並びます）");
+  out.push("","## これからのサービスのストック");
+  const sv=[["強み",m.s1],["届けられること",m.s2],["実績",m.s3],["求めているもの",m.seek]].filter(x=>(x[1]||"").trim());
+  out.push(sv.length?sv.map(x=>`- ${x[0]}：${x[1].trim().replace(/\n+/g," ")}`).join("\n"):"（「6 自分の軸」の強みの3つの文を書くと、ここに並びます）");
+  const tq=buildTopics(true,"###");
+  if(tq.length)out.push("","## 質問への答え（トピック別）",...tq);
+  const ml=mapLines(true);
+  if(ml.length)out.push("","## 自分理解マトリクス",...ml.map(l=>l.startsWith("■ ")?"### "+l.slice(2):l));
+  const turns=turningPoints();
+  if(turns.length){out.push("","## 人生の曲がり角（気持ちの波から）");turns.forEach(e=>out.push(`- ${e.age}歳　${e.text}（充実度 ${(e.score>0?"+":"")+e.score}）`));}
+  return out.join("\n");
+}
+function buildAI(withPriv,withYears){
+  const evs=sorted(S.events.filter(e=>withPriv||!e.priv));
+  const out=[];
+  out.push("あなたは、私の自分史づくりを手伝う聞き手です。下にあるのは、私が書き出した自分史のメモです。次のルールで進めてください。",
+  "",
+  "1. 質問は一度に1つだけにしてください。私が答えてから、次の質問に進んでください。",
+  "2. メモにないことを推測で書かないでください。分からないところは空白として残し、最後に一覧にしてください。",
+  "3. 年は生まれ年から計算し、年齢と年が合わないところや、話の食い違いがあれば、私に確認してください。",
+  "4. 私の言葉は、できるだけそのまま使ってください。言い換えたときは、そう伝えてください。",
+  "5. 出来事ごとに「事実 → そのときの気持ち → 理由 → 今の自分につながっていること」の順に聞いてください。",
+  "6. つらい出来事は責めずに聞いてください。今の私から見た意味（選んだこと、学んだこと、感謝していること）も一緒に考えてください。無理に前向きにはしないでください。",
+  "7. 人に見せたくない話が出たら、まとめに入れてよいかを確認してください。",
+  "8. 最初に、深掘りすると良さそうな出来事を3つ選んで、理由と一緒に教えてください。そのあと質問を始めてください。",
+  "9. 空白がだいたい埋まったら、次の4つを作ってください。",
+  "   A. 提出用：時代ごとのハイライトの箇条書き（A4で4ページ以内）",
+  "   B. キャッチコピーの候補を5つ（経験・強み・届けたい相手が入るもの）と、それぞれの理由。自分理解マトリクスがあれば、どのマスに出来事が集まっているかから、私が選んできたもの（私の軸）も一言で添えてください",
+  "   C. 全体を時系列にまとめた自分史（一人称「私」、章立てと年表つき）",
+  "   D. この自分史から作れる発信のネタを10個と、これからのサービスの種を3つ",
+  "",
+  "---",
+  `呼び名：${S.name||"（未記入）"}`,
+  `生まれ年：${birth()?birth()+"年":"（未記入）"}`);
+  if((S.catch.line||"").trim())out.push(`今のキャッチコピー（下書き）：${S.catch.line.trim()}`);
+  out.push("","【ハイライト】",evs.length?evs.map(e=>lineOfEvent(e,withPriv)).join("\n"):"（まだありません）");
+  const deep=evs.filter(e=>deepText(e));
+  if(deep.length){out.push("","【深掘りしたメモ】");deep.forEach(e=>{out.push(`■ ${e.age===""?"":e.age+"歳　"}${e.text}`,deepText(e));});}
+  const m=S.magic;
+  const mm=[["得意なこと（一言）",m.good],["求めているもの",m.seek],["優れていること",m.s1],["相手に届けられること",m.s2],["実現したこと",m.s3]].filter(x=>(x[1]||"").trim());
+  if(mm.length){out.push("","【自分を一言で・強み（下書き）】");mm.forEach(x=>out.push(`- ${x[0]}：${x[1].trim()}`));}
+  const tq=buildTopics(withPriv,"■");
+  if(tq.length)out.push("","【質問への答え（トピック別）】",...tq);
+  const ml=mapLines(withPriv);
+  if(ml.length)out.push("","【自分理解マトリクス（出来事を2本の軸で4つに分けたもの）】",...ml);
+  if(withYears){
+    const ys=Object.keys(S.years).map(Number).filter(a=>(S.years[a]||"").trim()).sort((x,y)=>x-y);
+    if(ys.length){out.push("","【1年1ページの書き写し】");ys.forEach(a=>{const y=yearOf(a);out.push("",`■ ${a}歳${y?"（"+y+"年）":""}`,S.years[a].trim());});}
+  }
+  return out.join("\n");
+}
+
+/* ---------- 見本 ---------- */
+function loadSample(){
+  S.name=S.name||"見本さん";S.birth=S.birth||"1980";
+  const ex=[
+    [7,"hobby","ピアノを習い始める",2],[10,"work","塾の選抜クラスに入る",3],[12,"private","家の事情で中学受験をあきらめる",-3],
+    [14,"hobby","吹奏楽部で後輩に教える役になる",4],[20,"work","就職。最初の配属は総務",1],[27,"work","社内公募に手を挙げて異動",4],
+    [33,"private","子どもが生まれる",4],[38,"work","忙しい部署で余裕がない日々",-3],[45,"hobby","学び直しを始める",3]
+  ];
+  ex.forEach(([age,col,text,score])=>S.events.push({id:"e"+(S.seq++),age,col,text:"［見本］"+text,score,star:false,priv:false,deep:{}}));
+  if(!(S.years[14]||"").trim())S.years[14]="［見本］\n【仕事・学校】部活：吹奏楽部。2年からアルトサックス。部員が足りなくて、ほかの楽器の後輩にも教えた\n【好きなこと・特技】人に教えていたこと：呼吸法、楽譜の読み方、リズムの合わせ方\nそのときの気持ち：頼られるのがうれしかった";
+  if(!(S.years[27]||"").trim())S.years[27]="［見本］\n【仕事・学校】異動・転職：社内で初めての公募。一般職だったけど手を挙げた\n周りからは「どんなもんなの？」と見られていた気がする\n結果的に、課長がやるような仕事も任された";
+  S.lastYear=14;curYear=14;
+  fName.value=S.name;fBirth.value=S.birth;save();render();toast("見本を入れました。［見本］の行は削除できます");
+}
+
+render();
+(async()=>{
+  try{
+    if(!window.claude||!window.claude.use)return;
+    const d=await window.claude.use("downloads");
+    if(d){dl=d;document.querySelectorAll("[data-dl]").forEach(b=>b.hidden=false);}
+  }catch(e){}
+})();
+})();
+</script>
+</body>
+</html>
