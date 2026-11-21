@@ -125,6 +125,8 @@ input[type=number]{width:96px}
 .imp-item input[type=number]{width:5.5em}
 .imp-pre{white-space:pre-wrap;word-break:break-word;font:inherit;font-size:14px;margin:6px 0 0;max-height:12em;overflow:auto}
 .warn-t{color:var(--warn,#b3261e)}
+.gap{border-top:2px dashed var(--line);margin-top:14px;padding-top:12px}
+.gap details summary{cursor:pointer}
 .qa-list{margin:8px 0 0;padding-left:1.4em;display:flex;flex-direction:column;gap:8px}
 .qa-list li.on>.linkish{font-weight:600}
 .linkish{background:none;border:0;padding:0;color:var(--pen);text-align:left;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
@@ -677,7 +679,8 @@ function importBox(){
     h("li",{text:"ノートのページを、スマホで1ページずつ撮ります。"}),
     h("li",{text:"下の「読み取り用の文をコピー」を押して、その文と写真を、ふだん使っているAI（ChatGPTなど）に送ります。"}),
     h("li",{text:"AIが書き起こした文をコピーして、下の欄に貼り、「中身を確かめる」を押します。"}),
-    h("li",{text:"どの年に入るかを確かめてから「取り込む」を押します。"})));
+    h("li",{text:"どの年に入るかを確かめてから「取り込む」を押します。"}),
+    h("li",{text:"最後に、いちばん下の「ノートに書いていないことだけ、AIに聞いてもらう」で、足りないところを埋めます。"})));
   d.append(h("p",{class:"small muted",text:"写真はこのアプリには送られません。送り先は、あなたが使っているAIだけです。AIの読み間違いがあるので、取り込んだあとに読み返して直してください。"}));
   const pr=h("textarea",{rows:"6",readonly:true,"aria-label":"AIに送る読み取り用の文",value:SCAN_PROMPT});
   d.append(h("div",{class:"row"},copyBtn(()=>SCAN_PROMPT,pr,"読み取り用の文をコピー")),pr);
@@ -714,7 +717,89 @@ function importBox(){
     }},"取り込む"),h("span",{class:"small muted",text:"年齢が空の項目は取り込まずに残します。"})));
     d.append(h("h3",{text:"取り込む前の確認"}),list);
   }
+  d.append(gapBox());
   return d;
+}
+
+/* ---------- ノートに書いていないことだけAIに聞いてもらう ---------- */
+let gapText="",gapItems=null;
+function gapPrompt(){
+  const b=birth(),out=[];
+  out.push("あなたは、自分史づくりの聞き手です。下に「私が手書きのノートに書いたこと」と「自分史ノートアプリの質問の一覧」があります。");
+  out.push("","【お願い】");
+  out.push("・質問の一覧のうち、ノートにもう答えが書いてある質問は聞かないでください。");
+  out.push("・ノートに書いていない質問だけを、1回に1問ずつ、やさしく聞いてください。番号どおりの順でなくて大丈夫です。");
+  out.push("・ノートに少しだけ書いてある質問は、「ノートには〇〇と書いてありますが」と添えて、足りないところだけ聞いてください。");
+  out.push("・私が「覚えていない」「答えたくない」「パス」と言ったら、その質問は飛ばして次へ進んでください。");
+  out.push("・私の答えを、言い換えたり、足したり、整えたりしないでください。");
+  out.push("・私が「おわり」と言うか、聞く質問がなくなったら、最後に私の答えだけを、次の形でまとめて出してください。説明やまとめは付けないでください。");
+  out.push("","［2-3］質問文","答え：私が答えたとおりの文","","（［ ］の中は、下の一覧の番号をそのまま使ってください。飛ばした質問は書かないでください。）");
+  out.push("","【私のこと】",`呼び名：${S.name||"（なし）"}`,b?`生まれ年：${b}年`:"生まれ年：（未入力）");
+  out.push("","【私が手書きのノートに書いたこと】");
+  const ys=Object.keys(S.years).map(Number).filter(a=>(S.years[a]||"").trim()).sort((x,y)=>x-y);
+  if(ys.length)ys.forEach(a=>{const y=yearOf(a);out.push("",`■ ${a}歳${y?"（"+y+"年）":""}`,S.years[a].trim());});else out.push("（まだありません）");
+  const ev=sorted(S.events.filter(e=>e.text));
+  if(ev.length){out.push("","【ハイライト（大事な出来事）】");ev.forEach(e=>out.push(`・${e.age!==""?e.age+"歳　":""}${e.text}`));}
+  out.push("","【自分史ノートアプリの質問の一覧】");
+  let n=0;
+  TOPICS.forEach((t,ti)=>{
+    if(S.qa.skip[t.k])return;
+    const open=t.qs.map((q,qi)=>[q,qi]).filter(([,qi])=>!qaAns(t.k,qi));
+    if(!open.length)return;
+    out.push("",`■ ${t.label}`);
+    open.forEach(([q,qi])=>{out.push(`［${ti+1}-${qi+1}］${q[0]}`);n++;});
+  });
+  if(!n)out.push("（まだ答えていない質問はありません）");
+  return out.join("\n");
+}
+function parseGap(src){
+  const items=[];let cur=null;
+  src.replace(/\r/g,"").split("\n").forEach(raw=>{
+    const line=zen2han(raw).trim();
+    const m=line.match(/^[［\[](\d{1,2})\s*[-－ー‐]\s*(\d{1,2})[］\]]\s*(.*)$/);
+    if(m){
+      const t=TOPICS[+m[1]-1],qi=+m[2]-1;
+      cur=t&&t.qs[qi]?{t:t.k,qi,label:t.label,q:t.qs[qi][0],lines:[]}:null;
+      if(cur)items.push(cur);return;
+    }
+    if(!cur)return;
+    cur.lines.push(raw.replace(/^\s*(答え|A)\s*[：:]\s*/,"").replace(/\s+$/,""));
+  });
+  return items.map(c=>({t:c.t,qi:c.qi,label:c.label,q:c.q,text:c.lines.join("\n").replace(/^\n+|\n+$/g,"")})).filter(c=>c.text.trim());
+}
+function gapBox(){
+  const box=h("div",{class:"gap stack"});
+  box.append(h("h3",{text:"ノートに書いていないことだけ、AIに聞いてもらう"}));
+  box.append(h("p",{class:"small",text:"取り込んだあとに使います。AIがノートと「1 質問に答える」の質問を見比べて、ノートに書いていない質問だけを1問ずつ聞いてくれます。答え終わったら、AIのまとめを下に貼ると「1 質問に答える」の答えに入ります。"}));
+  const gp=h("textarea",{rows:"6",readonly:true,"aria-label":"AIに聞いてもらう文",value:gapPrompt()});
+  box.append(h("div",{class:"row"},copyBtn(()=>gp.value=gapPrompt(),gp,"聞いてもらう文をコピー")),
+    h("details",null,h("summary",{class:"small",text:"コピーできないときは、ここを開いて文を選んでください"}),gp));
+  const src=h("textarea",{id:"gap-src",rows:"6","aria-label":"AIがまとめた答えを貼る",placeholder:"AIが最後にまとめた答えを、ここに貼ります",value:gapText});
+  src.addEventListener("input",()=>{gapText=src.value;});
+  box.append(src,h("div",{class:"row"},
+    h("button",{class:"btn",type:"button",onclick:()=>{
+      gapText=src.value;gapItems=parseGap(gapText);
+      if(!gapItems.length)toast("［2-3］のような番号のついた答えが見つかりませんでした");
+      impOpen=true;render();
+    }},"答えを確かめる"),
+    gapText||gapItems?h("button",{class:"btn ghost sm",type:"button",onclick:()=>{gapText="";gapItems=null;impOpen=true;render();}},"欄を空にする"):null));
+  if(gapItems&&gapItems.length){
+    const list=h("div",{class:"imp-list stack"});
+    gapItems.forEach(c=>{
+      const has=qaAns(c.t,c.qi);
+      list.append(h("div",{class:"imp-item"},
+        h("div",null,h("b",{text:c.label}),h("span",{class:"small muted",text:has?"（すでにある答えの後ろに足します）":""})),
+        h("div",{class:"small",text:"質問："+c.q}),
+        h("pre",{class:"imp-pre",text:c.text})));
+    });
+    list.append(h("div",{class:"row"},h("button",{class:"btn",type:"button",onclick:()=>{
+      gapItems.forEach(c=>{const k=qaKey(c.t,c.qi),old=(S.qa.a[k]||"").replace(/\s+$/,"");S.qa.a[k]=old?old+"\n"+c.text:c.text;});
+      const n=gapItems.length;gapItems=null;gapText="";save();impOpen=true;render();
+      toast(`${n}問の答えを「1 質問に答える」に入れました`);
+    }},"「1 質問に答える」に入れる"),h("span",{class:"small muted",text:`${gapItems.length}問`})));
+    box.append(h("h3",{text:"入れる前の確認"}),list);
+  }
+  return box;
 }
 
 function voiceGuide(){
