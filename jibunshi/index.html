@@ -114,6 +114,13 @@ input[type=number]{width:96px}
 /* マトリクス */
 .axes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .matrix{display:grid;grid-template-columns:24px minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr) auto;gap:6px;margin-top:10px}
+.quad{position:relative}
+.quad .cnt{position:absolute;right:6px;bottom:4px;font-size:11px;color:var(--muted)}
+.mid{margin-top:6px;margin-left:30px;border:1px dashed var(--line);border-radius:8px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12.5px}
+.mid .q-chip{font-size:12.5px;background:var(--pen-soft);border-radius:6px;padding:1px 7px}
+.maps{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.maps .btn[aria-pressed=true]{background:var(--pen);color:var(--sheet);border-color:var(--pen)}
+.axrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 150px;gap:8px;align-items:end}
 .quad{background:var(--sheet);border:1px solid var(--line);border-radius:8px;min-height:120px;padding:8px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start}
 .quad .q-chip{font-size:12.5px;background:var(--pen-soft);border-radius:6px;padding:1px 7px}
 .ax-y{writing-mode:vertical-rl;font-size:12px;color:var(--muted);display:flex;align-items:center;justify-content:center}
@@ -139,6 +146,8 @@ input[type=number]{width:96px}
   .pick{max-height:260px}
   .place{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .place .ptxt{grid-column:1 / -1}
+  .axrow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .axrow select{grid-column:1 / -1}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -164,7 +173,7 @@ input[type=number]{width:96px}
     <button class="tab" role="tab" data-step="write"><span class="n">2</span>ハイライト</button>
     <button class="tab" role="tab" data-step="curve"><span class="n">3</span>気持ちの波</button>
     <button class="tab" role="tab" data-step="deep"><span class="n">4</span>深掘りする</button>
-    <button class="tab" role="tab" data-step="oneword"><span class="n">5</span>キャッチコピー</button>
+    <button class="tab" role="tab" data-step="oneword"><span class="n">5</span>自分の軸</button>
     <button class="tab" role="tab" data-step="summary"><span class="n">6</span>まとめる</button>
   </nav>
 
@@ -200,7 +209,17 @@ const LADDER=[
   {k:"now",step:"今へ",label:"今の自分のどこにつながっている？",sub:"仕事のやり方、大事にしていること、苦手なこと、得意なこと。"},
   {k:"reframe",step:"見直す",label:"今の自分から見ると、どう見える？",sub:"「相手の立場だったら？」「この経験がなかったら、今の私は？」「今なら誰に何を伝えたい？」から1つ選んで。無理に前向きにしなくて大丈夫です。"}
 ];
-const DEFAULT_AXES={xL:"苦しかった",xR:"楽しかった",yT:"ためになった",yB:"ためにならなかった"};
+const AXIS_PRESETS=[
+  ["楽だった","苦しかった"],
+  ["ためになった","ためにならなかった"],
+  ["お金が儲かった","儲からなかった"],
+  ["たくさんの人と知り合えた","知り合えなかった"],
+  ["家から近かった","遠かった"],
+  ["体を使った（肉体系）","頭を使った（知能系）"],
+  ["楽しかった","つまらなかった"]
+];
+const OLD_AXES={xL:"苦しかった",xR:"楽しかった",yT:"ためになった",yB:"ためにならなかった"};
+function newMap(n){return{id:"m"+n,theme:"work",yT:"楽だった",yB:"苦しかった",xL:"ためにならなかった",xR:"ためになった",note:"",pos:{}};}
 
 let S=load();
 let view=(location.hash||"").replace("#","")||"years";
@@ -208,23 +227,75 @@ let curDeep=null;
 let confirmId=null;
 let curYear=null;
 
-function blank(){return{name:"",birth:"",events:[],years:{},lastYear:0,axes:{...DEFAULT_AXES},magic:{good:"",seek:"",s1:"",s2:"",s3:""},catch:{how:"",who:"",what:"",line:""},seq:1};}
+function blank(){return{name:"",birth:"",events:[],years:{},lastYear:0,maps:[newMap(1)],curMap:"m1",mapSeq:2,magic:{good:"",seek:"",s1:"",s2:"",s3:""},catch:{how:"",who:"",what:"",line:""},seq:1};}
 function load(){
   try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);return normalize(d);}}catch(e){}
   return blank();
 }
 function normalize(d){
   const b=blank();const o=Object.assign(b,d||{});
-  o.axes=Object.assign({...DEFAULT_AXES},o.axes||{});
   o.magic=Object.assign(blank().magic,o.magic||{});
   o.catch=Object.assign(blank().catch,o.catch||{});
   const ys={};if(o.years&&typeof o.years==="object")for(const[k,v]of Object.entries(o.years)){const a=Math.round(+k);if(a>=0&&a<=120&&typeof v==="string")ys[a]=v;}
   o.years=ys;o.lastYear=Math.max(0,Math.min(120,Math.round(+o.lastYear||0)));
-  o.events=Array.isArray(o.events)?o.events.filter(e=>e&&typeof e==="object").map(e=>({id:e.id||("e"+Math.random().toString(36).slice(2,8)),age:(e.age===""||e.age==null||isNaN(+e.age))?"":+e.age,col:COL[e.col]?e.col:"private",text:String(e.text||""),score:(e.score===""||e.score==null||isNaN(+e.score))?null:+e.score,star:!!e.star,priv:!!e.priv,deep:e.deep&&typeof e.deep==="object"?e.deep:{},mx:e.mx||"",my:e.my||""})):[];
+  o.events=Array.isArray(o.events)?o.events.filter(e=>e&&typeof e==="object").map(e=>({id:e.id||("e"+Math.random().toString(36).slice(2,8)),age:(e.age===""||e.age==null||isNaN(+e.age))?"":+e.age,col:COL[e.col]?e.col:"private",text:String(e.text||""),score:(e.score===""||e.score==null||isNaN(+e.score))?null:+e.score,star:!!e.star,priv:!!e.priv,deep:e.deep&&typeof e.deep==="object"?e.deep:{}})):[];
   o.seq=Math.max(+o.seq||1,o.events.length+1);
+  normalizeMaps(o,d||{});
   return o;
 }
 let saveTimer=null;
+function normalizeMaps(o,d){
+  const okX=v=>v==="L"||v==="C"||v==="R",okY=v=>v==="T"||v==="C"||v==="B";
+  if(Array.isArray(d.maps)&&d.maps.length){
+    o.maps=d.maps.filter(m=>m&&typeof m==="object").map((m,i)=>{
+      const b=newMap(i+1),r=Object.assign(b,m);
+      ["yT","yB","xL","xR","note"].forEach(k=>r[k]=String(r[k]==null?"":r[k]));
+      if(r.theme!=="all"&&!COL[r.theme])r.theme="all";
+      const pos={};if(m.pos&&typeof m.pos==="object")for(const[k,v]of Object.entries(m.pos)){if(v&&(okX(v.x)||okY(v.y)))pos[k]={x:okX(v.x)?v.x:"",y:okY(v.y)?v.y:""};}
+      r.pos=pos;return r;});
+    if(!o.maps.length)o.maps=[newMap(1)];
+  }else{
+    /* 旧版（軸1つ・出来事にmx/my）からの引き継ぎ */
+    const m=newMap(1);m.theme="all";
+    const ax=Object.assign({...OLD_AXES},d.axes||{});
+    const isOld=Object.keys(OLD_AXES).every(k=>ax[k]===OLD_AXES[k]);
+    if(!isOld){m.xL=ax.xL;m.xR=ax.xR;m.yT=ax.yT;m.yB=ax.yB;}
+    (Array.isArray(d.events)?d.events:[]).forEach(e=>{
+      if(!e||!e.id||!(e.mx||e.my))return;
+      if(isOld)m.pos[e.id]={x:e.my==="T"?"R":e.my==="B"?"L":"",y:e.mx==="R"?"T":e.mx==="L"?"B":""};
+      else m.pos[e.id]={x:okX(e.mx)?e.mx:"",y:okY(e.my)?e.my:""};
+    });
+    o.maps=[m];
+  }
+  o.maps.forEach((m,i)=>{if(!/^m\d+$/.test(m.id)||o.maps.findIndex(x=>x.id===m.id)!==i)m.id="m"+(100+i);});
+  o.mapSeq=Math.max(+o.mapSeq||1,...o.maps.map(m=>+m.id.slice(1)+1));
+  if(!o.maps.some(m=>m.id===o.curMap))o.curMap=o.maps[0].id;
+  delete o.axes;
+  o.events.forEach(e=>{delete e.mx;delete e.my;});
+}
+function curMapObj(){return S.maps.find(m=>m.id===S.curMap)||S.maps[0];}
+function mapTitle(m){return `${m.theme==="all"?"すべて":COL[m.theme]}｜${m.yT}↔${m.yB} × ${m.xL}↔${m.xR}`;}
+function mapPlaced(m,withPriv){
+  const ev=new Map(S.events.map(e=>[e.id,e]));
+  const k=e=>e.age===""?999:e.age;
+  return Object.entries(m.pos).map(([id,p])=>({e:ev.get(id),p})).filter(o=>o.e&&(o.p.x||o.p.y)&&(m.theme==="all"||o.e.col===m.theme)&&(withPriv||!o.e.priv)).sort((a,b)=>k(a.e)-k(b.e));
+}
+function posWord(m,p){
+  const y=p.y==="T"?m.yT:p.y==="B"?m.yB:p.y==="C"?"どちらとも言えない":"—";
+  const x=p.x==="L"?m.xL:p.x==="R"?m.xR:p.x==="C"?"どちらとも言えない":"—";
+  return `${y}・${x}`;
+}
+function mapLines(withPriv){
+  const out=[];
+  S.maps.forEach(m=>{
+    const pl=mapPlaced(m,withPriv);
+    if(!pl.length&&!(m.note||"").trim())return;
+    out.push("",`■ 題材：${m.theme==="all"?"すべて":COL[m.theme]}（縦：${m.yT}↔${m.yB}／横：${m.xL}↔${m.xR}）`);
+    pl.forEach(({e,p})=>out.push(`- ${e.age===""?"":e.age+"歳　"}${e.text}：${posWord(m,p)}`));
+    if((m.note||"").trim())out.push(`気づき：${m.note.trim().replace(/\n+/g," ")}`);
+  });
+  return out;
+}
 function save(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{
@@ -321,7 +392,7 @@ function vYears(){
   const addHl=t=>{
     t=(t||"").replace(/^【[^】]*】/,"").replace(/\s+/g," ").trim();
     if(!t)return false;
-    S.events.push({id:"e"+(S.seq++),age:a,col:colIn.value,text:t.slice(0,140),score:null,star:false,priv:false,deep:{},mx:"",my:""});
+    S.events.push({id:"e"+(S.seq++),age:a,col:colIn.value,text:t.slice(0,140),score:null,star:false,priv:false,deep:{}});
     save();render();toast("ハイライトにしました");return true;
   };
   page.append(h("div",{class:"row"},colIn,
@@ -410,7 +481,7 @@ function stageCard(st,i){
   const add=()=>{
     const t=txtIn.value.trim();if(!t){txtIn.focus();return;}
     const a=ageIn.value===""?"":Math.max(0,Math.min(120,Math.round(+ageIn.value)));
-    S.events.push({id:"e"+(S.seq++),age:a,col:colIn.value,text:t,score:null,star:false,priv:false,deep:{},mx:"",my:""});
+    S.events.push({id:"e"+(S.seq++),age:a,col:colIn.value,text:t,score:null,star:false,priv:false,deep:{}});
     save();render();
     requestAnimationFrame(()=>{const again=document.querySelectorAll(".stage")[i];if(again){const inp=again.querySelector(".add input[type=text]");if(inp)inp.focus();}});
   };
@@ -553,57 +624,15 @@ function vDeep(){
 }
 function doneMark(e){const n=LADDER.filter(q=>(e.deep[q.k]||"").trim()).length;return n?h("span",{class:"muted small",text:`　${n}/${LADDER.length}`}):null;}
 
-/* ---------- 4 一言にする ---------- */
+/* ---------- 5 自分の軸 ---------- */
 function vOneword(){
   const box=h("div",{class:"stack"});
-  box.append(h("div",{class:"intro"},tip("キャッチコピーにするコツ",[
-    "出来事を2つの軸で分けると、自分の選び方のくせが見えます。軸は自由に変えてください（例：お金になった／ならなかった、人と出会えた／出会えなかった）。",
-    "得意なことがばらばらに見えても、共通するものが1つあります。それを一言にして、キャッチコピーの材料にします。",
-    "謙遜しないで書きます。ここは自分のためのノートです。"
+  box.append(h("div",{class:"intro"},tip("ここでやること",[
+    "まず「自分理解マトリクス」で出来事を4つのマスに分けて、自分が何を選んできたか（自分の軸）を見つけます。",
+    "次に「自分への2つの質問」と「強みを3つの文にする」で、得意なことを言葉にします。",
+    "最後に、ここまでの材料を組み立てて、キャッチコピーにします。謙遜しないで書きます。ここは自分のためのノートです。"
   ])));
-  const c=S.catch;
-  const cIn=(k,label,ph)=>{const id="c-"+k;const i=h("input",{type:"text",id,value:c[k],placeholder:ph});i.addEventListener("input",()=>{c[k]=i.value;save();});return h("div",{class:"field"},h("label",{for:id,text:label}),i);};
-  const lineTA=h("textarea",{id:"c-line",rows:"2",value:c.line,placeholder:"例：20年の経理の仕事と子育てで、数字が苦手な個人事業主のお金の不安をほどく人"});
-  lineTA.addEventListener("input",()=>{c.line=lineTA.value;save();});
-  box.append(h("div",{class:"sheet stack"},
-    h("h2",{text:"キャッチコピー"}),
-    h("p",{class:"small muted",text:"3つの材料を書いて「組み立てる」を押すと、下書きが入ります。そこから自分の言葉に直してください。"}),
-    h("div",{class:"axes"},
-      cIn("how","① どんな経験・強みで","例：20年の経理の仕事と子育てで"),
-      cIn("who","② 誰の","例：数字が苦手な個人事業主の"),
-      cIn("what","③ 何をする人","例：お金の不安をほどく人")),
-    h("div",{class:"row"},h("button",{class:"btn ghost sm",type:"button",onclick:()=>{
-      const d=[c.how,c.who,c.what].map(s=>(s||"").trim()).filter(Boolean).join("");
-      if(!d){toast("①〜③のどれかを書いてください");return;}
-      c.line=d;lineTA.value=d;save();
-    }},"組み立てる")),
-    h("label",{for:"c-line",text:"私のキャッチコピー"}),lineTA
-  ));
-  const ax=S.axes;
-  const axIn=(k,label)=>{const id="ax-"+k;const i=h("input",{type:"text",id,value:ax[k]});i.addEventListener("input",()=>{ax[k]=i.value;save();});i.addEventListener("change",()=>render());return h("div",{class:"field"},h("label",{for:id,text:label}),i);};
-  const mxBox=h("div",{class:"sheet"});
-  mxBox.append(h("h2",{text:"自分理解マトリクス"}));
-  mxBox.append(h("div",{class:"axes",style:"margin-top:8px"},axIn("xL","横軸・左"),axIn("xR","横軸・右"),axIn("yT","縦軸・上"),axIn("yB","縦軸・下")));
-  const Q={TL:[],TR:[],BL:[],BR:[]};
-  S.events.forEach(e=>{if(e.mx&&e.my)Q[(e.my==="T"?"T":"B")+(e.mx==="L"?"L":"R")].push(e);});
-  const quad=k=>h("div",{class:"quad"},Q[k].length?Q[k].map(e=>h("span",{class:"q-chip",text:`${ageLabel(e)} ${e.text}`})):h("span",{class:"muted small",text:"—"}));
-  mxBox.append(h("div",{class:"matrix"},
-    h("div",{class:"ax-y",text:"↑ "+ax.yT}),quad("TL"),quad("TR"),
-    h("div",{class:"ax-y",text:ax.yB+" ↓"}),quad("BL"),quad("BR"),
-    h("div"),h("div",{class:"ax-x"},h("span",{text:"← "+ax.xL}),h("span",{text:ax.xR+" →"}))
-  ));
-  const place=h("div",{style:"margin-top:12px"});
-  const evs=sorted(S.events);
-  if(!evs.length)place.append(h("p",{class:"empty",text:"ハイライトを、ここで4つのマスに分けます。"}));
-  evs.forEach(e=>{
-    const sx=h("select",{"aria-label":"横軸"},h("option",{value:""},"横軸：—"),h("option",{value:"L",selected:e.mx==="L"},ax.xL),h("option",{value:"R",selected:e.mx==="R"},ax.xR));
-    const sy=h("select",{"aria-label":"縦軸"},h("option",{value:""},"縦軸：—"),h("option",{value:"T",selected:e.my==="T"},ax.yT),h("option",{value:"B",selected:e.my==="B"},ax.yB));
-    sx.addEventListener("change",()=>{e.mx=sx.value;save();render();});
-    sy.addEventListener("change",()=>{e.my=sy.value;save();render();});
-    place.append(h("div",{class:"place"},h("span",{class:"ptxt",text:`${ageLabel(e)}　${e.text}`}),sx,sy));
-  });
-  mxBox.append(place);
-  box.append(mxBox);
+  box.append(matrixBox());
 
   const m=S.magic;
   const q=(k,label,sub,rows)=>{const id="m-"+k;const ta=h("textarea",{id,rows:String(rows||2),value:m[k]});ta.addEventListener("input",()=>{m[k]=ta.value;save();});return h("div",{class:"q"},h("label",{for:id,text:label}),sub?h("span",{class:"sub",text:sub}):null,ta);};
@@ -616,7 +645,97 @@ function vOneword(){
       q("s2","それで、相手にどんな良いことを届けられる？"),
       q("s3","それで実現したこと（実績）は？","数字や具体的な出来事で。小さくても大丈夫です。"))
   ));
+
+  const c=S.catch;
+  const cIn=(k,label,ph)=>{const id="c-"+k;const i=h("input",{type:"text",id,value:c[k],placeholder:ph});i.addEventListener("input",()=>{c[k]=i.value;save();});return h("div",{class:"field"},h("label",{for:id,text:label}),i);};
+  const lineTA=h("textarea",{id:"c-line",rows:"2",value:c.line,placeholder:"例：20年の経理の仕事と子育てで、数字が苦手な個人事業主のお金の不安をほどく人"});
+  lineTA.addEventListener("input",()=>{c.line=lineTA.value;save();});
+  box.append(h("div",{class:"sheet stack"},
+    h("h2",{text:"キャッチコピーを組み立てる"}),
+    h("p",{class:"small muted",text:"3つの材料を書いて「組み立てる」を押すと、下書きが入ります。そこから自分の言葉に直してください。"}),
+    h("div",{class:"axes"},
+      cIn("how","① どんな経験・強みで","例：20年の経理の仕事と子育てで"),
+      cIn("who","② 誰の","例：数字が苦手な個人事業主の"),
+      cIn("what","③ 何をする人","例：お金の不安をほどく人")),
+    h("div",{class:"row"},h("button",{class:"btn ghost sm",type:"button",onclick:()=>{
+      const d=[c.how,c.who,c.what].map(s=>(s||"").trim()).filter(Boolean).join("");
+      if(!d){toast("①〜③のどれかを書いてください");return;}
+      c.line=d;lineTA.value=d;save();
+    }},"組み立てる")),
+    h("label",{for:"c-line",text:"私のキャッチコピー"}),lineTA
+  ));
   return box;
+}
+function matrixBox(){
+  const mp=curMapObj();
+  const mxBox=h("div",{class:"sheet stack"});
+  mxBox.append(h("h2",{text:"自分理解マトリクス"}));
+  mxBox.append(tip("使い方",[
+    "題材を1つに絞って、出来事を2本の軸で4つのマスに分けます。最初は本の例のとおり「楽だった↔苦しかった」と「ためになった↔ためにならなかった」で分けてみてください。",
+    "「楽」は楽しさではなく、ラクだったかどうかです。やることが多くて大変だったけど楽しかったことは「苦しかった」の側に入ります。楽しさで分けたいときは、軸を「楽しかった↔つまらなかった」に変えてください。",
+    "軸は自由に変えて大丈夫です（お金が儲かったか、たくさんの人と知り合えたか、など）。どちらとも言えないものは「真ん中」に置きます。",
+    "題材や軸を変えたマップをいくつか作ると、何度も同じマスに集まる出来事が出てきます。それが、あなたが選んできたもの＝自分の軸です。"
+  ]));
+
+  /* マップの切り替え */
+  const del=confirmId==="map:"+mp.id
+    ?h("span",{class:"confirm"},"このマップを消しますか？",h("button",{class:"btn warn sm",type:"button",onclick:()=>{S.maps=S.maps.filter(x=>x!==mp);S.curMap=S.maps[0].id;confirmId=null;save();render();}},"消す"),h("button",{class:"btn ghost sm",type:"button",onclick:()=>{confirmId=null;render();}},"やめる"))
+    :(S.maps.length>1?h("button",{class:"icon-btn",type:"button",onclick:()=>{confirmId="map:"+mp.id;render();}},"このマップを消す"):null);
+  mxBox.append(h("div",{class:"maps"},
+    S.maps.map((m,i)=>h("button",{class:"btn ghost sm",type:"button","aria-pressed":String(m===mp),title:mapTitle(m),onclick:()=>{S.curMap=m.id;confirmId=null;save();render();}},`マップ${i+1}（${m.theme==="all"?"すべて":COL[m.theme]}）`)),
+    h("button",{class:"btn ghost sm",type:"button",onclick:()=>{const m=newMap(S.mapSeq++);m.theme=mp.theme;S.maps.push(m);S.curMap=m.id;save();render();}},"＋ 新しいマップ"),
+    del));
+
+  /* 題材 */
+  const th=h("select",{id:"mx-theme"},h("option",{value:"all",selected:mp.theme==="all"},"すべての出来事"),COLS.map(c=>h("option",{value:c.k,selected:mp.theme===c.k},c.label)));
+  th.addEventListener("change",()=>{mp.theme=th.value;save();render();});
+  mxBox.append(h("div",{class:"field"},h("label",{for:"mx-theme",text:"題材（どの出来事を並べるか）"}),th));
+
+  /* 軸 */
+  const axIn=(k,label)=>{const id="ax-"+mp.id+"-"+k;const i=h("input",{type:"text",id,value:mp[k]});i.addEventListener("input",()=>{mp[k]=i.value;save();});i.addEventListener("change",()=>render());return h("div",{class:"field"},h("label",{for:id,text:label}),i);};
+  const preset=(a,b,label)=>{const s=h("select",{"aria-label":label+"を例から選ぶ"},h("option",{value:""},"例から選ぶ"),AXIS_PRESETS.map((p,i)=>h("option",{value:String(i)},`${p[0]}↔${p[1]}`)));
+    s.addEventListener("change",()=>{const p=AXIS_PRESETS[+s.value];if(!p)return;mp[a]=p[0];mp[b]=p[1];save();render();});return s;};
+  mxBox.append(h("div",{class:"axrow"},axIn("yT","縦軸・上"),axIn("yB","縦軸・下"),preset("yT","yB","縦軸")));
+  mxBox.append(h("div",{class:"axrow"},axIn("xL","横軸・左"),axIn("xR","横軸・右"),preset("xR","xL","横軸")));
+  mxBox.append(h("p",{class:"small muted",text:"軸を変えても、置いた場所はそのまま残ります。別の軸で分け直すときは「＋ 新しいマップ」で作ってください。"}));
+
+  /* 図 */
+  const evs=sorted(S.events.filter(e=>mp.theme==="all"||e.col===mp.theme));
+  const Q={TL:[],TR:[],BL:[],BR:[]},mid=[];
+  evs.forEach(e=>{const p=mp.pos[e.id];if(!p||!(p.x||p.y))return;
+    if(p.x==="C"||p.y==="C"||!p.x||!p.y){if(p.x==="C"||p.y==="C")mid.push(e);return;}
+    Q[p.y+p.x].push(e);});
+  const quad=k=>h("div",{class:"quad"},Q[k].length?Q[k].map(e=>h("span",{class:"q-chip",text:`${ageLabel(e)} ${e.text}`})):h("span",{class:"muted small",text:"—"}),Q[k].length?h("span",{class:"cnt",text:Q[k].length+"件"}):null);
+  mxBox.append(h("div",{class:"matrix"},
+    h("div",{class:"ax-y",text:"↑ "+mp.yT}),quad("TL"),quad("TR"),
+    h("div",{class:"ax-y",text:mp.yB+" ↓"}),quad("BL"),quad("BR"),
+    h("div"),h("div",{class:"ax-x"},h("span",{text:"← "+mp.xL}),h("span",{text:mp.xR+" →"}))
+  ));
+  mxBox.append(h("div",{class:"mid"},h("span",{class:"muted",text:"真ん中（どちらとも言えない）："}),mid.length?mid.map(e=>h("span",{class:"q-chip",text:`${ageLabel(e)} ${e.text}`})):h("span",{class:"muted",text:"—"})));
+
+  /* 振り分け */
+  const place=h("div");
+  if(!evs.length)place.append(h("p",{class:"empty",text:mp.theme==="all"?"「2 ハイライト」に出来事を書くと、ここで4つのマスに分けられます。":`「${COL[mp.theme]}」の出来事がまだありません。題材を変えるか、「2 ハイライト」に書き足してください。`}));
+  evs.forEach(e=>{
+    const p=mp.pos[e.id]||{x:"",y:""};
+    const set=(k,v)=>{const n=Object.assign({x:"",y:""},mp.pos[e.id]||{});n[k]=v;if(!n.x&&!n.y)delete mp.pos[e.id];else mp.pos[e.id]=n;save();render();};
+    const sy=h("select",{"aria-label":"縦軸"},h("option",{value:""},"縦：—"),h("option",{value:"T",selected:p.y==="T"},mp.yT),h("option",{value:"C",selected:p.y==="C"},"真ん中"),h("option",{value:"B",selected:p.y==="B"},mp.yB));
+    const sx=h("select",{"aria-label":"横軸"},h("option",{value:""},"横：—"),h("option",{value:"R",selected:p.x==="R"},mp.xR),h("option",{value:"C",selected:p.x==="C"},"真ん中"),h("option",{value:"L",selected:p.x==="L"},mp.xL));
+    sy.addEventListener("change",()=>set("y",sy.value));
+    sx.addEventListener("change",()=>set("x",sx.value));
+    place.append(h("div",{class:"place"},h("span",{class:"ptxt",text:`${ageLabel(e)}　${e.text}`}),sy,sx));
+  });
+  mxBox.append(place);
+
+  /* 気づき */
+  const nid="mx-note-"+mp.id;
+  const note=h("textarea",{id:nid,rows:"3",value:mp.note,placeholder:"例：仕事では、苦しくても自分のためになることを選んできた。これが私の仕事観。"});
+  note.addEventListener("input",()=>{mp.note=note.value;save();});
+  mxBox.append(h("div",{class:"q"},
+    h("label",{for:nid,text:"一言で言うと、これが私の「〇〇観」"}),
+    h("span",{class:"sub",text:"いちばん多く集まったマスはどこ？ そこに共通するものは？ 逆に、すぐやめてしまったものはどのマス？"}),
+    note));
+  return mxBox;
 }
 
 /* ---------- 6 まとめる ---------- */
@@ -768,7 +887,9 @@ function buildFull(){
   out.push(seeds.length?seeds.map(e=>{const k=((e.deep.reframe||"").trim()||(e.deep.now||"").trim()).replace(/\n+/g," ");return `- ${e.age===""?"":e.age+"歳　"}${e.text}${k?" → "+k:""}${e.priv?"［非公開］":""}`;}).join("\n"):"（「4 深掘りする」で「今へ」「見直す」を書くと、ここに並びます）");
   out.push("","## これからのサービスのストック");
   const sv=[["強み",m.s1],["届けられること",m.s2],["実績",m.s3],["求めているもの",m.seek]].filter(x=>(x[1]||"").trim());
-  out.push(sv.length?sv.map(x=>`- ${x[0]}：${x[1].trim().replace(/\n+/g," ")}`).join("\n"):"（「5 キャッチコピー」の強みの3つの文を書くと、ここに並びます）");
+  out.push(sv.length?sv.map(x=>`- ${x[0]}：${x[1].trim().replace(/\n+/g," ")}`).join("\n"):"（「5 自分の軸」の強みの3つの文を書くと、ここに並びます）");
+  const ml=mapLines(true);
+  if(ml.length)out.push("","## 自分理解マトリクス",...ml.map(l=>l.startsWith("■ ")?"### "+l.slice(2):l));
   const turns=turningPoints();
   if(turns.length){out.push("","## 人生の曲がり角（気持ちの波から）");turns.forEach(e=>out.push(`- ${e.age}歳　${e.text}（充実度 ${(e.score>0?"+":"")+e.score}）`));}
   return out.join("\n");
@@ -788,7 +909,7 @@ function buildAI(withPriv,withYears){
   "8. 最初に、深掘りすると良さそうな出来事を3つ選んで、理由と一緒に教えてください。そのあと質問を始めてください。",
   "9. 空白がだいたい埋まったら、次の4つを作ってください。",
   "   A. 提出用：時代ごとのハイライトの箇条書き（A4で4ページ以内）",
-  "   B. キャッチコピーの候補を5つ（経験・強み・届けたい相手が入るもの）と、それぞれの理由",
+  "   B. キャッチコピーの候補を5つ（経験・強み・届けたい相手が入るもの）と、それぞれの理由。自分理解マトリクスがあれば、どのマスに出来事が集まっているかから、私が選んできたもの（私の軸）も一言で添えてください",
   "   C. 全体を時系列にまとめた自分史（一人称「私」、章立てと年表つき）",
   "   D. この自分史から作れる発信のネタを10個と、これからのサービスの種を3つ",
   "",
@@ -802,9 +923,8 @@ function buildAI(withPriv,withYears){
   const m=S.magic;
   const mm=[["得意なこと（一言）",m.good],["求めているもの",m.seek],["優れていること",m.s1],["相手に届けられること",m.s2],["実現したこと",m.s3]].filter(x=>(x[1]||"").trim());
   if(mm.length){out.push("","【自分を一言で・強み（下書き）】");mm.forEach(x=>out.push(`- ${x[0]}：${x[1].trim()}`));}
-  const axisUsed=S.events.filter(e=>e.mx&&e.my&&(withPriv||!e.priv));
-  if(axisUsed.length){out.push("",`【自分理解マトリクス（横：${S.axes.xL}↔${S.axes.xR}／縦：${S.axes.yT}↔${S.axes.yB}）】`);
-    axisUsed.forEach(e=>out.push(`- ${e.text}：${e.mx==="L"?S.axes.xL:S.axes.xR}・${e.my==="T"?S.axes.yT:S.axes.yB}`));}
+  const ml=mapLines(withPriv);
+  if(ml.length)out.push("","【自分理解マトリクス（出来事を2本の軸で4つに分けたもの）】",...ml);
   if(withYears){
     const ys=Object.keys(S.years).map(Number).filter(a=>(S.years[a]||"").trim()).sort((x,y)=>x-y);
     if(ys.length){out.push("","【1年1ページの書き写し】");ys.forEach(a=>{const y=yearOf(a);out.push("",`■ ${a}歳${y?"（"+y+"年）":""}`,S.years[a].trim());});}
@@ -820,7 +940,7 @@ function loadSample(){
     [14,"hobby","吹奏楽部で後輩に教える役になる",4],[20,"work","就職。最初の配属は総務",1],[27,"work","社内公募に手を挙げて異動",4],
     [33,"private","子どもが生まれる",4],[38,"work","忙しい部署で余裕がない日々",-3],[45,"hobby","学び直しを始める",3]
   ];
-  ex.forEach(([age,col,text,score])=>S.events.push({id:"e"+(S.seq++),age,col,text:"［見本］"+text,score,star:false,priv:false,deep:{},mx:"",my:""}));
+  ex.forEach(([age,col,text,score])=>S.events.push({id:"e"+(S.seq++),age,col,text:"［見本］"+text,score,star:false,priv:false,deep:{}}));
   if(!(S.years[14]||"").trim())S.years[14]="［見本］\n【仕事・学校】部活：吹奏楽部。2年からアルトサックス。部員が足りなくて、ほかの楽器の後輩にも教えた\n【好きなこと・特技】人に教えていたこと：呼吸法、楽譜の読み方、リズムの合わせ方\nそのときの気持ち：頼られるのがうれしかった";
   if(!(S.years[27]||"").trim())S.years[27]="［見本］\n【仕事・学校】異動・転職：社内で初めての公募。一般職だったけど手を挙げた\n周りからは「どんなもんなの？」と見られていた気がする\n結果的に、課長がやるような仕事も任された";
   S.lastYear=14;curYear=14;
