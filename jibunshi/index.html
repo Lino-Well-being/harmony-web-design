@@ -13,23 +13,23 @@
 <style>
 /* Layout: 方眼ノートの1冊。上に名前と生まれ年、5つの手順をタブで進む。各手順は「書き方のコツ」→作業面の順 */
 :root{
-  --paper:#f6f8fb; --sheet:#ffffff; --grid:#e2e8f1; --ink:#1d2a44; --muted:#5b6880;
-  --pen:#2b66a8; --pen-soft:#e4eef9; --marker:#ffe27a; --marker-ink:#4a3b00;
-  --line:#cfd8e6; --warn:#b4432f; --ok:#2f7a4f;
+  --paper:#f7faef; --sheet:#ffffff; --grid:#e3edd2; --ink:#27331d; --muted:#5e6b50;
+  --pen:#4e7d22; --pen-soft:#eaf3d5; --marker:#ffe27a; --marker-ink:#4a3b00;
+  --line:#d2dfba; --warn:#b4432f; --ok:#2f7a4f;
   --c-work:#2b66a8; --c-private:#2f7a4f; --c-love:#b4527a; --c-hobby:#a8701e;
   --f-hand:"Klee One","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
   --f-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
   --r:10px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#121826; --sheet:#1a2234; --grid:#243049; --ink:#e6ebf4; --muted:#9aa7bf;
-  --pen:#7fb0ea; --pen-soft:#22324d; --marker:#e9c94a; --marker-ink:#2a2100;
-  --line:#33405a; --warn:#ec8a76; --ok:#7cc79a;
+  --paper:#13190f; --sheet:#1b2415; --grid:#26321c; --ink:#e9efdf; --muted:#a2af8e;
+  --pen:#b3d67a; --pen-soft:#2a3a1d; --marker:#e9c94a; --marker-ink:#2a2100;
+  --line:#3a4a2b; --warn:#ec8a76; --ok:#7cc79a;
   --c-work:#7fb0ea; --c-private:#7cc79a; --c-love:#e597b8; --c-hobby:#e2b26a; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --paper:#121826; --sheet:#1a2234; --grid:#243049; --ink:#e6ebf4; --muted:#9aa7bf;
-  --pen:#7fb0ea; --pen-soft:#22324d; --marker:#e9c94a; --marker-ink:#2a2100;
-  --line:#33405a; --warn:#ec8a76; --ok:#7cc79a;
+  --paper:#13190f; --sheet:#1b2415; --grid:#26321c; --ink:#e9efdf; --muted:#a2af8e;
+  --pen:#b3d67a; --pen-soft:#2a3a1d; --marker:#e9c94a; --marker-ink:#2a2100;
+  --line:#3a4a2b; --warn:#ec8a76; --ok:#7cc79a;
   --c-work:#7fb0ea; --c-private:#7cc79a; --c-love:#e597b8; --c-hobby:#e2b26a; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75;
