@@ -59,6 +59,25 @@ textarea.big{min-height:320px}
 .voice ul{margin:6px 0 0}
 input[type=number]{width:96px}
 .privacy{font-size:12.5px;color:var(--muted);max-width:420px}
+.ov{margin:4px 0 6px}
+.ov-box{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:8px 12px}
+.ov-box summary{cursor:pointer}
+.ov-rows{display:grid;gap:4px;margin-top:8px}
+.ov-row{display:grid;grid-template-columns:7.5em minmax(0,1fr) 3em;gap:8px;align-items:center}
+.ov-lab{font-size:12.5px;color:var(--muted);line-height:1.3}
+.ov-n{text-align:right}
+.ov-cells{display:flex;flex-wrap:wrap;gap:3px}
+.ov-c{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:4px;border:1px solid var(--line);background:var(--sheet);padding:0;font-size:10px;line-height:1;color:var(--marker-ink);cursor:pointer;font-style:normal}
+.ov-c.lv1{background:var(--pen-soft);border-color:var(--line)}
+.ov-c.lv2{background:#9cc46a;border-color:#86b153}
+.ov-c.lv3{background:var(--pen);border-color:var(--pen);color:var(--marker)}
+.ov-c.now{outline:2px solid var(--ink);outline-offset:1px}
+.ov-legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;align-items:center}
+.ov-legend span{display:inline-flex;align-items:center;gap:4px}
+.ov-legend .ov-c{width:12px;height:12px;cursor:default;font-size:8px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ov-c.lv2{background:#6f9640;border-color:#7fa84d}}
+:root[data-theme="dark"] .ov-c.lv2{background:#6f9640;border-color:#7fa84d}
+@media (max-width:520px){.ov-row{grid-template-columns:5.8em minmax(0,1fr) 2.6em;gap:6px}.ov-c{width:16px;height:16px}}
 .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin:6px 0 16px;scrollbar-width:thin}
 .tab{flex:0 0 auto;border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:6px 14px;display:flex;gap:8px;align-items:center;white-space:nowrap}
 .tab .n{font-family:var(--f-hand);font-weight:600;color:var(--pen)}
@@ -189,6 +208,8 @@ input[type=number]{width:96px}
     </div>
   </header>
   <p class="privacy">書いた内容は、この端末のブラウザの中にだけ保存されます。主催者にもほかの参加者にも見えません。「Cookieとサイトデータ」を消すと消えます。iPhoneのSafariは、7日ほど開かないと消えることがあるので、ホーム画面に追加して開くか、ときどき「7 まとめる」から控えを取ってください。</p>
+
+  <section id="overview" class="ov" aria-label="進み具合"></section>
 
   <nav class="tabs" role="tablist" aria-label="手順">
     <button class="tab" role="tab" data-step="ask"><span class="n">1</span>質問に答える</button>
@@ -330,6 +351,7 @@ function save(){
   saveTimer=setTimeout(()=>{
     try{localStorage.setItem(KEY,JSON.stringify(S));flashSaved("保存しました");}
     catch(e){flashSaved("この画面では保存できません。控えを取ってください");}
+    try{renderOverview();}catch(e){}
   },400);
 }
 function flashSaved(t){const el=document.getElementById("saved");el.textContent=t;clearTimeout(el._t);el._t=setTimeout(()=>{el.textContent="";},2200);}
@@ -365,11 +387,49 @@ document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{go(
 window.addEventListener("hashchange",()=>{const v=location.hash.replace("#","");if(v&&v!==view){view=v;render();}});
 function go(v){view=v;try{history.replaceState(null,"","#"+v);}catch(e){}render();window.scrollTo({top:0});}
 
+/* ---------- 進み具合（年ごとの見渡し） ---------- */
+const QA_RANGE={birth:[0,2],young:[3,5],low:[6,8],high:[9,11],teen:[12,17],college:[18,21]};
+let ovOpen=true;try{ovOpen=localStorage.getItem("jibunshi-ov")!=="0";}catch(e){}
+function yearLevel(a){
+  const hl=S.events.some(e=>e.age===a&&e.text);
+  if(hl)return 3;
+  if((S.years[a]||"").trim())return 2;
+  for(const k in QA_RANGE){const r=QA_RANGE[k];if(a>=r[0]&&a<=r[1]&&TOPIC[k]&&qaCount(k))return 1;}
+  return 0;
+}
+function renderOverview(){
+  const box=document.getElementById("overview");if(!box)return;
+  const max=maxAge(),ca=currentAge();
+  let n=0;for(let a=0;a<=max;a++)if(yearLevel(a)>=2)n++;
+  const d=h("details",{class:"ov-box",open:ovOpen});
+  d.addEventListener("toggle",()=>{ovOpen=d.open;try{localStorage.setItem("jibunshi-ov",ovOpen?"1":"0");}catch(e){}});
+  d.append(h("summary",null,h("strong",{text:"進み具合"}),h("span",{class:"small muted",text:`　書けた年 ${n}／${max+1}`})));
+  const rows=h("div",{class:"ov-rows"});
+  STAGES.forEach(st=>{
+    if(st.from>max)return;
+    const to=Math.min(st.to,max),cells=h("div",{class:"ov-cells"});
+    let done=0;
+    for(let a=st.from;a<=to;a++){
+      const lv=yearLevel(a);if(lv>=2)done++;
+      const y=yearOf(a);
+      const lab=`${a}歳${y?"（"+y+"年）":""}：${["まだ書いていない","質問に答えた","書いた","ハイライトあり"][lv]}`;
+      cells.append(h("button",{type:"button",class:"ov-c lv"+lv+(a===ca?" now":""),title:lab,"aria-label":lab,onclick:()=>{curYear=a;S.lastYear=a;save();go("years");}},lv===3?"★":""));
+    }
+    rows.append(h("div",{class:"ov-row"},h("span",{class:"ov-lab",text:st.label}),cells,h("span",{class:"ov-n small muted",text:`${done}/${to-st.from+1}`})));
+  });
+  d.append(rows,h("div",{class:"ov-legend small muted"},
+    h("span",null,h("i",{class:"ov-c lv0"}),"まだ"),h("span",null,h("i",{class:"ov-c lv1"}),"質問に答えた"),
+    h("span",null,h("i",{class:"ov-c lv2"}),"書いた"),h("span",null,h("i",{class:"ov-c lv3"},"★"),"ハイライトあり"),
+    h("span",null,"マスを押すと、その年のページに移ります")));
+  box.replaceChildren(d);
+}
+
 function render(){
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",String(t.dataset.step===view)));
   const m=document.getElementById("main");m.replaceChildren();
   const f={ask:vAsk,years:vYears,write:vWrite,curve:vCurve,deep:vDeep,oneword:vOneword,summary:vSummary}[view]||vYears;
   m.append(f());
+  renderOverview();
 }
 
 function tip(title,items){return h("div",{class:"tip"},h("strong",{text:title}),h("ul",null,items.map(i=>h("li",{text:i}))));}
