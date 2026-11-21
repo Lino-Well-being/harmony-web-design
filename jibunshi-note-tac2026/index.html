@@ -887,6 +887,98 @@ function voiceGuide(){
 }
 
 /* ---------- 2 ハイライト ---------- */
+/* ---------- ハイライトの候補をAIに出してもらう ---------- */
+let candOpen=false,candText="",candItems=null;
+function candPrompt(){
+  const b=birth(),out=[];
+  out.push("あなたは、自分史づくりの聞き手です。下にあるのは、私が自分史ノートアプリに書いた自分史のメモです。この中から、提出用の自分史に載せる「ハイライト（大事な出来事）」の候補を選んでください。");
+  out.push("","【選び方】");
+  out.push("・次の3つに当てはまる出来事を選んでください。","　1. 人生の曲がり角になった出来事（進路、仕事、家族、考え方が変わったとき）","　2. 今の自分の仕事・大事にしていること・得意なことにつながっている出来事","　3. 形を変えて何度もくり返している選び方や役まわりが、よく表れている出来事");
+  out.push("・人生の時期（子どものころ、中学・高校、学生時代、20代、30代、40代〜今）ごとに3〜5個、全部で30個までにしてください。メモが少ない時期は、少なくて大丈夫です。");
+  out.push("・メモに書いてあることだけを使ってください。書いていないことを足したり、推測したりしないでください。");
+  out.push("・できるだけ私の言葉のまま、1つを60字くらいまでの1行にしてください。");
+  out.push("・年齢は、メモの年齢か、生まれ年からの計算で書いてください。分からなければ「？」にしてください。");
+  out.push("・下の「すでに選んだハイライト」と同じ出来事は出さないでください。");
+  out.push("・家族の病気や死など、人に見せるか迷いそうな出来事は、理由の最後に「（人に見せるか確かめてください）」と添えてください。");
+  out.push("","【出す形】次の形だけで出してください。前置きやまとめは付けないでください。","［14歳｜仕事・学校］出来事の1行","理由：選んだ理由を一言","","（分類は「仕事・学校」「家族・暮らし」「恋愛・大切な人」「好きなこと・特技」のどれかにしてください）");
+  out.push("","---","【私のこと】",`呼び名：${S.name||"（なし）"}`,b?`生まれ年：${b}年`:"生まれ年：（未入力）");
+  const ev=sorted(S.events.filter(e=>e.text&&!e.priv));
+  out.push("","【すでに選んだハイライト】",ev.length?ev.map(e=>`・${e.age!==""?e.age+"歳　":""}${e.text}`).join("\n"):"（まだありません）");
+  out.push("","【1年1ページに書いたこと】");
+  const ys=Object.keys(S.years).map(Number).filter(a=>(S.years[a]||"").trim()).sort((x,y)=>x-y);
+  if(ys.length)ys.forEach(a=>{const y=yearOf(a);out.push("",`■ ${a}歳${y?"（"+y+"年）":""}`,S.years[a].trim());});else out.push("（まだありません）");
+  const tq=buildTopics(false,"■");
+  out.push("","【質問への答え（トピック別）】",...(tq.length?tq:["（まだありません）"]));
+  return out.join("\n");
+}
+const COL_BY_LABEL=Object.fromEntries(COLS.map(c=>[c.label,c.k]));
+function parseCand(src){
+  const items=[];let cur=null;
+  zen2han(src.replace(/\r/g,"")).split("\n").forEach(raw=>{
+    const l=raw.trim().replace(/^[-・*\d.\s]+(?=[［\[])/,"");
+    const m=l.match(/^[［\[]\s*(\d{1,3}|[？?])?\s*(?:歳|才)?\s*[｜|｜/／]\s*([^］\]]+?)\s*[］\]]\s*(.+)$/);
+    if(m){
+      const a=m[1]&&/\d/.test(m[1])?Math.min(120,+m[1]):"";
+      const lab=m[2].trim();
+      const col=COL_BY_LABEL[lab]||(COLS.find(c=>lab.includes(c.label.split("・")[0]))||{k:"work"}).k;
+      cur={age:a,col,text:m[3].trim().slice(0,140),why:"",on:true};items.push(cur);return;
+    }
+    const w=l.match(/^理由\s*[：:]\s*(.+)$/);
+    if(w&&cur){cur.why=(cur.why?cur.why+" ":"")+w[1].trim();}
+  });
+  return items;
+}
+function candBox(){
+  const d=h("details",{class:"tip imp",open:candOpen});
+  d.addEventListener("toggle",()=>{candOpen=d.open;});
+  d.append(h("summary",null,h("strong",{text:"ハイライトの候補をAIに出してもらう"})));
+  d.append(h("ol",{class:"imp-steps"},
+    h("li",{text:"「1 質問に答える」と「2 1年1ページ」を書いてから使います。書いた量が多いほど、候補も選びやすくなります。"}),
+    h("li",{text:"下の「候補を出してもらう文をコピー」を押して、ふだん使っているAI（ChatGPTなど）に貼って送ります。"}),
+    h("li",{text:"AIが出した候補を全部コピーして、下の欄に貼り、「候補を確かめる」を押します。"}),
+    h("li",{text:"要らない候補はチェックを外し、年齢や言葉を直してから「チェックしたものをハイライトに入れる」を押します。"})));
+  d.append(h("p",{class:"small muted",text:"AIは「人生の曲がり角」「今の自分につながっていること」「くり返している選び方」の3つで選びます。非公開にしたトピックとハイライトは、AIに送る文に入りません。最後に決めるのはあなたです。"}));
+  const pr=h("textarea",{rows:"5",readonly:true,"aria-label":"AIに送る、候補を出してもらう文"});
+  d.addEventListener("toggle",()=>{if(d.open)pr.value=candPrompt();});
+  if(candOpen)pr.value=candPrompt();
+  d.append(h("div",{class:"row"},copyBtn(()=>candPrompt(),pr,"候補を出してもらう文をコピー")),
+    h("details",null,h("summary",{class:"small",text:"コピーできないときは、ここを開いて文を選んでください"}),pr));
+  const src=h("textarea",{rows:"7","aria-label":"AIが出した候補を貼る",placeholder:"［14歳｜仕事・学校］…\n理由：…\nの形の、AIの答えをここに貼ります",value:candText});
+  src.addEventListener("input",()=>{candText=src.value;});
+  d.append(h("h3",{text:"AIが出した候補"}),src,h("div",{class:"row"},
+    h("button",{class:"btn",type:"button",onclick:()=>{
+      candText=src.value;candItems=parseCand(candText);
+      if(!candItems.length)toast("候補が見つかりませんでした。［14歳｜仕事・学校］の形か確かめてください");
+      candOpen=true;render();
+    }},"候補を確かめる"),
+    candText||candItems?h("button",{class:"btn ghost sm",type:"button",onclick:()=>{candText="";candItems=null;candOpen=true;render();}},"欄を空にする"):null));
+  if(candItems&&candItems.length){
+    const list=h("div",{class:"imp-list stack"});
+    candItems.forEach(c=>{
+      const cb=h("input",{type:"checkbox",checked:c.on,"aria-label":"ハイライトに入れる"});
+      cb.addEventListener("change",()=>{c.on=cb.checked;});
+      const ageIn=h("input",{type:"number",min:"0",max:"120",inputmode:"numeric","aria-label":"年齢",placeholder:"？",value:c.age===""?"":String(c.age),style:"width:4.5em"});
+      ageIn.addEventListener("input",()=>{const v=ageIn.value.trim();c.age=v===""?"":Math.max(0,Math.min(120,Math.round(+v)));});
+      const colIn=h("select",{"aria-label":"分類"},COLS.map(x=>h("option",{value:x.k,selected:x.k===c.col},x.label)));
+      colIn.addEventListener("change",()=>{c.col=colIn.value;});
+      const tx=h("textarea",{rows:"2","aria-label":"出来事",value:c.text,style:"width:100%;margin:6px 0 0"});
+      tx.addEventListener("input",()=>{c.text=tx.value.slice(0,140);});
+      list.append(h("div",{class:"imp-item"},
+        h("div",{class:"row"},cb,ageIn,h("span",{class:"small",text:"歳"}),colIn),tx,
+        c.why?h("p",{class:"small muted",text:"理由："+c.why}):null));
+    });
+    list.append(h("div",{class:"row"},h("button",{class:"btn",type:"button",onclick:()=>{
+      const have=new Set(S.events.map(e=>e.text.trim()));
+      const pick=candItems.filter(c=>c.on&&c.text.trim()&&!have.has(c.text.trim()));
+      if(!pick.length){toast("入れる候補がありません");return;}
+      pick.forEach(c=>S.events.push({id:"e"+(S.seq++),age:c.age,col:c.col,text:c.text.trim(),score:null,star:false,priv:false,deep:{}}));
+      candItems=null;candText="";candOpen=false;save();render();
+      toast(`${pick.length}件をハイライトに入れました`);
+    }},"チェックしたものをハイライトに入れる"),h("span",{class:"small muted",text:"同じ文のハイライトがすでにあれば、入れません。"})));
+    d.append(h("h3",{text:"ハイライトに入れる前の確認"}),list);
+  }
+  return d;
+}
 function vWrite(){
   const box=h("div",{class:"stack"});
   box.append(h("div",{class:"intro"},
@@ -894,9 +986,11 @@ function vWrite(){
       "1年1ページから選んだハイライトが、時代ごとに並びます。ここから直接書き足すこともできます。",
       "提出用の箇条書きは、このハイライトから作ります。A4で4ページ以内が目安です。「7 まとめる」で今のページ数が分かります。",
       "人生の曲がり角になった出来事、今の自分につながっている出来事を選ぶと、深掘りしやすくなります。",
-      "人に見せたくない出来事には「非公開」を付けておくと、提出用から外れます。"
+      "人に見せたくない出来事には「非公開」を付けておくと、提出用から外れます。",
+      "選ぶのが難しいときは、下の「ハイライトの候補をAIに出してもらう」を使うと、AIが候補を出してくれます。要らないものを外すだけで選べます。"
     ])
   ));
+  box.append(candBox());
   if(!S.events.length){
     box.append(h("div",{class:"sheet row",style:"justify-content:space-between"},
       h("p",{class:"muted",text:"まだハイライトがありません。「2 1年1ページ」で選ぶか、下の点線のヒントから書けます。"}),
