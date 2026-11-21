@@ -472,7 +472,7 @@ function stageCard(st,i){
   const hints=h("div",{class:"hints"});
   const ageIn=h("input",{type:"number",min:"0",max:"120","aria-label":st.label+"の年齢",placeholder:"歳",value:String(st.from)});
   const colIn=h("select",{"aria-label":"分類"},COLS.map(c=>h("option",{value:c.k},c.label)));
-  const txtIn=h("input",{type:"text","aria-label":st.label+"の出来事",placeholder:"例：吹奏楽部に入った"});
+  const txtIn=h("input",{type:"text","aria-label":st.label+"の出来事"});
   COLS.forEach(c=>{
     hints.append(h("div",{class:"hint-col"},h("b",{class:"t-"+c.k,text:c.label}),
       (st.hints[c.k]||[]).map(t=>h("button",{class:"chip",type:"button",onclick:()=>{colIn.value=c.k;txtIn.value=t+"：";txtIn.focus();}},t))));
