@@ -137,7 +137,12 @@ input[type=number]{width:96px}
 .topic{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:6px 10px;font-size:13.5px;color:var(--ink)}
 .topic[aria-pressed=true]{border-color:var(--pen);box-shadow:inset 0 0 0 1px var(--pen)}
 .small.ok{color:var(--ok)}
-.qtext{font-size:18px;line-height:1.6}
+.qcard{background:var(--pen-soft);border:1px solid var(--pen);border-left:6px solid var(--pen);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.qno{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin:0}
+.qno b{background:var(--pen);color:var(--sheet);border-radius:999px;padding:0 10px;font-size:13px;font-family:var(--f-body)}
+.qtext{font-size:19px;line-height:1.6}
+.qcard .hint{font-size:13px;color:var(--muted);margin:0}
+.ans-label{font-size:13px;font-weight:600;color:var(--muted);margin:4px 0 -6px}
 .hl-box{border-top:1px dashed var(--grid);padding-top:10px}
 .imp summary{cursor:pointer}
 .imp-steps{margin:8px 0;padding-left:1.4em}
@@ -579,14 +584,16 @@ function vAsk(){
     box.append(sec);return box;
   }
   const qi=cur.q,[qt,qh]=T.qs[qi];
-  sec.append(h("p",{class:"small muted",text:`質問 ${qi+1}／${T.qs.length}`}));
-  sec.append(h("h3",{class:"qtext",text:qt}));
-  if(qh)sec.append(h("p",{class:"small muted",text:"思い出す手がかり："+qh}));
-  sec.append(voiceGuide());
+  sec.append(h("div",{class:"qcard"},
+    h("p",{class:"qno"},h("b",{text:"Q"+(qi+1)}),`質問 ${qi+1}／${T.qs.length}`),
+    h("h3",{class:"qtext",text:qt}),
+    qh?h("p",{class:"hint",text:"思い出す手がかり："+qh}):null));
   const key=qaKey(T.k,qi);
+  sec.append(h("label",{class:"ans-label",for:"qa-ans",text:"あなたの答え"}));
   const ta=h("textarea",{id:"qa-ans",class:"big",rows:"8",value:S.qa.a[key]||"","aria-label":qt});
   ta.addEventListener("input",()=>{if(ta.value)S.qa.a[key]=ta.value;else delete S.qa.a[key];save();});
   sec.append(ta);
+  sec.append(voiceGuide("上"));
   const last=qi>=T.qs.length-1;
   sec.append(h("div",{class:"row",style:"justify-content:space-between"},
     h("button",{class:"btn ghost sm",type:"button",disabled:qi<=0,onclick:()=>go2(T.k,qi-1)},"← 前の質問"),
@@ -865,7 +872,7 @@ function gapBox(){
   return box;
 }
 
-function voiceGuide(){
+function voiceGuide(pos){
   const ua=navigator.userAgent||"";
   const dev=/iPhone|iPad|iPod/.test(ua)?"ios":/Android/.test(ua)?"android":/Mac/.test(ua)?"mac":/Windows/.test(ua)?"win":"other";
   const ways={
@@ -877,7 +884,7 @@ function voiceGuide(){
   };
   return h("details",{class:"tip voice",open:S.voiceOpen!==false?true:null,ontoggle:function(){S.voiceOpen=this.open;save();}},
     h("summary",null,h("strong",{text:"話して書けます（音声入力）"})),
-    h("p",{style:"margin-top:6px",text:"下の欄を押して、"+ways[dev]}),
+    h("p",{style:"margin-top:6px",text:(pos||"下")+"の欄を押して、"+ways[dev]}),
     h("ul",null,
       h("li",{text:"話し言葉のまま、言い直しや「えーと」も消さずに残して大丈夫です。気持ちがそのまま残ります。"}),
       h("li",{text:"整えるのはあとで。大事なところだけ「ハイライトにする」で1行にします。"}),
