@@ -87,6 +87,9 @@ input[type=number]{width:96px}
 .tip{background:var(--pen-soft);border-radius:var(--r);padding:12px 14px;font-size:14px}
 .tip strong{font-weight:700}
 .tip ul{margin:6px 0 0;padding-left:1.2em}
+.mic-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}
+.mic{border:1px solid var(--pen);background:var(--sheet);color:var(--pen);border-radius:999px;padding:5px 14px;font-weight:500}
+.mic.on{background:#c0392b;border-color:#c0392b;color:#fff}
 .btn{border:1px solid var(--pen);background:var(--pen);color:var(--sheet);border-radius:8px;padding:7px 14px;font-weight:500}
 .btn.ghost{background:transparent;color:var(--pen)}
 .btn.warn{border-color:var(--warn);color:var(--warn);background:transparent}
@@ -600,7 +603,7 @@ function vAsk(){
   sec.append(h("label",{class:"ans-label",for:"qa-ans",text:"あなたの答え"}));
   const ta=h("textarea",{id:"qa-ans",class:"big",rows:"8",value:S.qa.a[key]||"","aria-label":qt});
   ta.addEventListener("input",()=>{if(ta.value)S.qa.a[key]=ta.value;else delete S.qa.a[key];save();});
-  sec.append(ta);
+  sec.append(micRow(ta)||"",ta);
   sec.append(voiceGuide("上"));
   const last=qi>=T.qs.length-1;
   sec.append(h("div",{class:"row",style:"justify-content:space-between"},
@@ -689,7 +692,7 @@ function vYears(){
         ta.value+=ins;S.years[a]=ta.value;save();ta.focus();ta.selectionStart=ta.selectionEnd=ta.value.length;
       }},t))));
   });
-  page.append(h("p",{class:"small muted",text:"点線のヒントを押すと、見出しが入ります。"}),hints,voiceGuide(),ta);
+  page.append(h("p",{class:"small muted",text:"点線のヒントを押すと、見出しが入ります。"}),hints,voiceGuide(),micRow(ta)||"",ta);
   const colIn=h("select",{"aria-label":"ハイライトの分類"},COLS.map(c=>h("option",{value:c.k},c.label)));
   const txtIn=h("input",{type:"text","aria-label":"ハイライトを書く",placeholder:"または、ハイライトを1行で書く"});
   const addHl=t=>{
@@ -880,6 +883,42 @@ function gapBox(){
   return box;
 }
 
+/* ---------- 音声入力ボタン（ブラウザの音声認識） ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let micRec=null,micBtnEl=null;
+function micStop(){if(micRec){try{micRec.stop();}catch(_){}}}
+function micRow(ta){
+  if(!SR)return null;
+  const st=h("span",{class:"small muted"});
+  const b=h("button",{class:"mic",type:"button",text:"🎤 話して入れる",onclick:()=>{
+    if(micRec&&micBtnEl===b){micStop();return;}
+    micStop();
+    const r=new SR();r.lang="ja-JP";r.continuous=true;r.interimResults=true;
+    micRec=r;micBtnEl=b;
+    r.onresult=ev=>{
+      if(!ta.isConnected){micStop();return;}
+      let fin="",mid="";
+      for(let i=ev.resultIndex;i<ev.results.length;i++){const t=ev.results[i][0].transcript;if(ev.results[i].isFinal)fin+=t;else mid+=t;}
+      if(fin){
+        const pos=ta.selectionEnd??ta.value.length;
+        ta.value=ta.value.slice(0,pos)+fin+ta.value.slice(pos);
+        ta.selectionStart=ta.selectionEnd=pos+fin.length;
+        ta.dispatchEvent(new Event("input",{bubbles:true}));
+      }
+      st.textContent=mid?"聞き取り中："+mid:"";
+    };
+    r.onerror=ev=>{
+      if(ev.error==="not-allowed"||ev.error==="service-not-allowed")toast("マイクの使用を許可してください（アドレスバーの左のマークから）");
+      else if(ev.error==="no-speech")toast("声が聞き取れませんでした。もう一度押して話してください");
+      else if(ev.error!=="aborted")toast("音声入力がうまく動きませんでした。下の説明の方法でも話せます");
+    };
+    r.onend=()=>{if(micRec===r){micRec=null;micBtnEl=null;}b.classList.remove("on");b.textContent="🎤 話して入れる";st.textContent="";};
+    try{r.start();}catch(_){toast("音声入力を始められませんでした");return;}
+    b.classList.add("on");b.textContent="■ 止める";st.textContent="話してください。終わったら「止める」を押します";
+  }});
+  return h("div",{class:"mic-row"},b,st);
+}
+
 function voiceGuide(pos){
   const ua=navigator.userAgent||"";
   const dev=/iPhone|iPad|iPod/.test(ua)?"ios":/Android/.test(ua)?"android":/Mac/.test(ua)?"mac":/Windows/.test(ua)?"win":"other";
@@ -892,11 +931,13 @@ function voiceGuide(pos){
   };
   return h("details",{class:"tip voice",open:S.voiceOpen!==false?true:null,ontoggle:function(){S.voiceOpen=this.open;save();}},
     h("summary",null,h("strong",{text:"話して書けます（音声入力）"})),
-    h("p",{style:"margin-top:6px",text:(pos||"下")+"の欄を押して、"+ways[dev]}),
+    SR?h("p",{style:"margin-top:6px",text:"「🎤 話して入れる」を押して話すと、"+(pos||"下")+"の欄に文字が入ります。初めてのときは、マイクを使ってよいか聞かれるので「許可」を押してください。"}):null,
+    h("p",{style:"margin-top:6px",text:(SR?"ボタンが動かないときは、":"")+(pos||"下")+"の欄を押して、"+ways[dev]}),
     h("ul",null,
       h("li",{text:"話し言葉のまま、言い直しや「えーと」も消さずに残して大丈夫です。気持ちがそのまま残ります。"}),
       h("li",{text:"整えるのはあとで。大事なところだけ「ハイライトにする」で1行にします。"}),
       h("li",{text:"人の名前や地名は聞き間違えやすいので、あとで見直してください。"}),
+      SR?h("li",{text:"ボタンの音声入力は、ブラウザの音声認識（Chromeならグーグル、Safariならアップル）を使って文字にします。"}):null,
       dev!=="ios"&&dev!=="android"?h("li",{text:"スマホでは、キーボードのマイクを押すだけで話せます。"}):null)
   );
 }
@@ -1175,7 +1216,7 @@ function vDeep(){
     const id="q-"+e.id+"-"+q.k;
     const ta=h("textarea",{id,rows:"4",value:e.deep[q.k]||"",placeholder:"話して入れても大丈夫です"});
     ta.addEventListener("input",()=>{e.deep[q.k]=ta.value;save();});
-    lad.append(h("div",{class:"q"},h("label",{for:id},h("span",{class:"step-tag",text:q.step}),q.label),h("span",{class:"sub",text:q.sub}),ta));
+    lad.append(h("div",{class:"q"},h("label",{for:id},h("span",{class:"step-tag",text:q.step}),q.label),h("span",{class:"sub",text:q.sub}),micRow(ta)||"",ta));
   });
   box.append(h("div",{class:"deep"},pick,lad));
   return box;
