@@ -1384,16 +1384,26 @@ function vSummary(){
     aiTA));
   const restore=h("textarea",{class:"out",style:"min-height:90px","aria-label":"控えを貼り付ける",placeholder:"別の端末で取った控え（データ）をここに貼り付けて「読み込む」"});
   const msg=h("p",{class:"small muted","aria-live":"polite"});
+  const doRestore=(text,tip)=>{
+    const bad="控えの形が読めませんでした。"+tip;
+    try{const d=normalize(JSON.parse(text));if(!d.events.length&&!d.name){msg.textContent=bad;return;}
+      S=d;curDeep=null;save();fName.value=S.name;fBirth.value=S.birth;toast("控えを読み込みました");render();}
+    catch(e){msg.textContent=bad;}
+  };
+  const fileIn=h("input",{type:"file",accept:".json,application/json,text/plain",hidden:true,"aria-label":"控えのファイル"});
+  fileIn.addEventListener("change",async()=>{
+    const f=fileIn.files&&fileIn.files[0];fileIn.value="";if(!f)return;
+    let t="";try{t=await f.text();}catch(e){msg.textContent="ファイルを開けませんでした。";return;}
+    doRestore(t,"「自分史ノート控え.json」のファイルを選んでください。");
+  });
   box.append(h("div",{class:"sheet stack"},
     h("h2",{text:"控え（データ）"}),
     h("p",{class:"small muted",text:"書いたもの全部を、文字のかたまりとして書き出します。メモアプリなどに貼って保管してください。"}),
     h("div",{class:"row"},copyBtn(()=>JSON.stringify(S),null,"控えをコピー"),saveBtn(()=>JSON.stringify(S,null,1),"自分史ノート控え.json","application/json","控えをファイルに保存")),
     restore,
-    h("div",{class:"row"},h("button",{class:"btn ghost",type:"button",onclick:()=>{
-      try{const d=normalize(JSON.parse(restore.value));if(!d.events.length&&!d.name){msg.textContent="控えの形が読めませんでした。コピーした文字をそのまま貼ってください。";return;}
-        S=d;curDeep=null;save();fName.value=S.name;fBirth.value=S.birth;toast("控えを読み込みました");render();}
-      catch(e){msg.textContent="控えの形が読めませんでした。コピーした文字をそのまま貼ってください。";}
-    }},"読み込む（今の内容と入れ替わります）")),msg,
+    h("div",{class:"row"},h("button",{class:"btn ghost",type:"button",onclick:()=>doRestore(restore.value,"コピーした文字をそのまま貼ってください。")},"読み込む（今の内容と入れ替わります）")),
+    h("div",{class:"row"},fileIn,h("button",{class:"btn ghost",type:"button",onclick:()=>fileIn.click()},"控えのファイルを選んで読み込む"),h("span",{class:"small muted",text:"「控えをファイルに保存」で保存したファイルから戻せます（今の内容と入れ替わります）"})),
+    msg,
     resetBlock()
   ));
   return box;
