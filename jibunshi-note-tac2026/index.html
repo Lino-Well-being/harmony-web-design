@@ -884,11 +884,11 @@ function voiceGuide(pos){
   const ua=navigator.userAgent||"";
   const dev=/iPhone|iPad|iPod/.test(ua)?"ios":/Android/.test(ua)?"android":/Mac/.test(ua)?"mac":/Windows/.test(ua)?"win":"other";
   const ways={
-    ios:"キーボード右下のマイクを押して話します。終わったらキーボードのボタンを押します。",
+    ios:"キーボード右下のマイクを押して話します。終わったらキーボードのボタンを押します。マイクが出ないときは、「設定」→「一般」→「キーボード」→「音声入力」をオンにしてください。",
     android:"キーボードのマイクを押して話します（Gboardなど）。",
-    mac:"fnキー（地球儀キー）を2回押して話します。",
+    mac:"設定したキー（🌐キーを2回など）を押して話します。初めてのときは、左上のりんごマーク→「システム設定」→「キーボード」→「音声入力」をオンにして、すぐ下の「ショートカット」で押すキーを選んでください（🌐やfnのキーがなければ「Controlキーを2回」が使えます）。",
     win:"Windowsキー＋Hを押して話します。",
-    other:"スマホならキーボードのマイク、Macはfnキーを2回、WindowsはWindowsキー＋Hで話せます。"
+    other:"スマホならキーボードのマイク、Macは音声入力をオンにしてから設定したキー（🌐キーを2回など）、WindowsはWindowsキー＋Hで話せます。"
   };
   return h("details",{class:"tip voice",open:S.voiceOpen!==false?true:null,ontoggle:function(){S.voiceOpen=this.open;save();}},
     h("summary",null,h("strong",{text:"話して書けます（音声入力）"})),
