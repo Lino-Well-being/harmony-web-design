@@ -387,9 +387,25 @@ function save(){
 function saveNow(){
   clearTimeout(saveTimer);
   const json=JSON.stringify(S);
-  try{localStorage.setItem(KEY,json);lastJSON=json;flashSaved("保存しました");}
-  catch(e){flashSaved("この画面では保存できません。控えを取ってください");return false;}
+  if(!putMain(json)){flashSaved("この画面では保存できません。控えを取ってください");return false;}
+  lastJSON=json;flashSaved("保存しました");
   snapToday(json);
+  return true;
+}
+/* 容量がいっぱいのときは、自動の控えを古い日から消して、書いた内容の保存を優先する */
+function putMain(json){
+  for(;;){
+    try{localStorage.setItem(KEY,json);return true;}
+    catch(e){if(!dropOldestSnap())return false;}
+  }
+}
+function dropOldestSnap(){
+  const o=readSnaps();
+  const days=Object.keys(o).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).sort();
+  if(days.length)delete o[days[0]];else if(o._before)delete o._before;
+  else{try{localStorage.removeItem(SNAP_KEY);}catch(e){}return false;}
+  try{if(Object.keys(o).length)localStorage.setItem(SNAP_KEY,JSON.stringify(o));else localStorage.removeItem(SNAP_KEY);}
+  catch(e){try{localStorage.removeItem(SNAP_KEY);}catch(e2){}}
   return true;
 }
 function flashSaved(t){const el=document.getElementById("saved");el.textContent=t;clearTimeout(el._t);el._t=setTimeout(()=>{el.textContent="";},2200);}
