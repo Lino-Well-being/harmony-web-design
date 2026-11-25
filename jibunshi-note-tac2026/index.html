@@ -212,10 +212,11 @@ input[type=number]{width:96px}
     <div class="who">
       <div class="field"><label for="f-name">呼び名</label><input id="f-name" type="text" placeholder="例：はなこ" style="width:140px"></div>
       <div class="field"><label for="f-birth">生まれ年（西暦）</label><input id="f-birth" type="number" min="1920" max="2025" placeholder="1975"></div>
+      <button id="done-today" class="btn sm" type="button">今日はここまで（ファイルに保存）</button>
       <span id="saved" class="saved" aria-live="polite"></span>
     </div>
   </header>
-  <p class="privacy">書いた内容は、この端末のブラウザの中にだけ保存されます。主催者にもほかの参加者にも見えません。「Cookieとサイトデータ」を消すと消えます。iPhoneのSafariは、7日ほど開かないと消えることがあるので、ホーム画面に追加して開くか、ときどき「7 まとめる」から控えを取ってください。</p>
+  <p class="privacy">書いた内容は、この端末のブラウザの中にだけ保存されます。主催者にもほかの参加者にも見えません。「Cookieとサイトデータ」を消すと消えます。iPhoneのSafariは、7日ほど開かないと消えることがあるので、ホーム画面に追加して開いてください。書き終えたら上の「今日はここまで」ボタンで、端末にファイルとしても残しておくと安心です。</p>
 
   <section id="overview" class="ov" aria-label="進み具合"></section>
 
@@ -278,6 +279,31 @@ let view=(location.hash||"").replace("#","")||"ask";
 let curDeep=null;
 let confirmId=null;
 let curYear=null;
+
+/* ---------- 日ごとの控え（このブラウザの中に自動で残す） ---------- */
+const SNAP_KEY=KEY+"-daily",SNAP_DAYS=7;
+function todayStr(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function readSnaps(){try{const o=JSON.parse(localStorage.getItem(SNAP_KEY)||"{}");return(o&&typeof o==="object"&&!Array.isArray(o))?o:{};}catch(e){return{};}}
+function writeSnaps(o){
+  const days=Object.keys(o).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).sort().reverse();
+  days.slice(SNAP_DAYS).forEach(k=>delete o[k]);
+  for(let keep=Math.min(days.length,SNAP_DAYS);keep>=1;keep--){
+    try{localStorage.setItem(SNAP_KEY,JSON.stringify(o));return;}
+    catch(e){delete o[days[keep-1]];if(keep===1)delete o._before;}
+  }
+}
+function hasContent(d){return!!(d&&((d.name||"").trim()||d.events.length||Object.values(d.years).some(v=>(v||"").trim())||Object.values(d.qa.a).some(v=>(v||"").trim())));}
+function snapToday(json){if(!hasContent(S))return;const o=readSnaps();o[todayStr()]={at:Date.now(),d:json};writeSnaps(o);}
+function snapBefore(){if(!hasContent(S))return;const o=readSnaps();o._before={at:Date.now(),d:JSON.stringify(S)};writeSnaps(o);}
+function replaceState(d,msg){snapBefore();S=d;curDeep=null;saveNow();fName.value=S.name;fBirth.value=S.birth;toast(msg);render();}
+
+/* ---------- ほかのタブで書き換えられたら、古い内容で上書きしない ---------- */
+let lastJSON=null;try{lastJSON=localStorage.getItem(KEY);}catch(e){}
+window.addEventListener("storage",ev=>{
+  if(ev.key!==KEY||ev.newValue==null||ev.newValue===lastJSON)return;
+  try{clearTimeout(saveTimer);S=normalize(JSON.parse(ev.newValue));lastJSON=ev.newValue;curDeep=null;
+    fName.value=S.name;fBirth.value=S.birth;render();toast("別のタブで書いた内容に切り替えました");}catch(e){}
+});
 
 function blank(){return{name:"",birth:"",events:[],years:{},lastYear:0,qa:{a:{},skip:{},priv:{},cur:{t:"birth",q:0}},maps:[newMap(1)],curMap:"m1",mapSeq:2,magic:{good:"",seek:"",s1:"",s2:"",s3:""},catch:{how:"",who:"",what:"",line:""},seq:1};}
 function load(){
@@ -356,11 +382,15 @@ function mapLines(withPriv){
 }
 function save(){
   clearTimeout(saveTimer);
-  saveTimer=setTimeout(()=>{
-    try{localStorage.setItem(KEY,JSON.stringify(S));flashSaved("保存しました");}
-    catch(e){flashSaved("この画面では保存できません。控えを取ってください");}
-    try{renderOverview();}catch(e){}
-  },400);
+  saveTimer=setTimeout(()=>{saveNow();try{renderOverview();}catch(e){}},400);
+}
+function saveNow(){
+  clearTimeout(saveTimer);
+  const json=JSON.stringify(S);
+  try{localStorage.setItem(KEY,json);lastJSON=json;flashSaved("保存しました");}
+  catch(e){flashSaved("この画面では保存できません。控えを取ってください");return false;}
+  snapToday(json);
+  return true;
 }
 function flashSaved(t){const el=document.getElementById("saved");el.textContent=t;clearTimeout(el._t);el._t=setTimeout(()=>{el.textContent="";},2200);}
 function toast(t){const el=document.getElementById("toast");el.textContent=t;el.hidden=false;clearTimeout(el._t);el._t=setTimeout(()=>{el.hidden=true;},2200);}
@@ -1396,7 +1426,7 @@ function vSummary(){
   const doRestore=(text,tip)=>{
     const bad="控えの形が読めませんでした。"+tip;
     try{const d=normalize(JSON.parse(text));if(!d.events.length&&!d.name){msg.textContent=bad;return;}
-      S=d;curDeep=null;save();fName.value=S.name;fBirth.value=S.birth;toast("控えを読み込みました");render();}
+      replaceState(d,"控えを読み込みました");}
     catch(e){msg.textContent=bad;}
   };
   const fileIn=h("input",{type:"file",accept:".json,application/json,text/plain",hidden:true,"aria-label":"控えのファイル"});
@@ -1415,14 +1445,57 @@ function vSummary(){
     msg,
     resetBlock()
   ));
+  box.append(snapSheet());
   return box;
+}
+function snapSheet(){
+  const o=readSnaps();
+  const items=Object.keys(o).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).sort().reverse().map(k=>[k,o[k]]);
+  if(o._before)items.push(["_before",o._before]);
+  const hm=t=>{const d=new Date(t);return d.getHours()+":"+String(d.getMinutes()).padStart(2,"0");};
+  const list=h("div",{class:"stack",style:"gap:8px"});
+  items.forEach(([k,v])=>{
+    let d=null;try{d=normalize(JSON.parse(v.d));}catch(e){}
+    if(!d)return;
+    const n=Object.values(d.qa.a).filter(x=>(x||"").trim()).length;
+    const name=k==="_before"?"戻したり読み込んだりする前の状態":(+k.slice(5,7))+"月"+(+k.slice(8))+"日の最後の状態";
+    list.append(h("div",{class:"row",style:"justify-content:space-between"},
+      h("span",{class:"small",text:`${name}（${hm(v.at)}）　答え${n}・ハイライト${d.events.length}・1年1ページ${Object.values(d.years).filter(x=>(x||"").trim()).length}`}),
+      h("button",{class:"btn ghost sm",type:"button",onclick:()=>replaceState(d,"その時点の状態に戻しました")},"この状態に戻す")));
+  });
+  return h("div",{class:"sheet stack"},
+    h("h2",{text:"日ごとの控え（自動）"}),
+    h("p",{class:"small muted",text:`このブラウザの中に、日ごとの最後の状態を${SNAP_DAYS}日分、自動で残しています。間違えて消したり上書きしたりしたときは、ここから戻せます。戻す前の状態も1つ残るので、やり直せます。ブラウザのデータを消すと、これも一緒に消えます。`}),
+    list.childNodes.length?list:h("p",{class:"small muted",text:"まだありません。書くと、今日の分から残ります。"}));
 }
 let resetArmed=false;
 function resetBlock(){
   return resetArmed
-    ?h("div",{class:"confirm"},"全部消して白紙に戻しますか？",h("button",{class:"btn warn sm",type:"button",onclick:()=>{S=blank();resetArmed=false;curDeep=null;save();fName.value="";fBirth.value="";render();toast("白紙に戻しました");}},"全部消す"),h("button",{class:"btn ghost sm",type:"button",onclick:()=>{resetArmed=false;render();}},"やめる"))
+    ?h("div",{class:"confirm"},"全部消して白紙に戻しますか？",h("button",{class:"btn warn sm",type:"button",onclick:()=>{resetArmed=false;replaceState(blank(),"白紙に戻しました");}},"全部消す"),h("button",{class:"btn ghost sm",type:"button",onclick:()=>{resetArmed=false;render();}},"やめる"))
     :h("div",null,h("button",{class:"btn warn sm",type:"button",onclick:()=>{resetArmed=true;render();}},"白紙に戻す"));
 }
+function csvText(){
+  const rows=[["区分","年齢・時期","項目","質問","答え","しるし"]];
+  rows.push(["基本","","呼び名","",S.name,""],["基本","","生まれ年","",S.birth,""]);
+  TOPICS.forEach(t=>t.qs.forEach(([q],i)=>{const v=qaAns(t.k,i);if(v)rows.push(["質問の答え",t.age==="now"?"今":"",t.label,q,v,S.qa.priv[t.k]?"非公開":""]);}));
+  Object.keys(S.years).map(Number).filter(a=>(S.years[a]||"").trim()).sort((x,y)=>x-y).forEach(a=>{const y=yearOf(a);rows.push(["1年1ページ",a+"歳"+(y?"（"+y+"年）":""),"","",S.years[a].trim(),""]);});
+  sorted(S.events.filter(e=>e.text)).forEach(e=>{
+    rows.push(["ハイライト",ageLabel(e),COL[e.col],"",e.text,[e.star?"★":"",e.priv?"非公開":"",e.score!=null?"点数"+e.score:""].filter(Boolean).join("・")]);
+    LADDER.forEach(q=>{const v=(e.deep[q.k]||"").trim();if(v)rows.push(["深掘り",ageLabel(e),e.text,q.label,v,e.priv?"非公開":""]);});
+  });
+  const m=S.magic;[["得意なこと（一言）",m.good],["人生で求めているもの",m.seek],["人より優れていること",m.s1],["相手に届けられること",m.s2],["実現したこと（実績）",m.s3]].forEach(([k,v])=>{if((v||"").trim())rows.push(["自分の軸","",k,"",v.trim(),""]);});
+  const c=S.catch;[["① どんな経験・強みで",c.how],["② 誰の",c.who],["③ 何をする人",c.what],["キャッチコピー",c.line]].forEach(([k,v])=>{if((v||"").trim())rows.push(["キャッチコピー","",k,"",v.trim(),""]);});
+  const cell=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';
+  return "\uFEFF"+rows.map(r=>r.map(cell).join(",")).join("\r\n");
+}
+document.getElementById("done-today").addEventListener("click",async()=>{
+  if(!saveNow())toast("このブラウザに保存できませんでした。ファイルだけ保存します");
+  const d=todayStr();
+  const ok1=await dlFile(csvText(),`自分史ノート_${d}.csv`,"text/csv");
+  await new Promise(r=>setTimeout(r,800));
+  const ok2=await dlFile(JSON.stringify(S,null,1),`自分史ノート控え_${d}.json`,"application/json");
+  if(ok1&&ok2)toast("2つのファイルを保存しました（ダウンロードのフォルダ）");
+});
 function copyBtn(get,ta,label){
   return h("button",{class:"btn sm",type:"button",onclick:async()=>{
     const t=get();
@@ -1431,13 +1504,14 @@ function copyBtn(get,ta,label){
   }},label||"コピー");
 }
 let dl=null;
+async function dlFile(text,filename,type){
+  const blob=new Blob([text],{type:type+";charset=utf-8"});
+  if(dl){try{await dl.save({filename,data:blob});return true;}catch(e){toast("保存しませんでした");return false;}}
+  const u=URL.createObjectURL(blob);const a=h("a",{href:u,download:filename});document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);return true;
+}
 function saveBtn(get,filename,type,label){
   const plain=!window.claude;
-  const b=h("button",{class:"btn ghost sm",type:"button",hidden:!dl&&!plain,onclick:async()=>{
-    const blob=new Blob([get()],{type:type+";charset=utf-8"});
-    if(dl){try{await dl.save({filename,data:blob});}catch(e){toast("保存しませんでした");}return;}
-    if(plain){const u=URL.createObjectURL(blob);const a=h("a",{href:u,download:filename});document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);}
-  }},label||"ファイルに保存");
+  const b=h("button",{class:"btn ghost sm",type:"button",hidden:!dl&&!plain,onclick:()=>{if(dl||plain)dlFile(get(),filename,type);}},label||"ファイルに保存");
   b.dataset.dl="1";return b;
 }
 function lineOfEvent(e,withPriv){
